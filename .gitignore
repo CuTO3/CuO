@@ -1,0 +1,28 @@
+# 本地私有原件（脱敏前的版本，见 README 说明，不进入公开仓库）
+.private-originals/
+
+# Syncthing 同步标记
+.stfolder/
+
+# 真实群聊样本：含真实 QQ 号、群名片、消息 ID 与聊天原文，不进入公开仓库
+**/标准化示例/
+**/输出示例/
+
+# 运行配置与凭据
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# 运行缓存与日志
+**/cache/
+logs/
+*.log
