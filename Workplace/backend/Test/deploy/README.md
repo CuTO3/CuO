@@ -1,4 +1,4 @@
-# CuCl 部署
+# 部署
 
 服务用户 cuo；代码 /serve/workspace/program/cuo/backend；生产配置 /serve/config/cuo/backend.env 和 groups.json；持久文件 /serve/data/cuo。不部署 UnknowFunction、本地 .venv、测试数据和缓存。服务器使用 Linux 虚拟环境。
 
@@ -10,6 +10,6 @@ systemd 定义见本目录 cuo-backend.service。服务只监听 127.0.0.1:8080�
 
 检查：systemctl status cuo-backend；curl http://127.0.0.1:8080/ready。ready=true 表示后端可服务，onebot_connected 单独表示 QQ 链路。日志用 journalctl -u cuo-backend 查看，不公开配置文件或包含用户聊天的数据。
 
-本机管理隧道：ssh -N -L 8080:127.0.0.1:8080 cucl。管理接口需 Bearer ADMIN_TOKEN；令牌只在服务器受限配置中保存。不要把测试令牌用于生产。
+本机管理隧道：ssh -N -L 8080:127.0.0.1:8080 <ssh_host>。管理接口需 Bearer ADMIN_TOKEN；令牌只在服务器受限配置中保存。不要把测试令牌用于生产。
 
 停止/恢复：sudo systemctl stop cuo-backend；恢复已备份的匹配代码与配置后 sudo systemctl start cuo-backend。停止服务不会删除数据库、工作簿或 NapCat 登录态。需要数据库回滚时先做当前备份并验证恢复方案，不能仅切换源码就假定 schema 兼容。
