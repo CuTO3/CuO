@@ -3,10 +3,14 @@
 
 # Syncthing 同步标记
 .stfolder/
+.stignore
 
 # 真实群聊样本：含真实 QQ 号、群名片、消息 ID 与聊天原文，不进入公开仓库
 **/标准化示例/
 **/输出示例/
+
+# 鸿爪录本地昵称保护词表（含真实群名片片段），格式见 nickname_dictionary.example.txt
+**/nickname_dictionary.txt
 
 # 运行配置与凭据
 .env
