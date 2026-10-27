@@ -1,0 +1,30 @@
+# Local work and legacy copies are not part of the public source tree.
+/work/
+/Workout/
+/.history/
+/.private-originals/
+**/__pycache__/
+**/.pytest_cache/
+**/*.egg-info/
+**/.venv/
+**/.env
+**/.env.*
+!**/.env.example
+**/deploy.env
+**/nickname_dictionary.txt
+*.pem
+*.key
+*.dump
+*.log
+
+# Runtime directories contain only committed placeholders.
+/service/*/var/**/*
+!/service/*/var/**/
+!/service/*/var/**/.gitkeep
+!/service/*/var/README.md
+
+# Third-party software: placeholders only.
+/software/**/*
+!/software/**/
+!/software/**/README.md
+!/software/**/.gitkeep

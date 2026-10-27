@@ -1,0 +1,13 @@
+var/**/*
+!var/**/
+!var/**/.gitkeep
+!var/README.md
+ops/deploy/deploy.env
+ops/deploy/records/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+**/.env
+**/.env.*
+!**/.env.example
+**/nickname_dictionary.txt

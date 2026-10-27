@@ -1,0 +1,27 @@
+[Unit]
+Description=CuO group assistant
+After=network-online.target postgresql@18-main.service litellm.service
+Wants=network-online.target litellm.service
+Requires=postgresql@18-main.service
+[Service]
+Type=simple
+User=cuo
+Group=cuo
+SupplementaryGroups=cuo-files
+WorkingDirectory=/serve/service/cuo/src/backend
+Environment=CUO_ENV_FILE=/serve/service/cuo/var/config/backend.env
+Environment=HOME=/serve/service/cuo/var/home
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/serve/software/python/environments/cuo/bin/python -m uvicorn Workflow.main:app --host 127.0.0.1 --port 8080 --workers 1
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=75
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/serve/service/cuo/var
+[Install]
+WantedBy=multi-user.target

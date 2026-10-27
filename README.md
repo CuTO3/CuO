@@ -19,8 +19,8 @@
 Requirement/        产品需求（白皮书）
 Solution/           设计实现文档（氧化铜主流程、意图识别、消息接收与发送、周易、众声录、鸿爪录、府库、清谈录人设）
 Workplace/
-├── backend/        后端源码
-└── frontend/       预留
+└── backend/        后端源码
+    └── console/    Web 控制中心静态资源，由 FastAPI 托管
 ```
 
 后端技术栈：Python 3.12、FastAPI、PostgreSQL、NapCat（OneBot 11 反向 WebSocket）、DeepSeek。
@@ -39,6 +39,10 @@ python -m venv .venv
 4. 启动：`.venv/bin/python -m uvicorn Main:app --host 127.0.0.1 --port 8080`。
 
 systemd 单元与部署说明见 `Workplace/backend/Test/deploy/`。
+
+## Web 控制中心
+
+已部署简约浅色管理台，提供运行总览、任务筛选、成员显示名称修改、内容档案和运行参数管理。访问与维护见 [控制中心说明](Workplace/backend/console/README.md)。服务器继续监听 `127.0.0.1:8080`，通过 SSH 将其映射至本机 9080 后访问 `/console/`；登录使用现有 `ADMIN_TOKEN`。
 
 ## 测试
 
