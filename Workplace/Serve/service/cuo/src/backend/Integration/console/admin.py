@@ -6,6 +6,7 @@ from Core.clock import now,business_date
 from Core.results import jsonable,result,save
 from psycopg import sql
 TABLES={"members","log","summaries","divinations","messages"}
+MAX_SAFE_FORTUNE=9007199254740991
 def version(row):
     return hashlib.sha256(json.dumps(jsonable(row),sort_keys=True,ensure_ascii=False).encode()).hexdigest()
 def install(app):
@@ -35,9 +36,12 @@ def install(app):
         if len(body)>16384:raise HTTPException(413)
         try:
             p=json.loads(body)
-            if not isinstance(p,dict) or p.get("operation") not in {"display_name","retry","resolve_delivery","nickname_slots"} or not isinstance(p.get("expected_version"),str):raise ValueError()
+            if not isinstance(p,dict) or p.get("operation") not in {"display_name","fortune","retry","resolve_delivery","nickname_slots"} or not isinstance(p.get("expected_version"),str):raise ValueError()
             if p["operation"]=="display_name":
                 if not isinstance(p.get("user_id"),str) or p.get("display_name") is not None and (not isinstance(p["display_name"],str) or len(p["display_name"])>100):raise ValueError()
+            elif p["operation"]=="fortune":
+                if set(p)!={"operation","user_id","fortune","expected_version"} or not isinstance(p.get("user_id"),str) or not p["user_id"].isascii() or not p["user_id"].isdecimal():raise ValueError()
+                if type(p.get("fortune")) is not int or abs(p["fortune"])>MAX_SAFE_FORTUNE:raise ValueError()
             else:
                 from uuid import UUID
                 UUID(p["target_task_id"])
@@ -45,10 +49,20 @@ def install(app):
         instant=now();tid=str(uuid4())
         await ctx.db.write("log",[{"task_id":tid,"triggered_at":instant,"business_date":business_date(instant),"request_type":"admin_update","params":p}],group_id=gid)
         ctx.queue.wake();return {"task_id":tid}
+    @app.get("/admin/{gid}/commands/{task_id}")
+    async def command_status(gid:str,task_id:str,request:Request):
+        ctx=auth(request)
+        if gid not in ctx.db.groups:raise HTTPException(404)
+        from uuid import UUID
+        try:UUID(task_id)
+        except ValueError:raise HTTPException(422,"invalid task id") from None
+        rows=await ctx.db.read("log",group_id=gid,filters={"task_id":task_id,"request_type":"admin_update"},limit=1)
+        if not rows:raise HTTPException(404)
+        return {"version":version(rows[0]),"record":jsonable(rows[0])}
 
 async def execute(task,ctx):
     p=task["params"];op=p["operation"];gid=task["group_id"]
-    table="members" if op=="display_name" else "log";key="user_id" if table=="members" else "task_id"
+    table="members" if op in {"display_name","fortune"} else "log";key="user_id" if table=="members" else "task_id"
     target=p["user_id"] if table=="members" else p["target_task_id"]
     async with ctx.db.transaction(gid) as tx:
         rows=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE {}=%s FOR UPDATE").format(ctx.db.table(gid,table),sql.Identifier(key)),(target,),transaction=tx)
@@ -57,6 +71,9 @@ async def execute(task,ctx):
         row=rows[0];update={key:target}
         if op=="display_name":
             update.update(display_name=p["display_name"],updated_at=now())
+        elif op=="fortune":
+            if type(p.get("fortune")) is not int or abs(p["fortune"])>MAX_SAFE_FORTUNE:raise ValueError("invalid fortune")
+            update.update(fortune=p["fortune"],updated_at=now())
         elif op=="retry":
             if row["status"] not in ("failed","needs_review"):raise ValueError("task is not retryable")
             if any(a.get("status") in ("sending","unknown") for a in row["result"].get("actions",[])):raise ValueError("resolve unknown delivery first")
@@ -78,4 +95,5 @@ async def execute(task,ctx):
             action["error"]=None
             update.update(result=value,status="pending",error=None)
         await ctx.db.write(table,[update],group_id=gid,mode="update",key_fields=(key,),transaction=tx)
-        return await save(task,ctx,result(target=str(target),operation=op),tx=tx)
+        metadata={"fortune_before":row["fortune"],"fortune_after":p["fortune"]} if op=="fortune" else {}
+        return await save(task,ctx,result(target=str(target),operation=op,**metadata),tx=tx)

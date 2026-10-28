@@ -81,3 +81,60 @@ def test_rate_limit_and_expired_session(client):
 
 def test_bearer_api_compatibility(client):
     assert client.get("/admin/groups", headers={"Authorization":"Bearer test-admin-secret"}).status_code == 200
+
+
+def fortune_command(**changes):
+    return {"operation":"fortune", "user_id":"456", "fortune":12, "expected_version":"member-version", **changes}
+
+
+def test_fortune_command_auth_and_enqueue(client):
+    from unittest.mock import AsyncMock, Mock
+    ctx=client.app.state.ctx
+    ctx.db.write=AsyncMock()
+    ctx.queue=SimpleNamespace(wake=Mock())
+    assert client.post('/admin/123/commands',headers=HEADERS,json=fortune_command()).status_code==401
+    login(client)
+    assert client.post('/admin/123/commands',json=fortune_command()).status_code==401
+    assert client.post('/admin/999/commands',headers=HEADERS,json=fortune_command()).status_code==404
+    ctx.db.write.assert_not_awaited()
+    response=client.post('/admin/123/commands',headers=HEADERS,json=fortune_command())
+    assert response.status_code==202
+    args=ctx.db.write.call_args
+    assert args.args[0]=='log' and args.kwargs['group_id']=='123'
+    entry=args.args[1][0]
+    assert entry['params']==fortune_command() and entry['task_id']==response.json()['task_id']
+    assert entry['request_type']=='admin_update'
+    ctx.queue.wake.assert_called_once()
+
+
+@pytest.mark.parametrize('changes',[
+    {'fortune':True},{'fortune':1.5},{'fortune':'5'},{'fortune':None},
+    {'fortune':9007199254740992},{'fortune':-9007199254740992},
+    {'user_id':''},{'user_id':'abc'},{'user_id':'１２３'},
+    {'expected_version':None},{'admin_token':'injected'},
+])
+def test_fortune_rejects_invalid_values_without_queue_write(client,changes):
+    from unittest.mock import AsyncMock
+    client.app.state.ctx.db.write=AsyncMock()
+    login(client)
+    assert client.post('/admin/123/commands',headers=HEADERS,json=fortune_command(**changes)).status_code==422
+    client.app.state.ctx.db.write.assert_not_awaited()
+
+
+def test_command_status_auth_and_group_scope(client):
+    from unittest.mock import AsyncMock
+    from uuid import uuid4
+    tid=str(uuid4())
+    record={'task_id':tid,'request_type':'admin_update','status':'completed','result':{'fortune_after':12}}
+    ctx=client.app.state.ctx
+    ctx.db.read=AsyncMock(return_value=[record])
+    path='/admin/123/commands/'+tid
+    assert client.get(path,headers=HEADERS).status_code==401
+    login(client)
+    assert client.get('/admin/999/commands/'+tid,headers=HEADERS).status_code==404
+    assert client.get('/admin/123/commands/invalid',headers=HEADERS).status_code==422
+    response=client.get(path,headers=HEADERS)
+    assert response.status_code==200 and response.json()['record']==record
+    ctx.db.read.assert_awaited_once_with('log',group_id='123',filters={'task_id':tid,'request_type':'admin_update'},limit=1)
+    ctx.db.read.return_value=[]
+    assert client.get(path,headers=HEADERS).status_code==404

@@ -30,8 +30,73 @@ function empty(text='这里还很安静。新的记录到来后，会显示在�
 function taskTable(rows){if(!rows.length)return empty();return `<div class="table-scroll"><table><thead><tr><th>任务</th><th>发起时间</th><th>执行状态</th><th>阶段</th><th></th></tr></thead><tbody>${rows.map(row=>{const r=row.record;return `<tr><td><div class="cell-main">${esc(labels[r.params?._opt]||labels[r.request_type]||r.request_type)}<span class="secondary">${esc(r.task_id?.slice(0,8))}</span></div></td><td>${date(r.created_at)}</td><td>${badge(r.status)}</td><td>${esc(r.step)}</td><td><button class="table-action" data-detail="${state.rows.indexOf(row)}">查看 ↗</button></td></tr>`;}).join('')}</tbody></table></div>`;}
 function renderRecords(){const name=pages[state.page][0];$('#content').innerHTML=`<section class="card"><div class="card-head"><div><h2>${name}</h2><p>当前群组 · ${esc(state.gid)}</p></div><span class="pill">${state.rows.length} 条已载入</span></div><div class="toolbar"><input id="search" class="search" aria-label="搜索记录" placeholder="搜索当前载入的记录…">${state.page==='log'?'<select id="status-filter" class="filter" aria-label="按状态筛选"><option value="">全部状态</option><option value="needs_review">待处理</option><option value="failed">失败</option><option value="pending">等待中</option><option value="running">处理中</option><option value="completed">已完成</option></select>':''}<button id="export" class="table-action">导出 JSON ↓</button></div><div id="records"></div><div class="table-note">最多显示最近 500 条 · 搜索和导出仅作用于当前载入的记录 · 时间为北京时间</div></section>`;$('#search').oninput=filterRecords;if($('#status-filter'))$('#status-filter').onchange=filterRecords;$('#export').onclick=()=>{const blob=new Blob([JSON.stringify(filteredRows().map(r=>r.record),null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`cuo-${state.page}-${state.gid}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};filterRecords();}
 function filteredRows(){const q=$('#search').value.trim().toLowerCase();const status=$('#status-filter')?.value;return state.rows.filter(r=>(!q||(JSON.stringify(r.record)+' '+(labels[r.record.request_type]||'')+' '+(labels[r.record.status]||'')).toLowerCase().includes(q))&&(!status||r.record.status===status));}
-function filterRecords(){const rows=filteredRows();if(!rows.length){$('#records').innerHTML=empty($('#search').value?'没有找到匹配的记录。':'这里还没有记录。');return;}if(state.page==='log'){$('#records').innerHTML=taskTable(rows);bindRowActions();return;}const headers={members:['成员','QQ 号','显示名称','福缘','最近更新',''],messages:['内容','发送者','QQ 号','时间',''],summaries:['总结内容','业务日期','生成时间',''],divinations:['占卜内容','成员','业务日期','状态','']}[state.page];$('#records').innerHTML=`<div class="table-scroll"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>{const r=row.record;const index=state.rows.indexOf(row);let cells;if(state.page==='members')cells=[r.nickname||'未命名',r.user_id,r.display_name||'—',r.fortune,date(r.updated_at)];else if(state.page==='messages')cells=[r.text||'媒体消息',r.nickname||'—',r.user_id,date(r.sent_at)];else if(state.page==='summaries')cells=[r.content,r.business_date,date(r.created_at)];else cells=[r.content||r.keyword||'生成中',r.user_id,r.business_date,labels[r.status]||r.status];return `<tr>${cells.map(c=>`<td><div class="cell-main">${esc(c)}</div></td>`).join('')}<td><button class="table-action" data-detail="${index}">${state.page==='members'?'管理':'查看'} ↗</button></td></tr>`;}).join('')}</tbody></table></div>`;bindRowActions();}
-function bindRowActions(){document.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showDetail(Number(b.dataset.detail)));}
+function filterRecords(){const rows=filteredRows();if(!rows.length){$('#records').innerHTML=empty($('#search').value?'没有找到匹配的记录。':'这里还没有记录。');return;}if(state.page==='log'){$('#records').innerHTML=taskTable(rows);bindRowActions();return;}const headers={members:['成员','QQ 号','显示名称','福缘','最近更新',''],messages:['内容','发送者','QQ 号','时间',''],summaries:['总结内容','业务日期','生成时间',''],divinations:['占卜内容','成员','业务日期','状态','']}[state.page];$('#records').innerHTML=`<div class="table-scroll"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>{const r=row.record;const index=state.rows.indexOf(row);let cells;if(state.page==='members')cells=[r.nickname||'未命名',r.user_id,r.display_name||'—',r.fortune,date(r.updated_at)];else if(state.page==='messages')cells=[r.text||'媒体消息',r.nickname||'—',r.user_id,date(r.sent_at)];else if(state.page==='summaries')cells=[r.content,r.business_date,date(r.created_at)];else cells=[r.content||r.keyword||'生成中',r.user_id,r.business_date,labels[r.status]||r.status];return `<tr>${cells.map(c=>`<td><div class="cell-main">${esc(c)}</div></td>`).join('')}<td><div class="member-actions"><button class="table-action" data-detail="${index}">${state.page==='members'?'管理':'查看'} ↗</button>${state.page==='members'?`<button class="table-action" data-fortune="${index}">改福缘 ↗</button>`:''}</div></td></tr>`;}).join('')}</tbody></table></div>`;bindRowActions();}
+function bindRowActions(){document.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>showDetail(Number(b.dataset.detail)));document.querySelectorAll('[data-fortune]').forEach(b=>b.onclick=()=>showFortune(Number(b.dataset.fortune)));}
+let fortuneEdit=null;
+function showFortune(index){
+ const row=state.rows[index];
+ fortuneEdit={row,gid:state.gid,busy:false,pending:false};
+ $('#fortune-member').textContent=`${row.record.display_name||row.record.nickname||'未命名'} · ${row.record.user_id}`;
+ $('#fortune-current').textContent=format(row.record.fortune);
+ $('#fortune-value').value=row.record.fortune;
+ $('#fortune-status').textContent='支持正负整数。保存后会显示执行结果。';
+ $('#fortune-form').querySelectorAll('button,input').forEach(el=>el.disabled=false);
+ $('#close-fortune').disabled=false;
+ updateFortuneChange();
+ $('#fortune-dialog').showModal();
+ $('#fortune-value').focus();
+ $('#fortune-value').select();
+}
+function fortuneValue(){const raw=$('#fortune-value').value.trim();const value=Number(raw);return raw&&Number.isSafeInteger(value)?value:null;}
+function updateFortuneChange(){
+ const value=fortuneValue();const before=fortuneEdit?.row.record.fortune;
+ $('#fortune-change').textContent=value===null?'请输入有效的整数。':`${format(before)} → ${format(value)}`;
+ $('#save-fortune').disabled=!fortuneEdit||fortuneEdit.busy||fortuneEdit.pending||value===null||value===before;
+}
+$('#fortune-value').oninput=updateFortuneChange;
+document.querySelectorAll('[data-fortune-step]').forEach(button=>button.onclick=()=>{
+ const value=fortuneValue();if(value===null)return;
+ const next=value+Number(button.dataset.fortuneStep);if(!Number.isSafeInteger(next))return;
+ $('#fortune-value').value=next;updateFortuneChange();
+});
+$('#close-fortune').onclick=()=>{if(!fortuneEdit?.busy)$('#fortune-dialog').close();};
+$('#fortune-dialog').addEventListener('cancel',event=>{if(fortuneEdit?.busy)event.preventDefault();});
+$('#fortune-form').onsubmit=async event=>{
+ event.preventDefault();const edit=fortuneEdit;const value=fortuneValue();
+ if(!edit||edit.busy||edit.pending||value===null||value===edit.row.record.fortune)return;
+ edit.busy=true;
+ $('#fortune-form').querySelectorAll('button,input').forEach(el=>el.disabled=true);
+ $('#close-fortune').disabled=true;
+ $('#fortune-status').textContent='正在提交修改…';
+ let taskId;
+ try{
+  const response=await api(`/admin/${edit.gid}/commands`,{method:'POST',body:JSON.stringify({operation:'fortune',user_id:edit.row.record.user_id,fortune:value,expected_version:edit.row.version})});
+  taskId=response.task_id;edit.pending=true;
+  $('#fortune-status').textContent='已入队，正在等待执行结果…';
+  for(let attempt=0;attempt<15;attempt++){
+   const {record}=await api(`/admin/${edit.gid}/commands/${taskId}`);
+   if(record.business_status==='completed'){
+    if(record.result?.status==='ok'){
+     $('#fortune-dialog').close();toast(`福缘已修改：${format(record.result.fortune_before)} → ${format(record.result.fortune_after)}`);
+     if(state.authenticated&&state.gid===edit.gid&&state.page==='members')await load();
+    }else{
+     $('#fortune-status').textContent=record.result?.error_code==='version_conflict'?'成员数据已变化，本次未修改。请关闭后重新打开。':'修改未成功，请在任务记录查看详情。';
+     if(state.authenticated&&state.gid===edit.gid&&state.page==='members')await load();
+    }
+    return;
+   }
+   if(['failed','needs_review'].includes(record.status)){$('#fortune-status').textContent='修改未完成，请在任务记录查看详情。';return;}
+   await new Promise(resolve=>setTimeout(resolve,1000));
+  }
+  $('#fortune-status').textContent=`任务 ${taskId.slice(0,8)} 仍在队列中，请稍后在任务记录确认。`;
+ }catch(error){
+  $('#fortune-status').textContent=taskId?`任务 ${taskId.slice(0,8)} 已提交，暂时无法确认结果，请在任务记录查看。`:error.message;
+ }finally{
+  edit.busy=false;$('#close-fortune').disabled=false;
+  if(!edit.pending)$('#fortune-form').querySelectorAll('button,input').forEach(el=>el.disabled=false);
+  updateFortuneChange();
+ }
+};
 function showDetail(index){const row=state.rows[index],r=row.record;const member=state.page==='members';$('#detail-title').textContent=member?'成员显示名称':'记录详情';$('#detail-body').innerHTML=member?`<p>${esc(r.nickname)} · ${esc(r.user_id)}<br>显示名称用于管理侧标识，留空将恢复默认名称。</p><label for="display-name" class="hidden">显示名称</label><input id="display-name" maxlength="100" value="${esc(r.display_name||'')}" placeholder="输入显示名称"><p>修改通过任务队列执行，提交后可在任务记录查看结果。</p><div class="detail-actions"><button id="save-member" class="primary">提交修改</button></div>`:`<pre>${esc(JSON.stringify(r,null,2))}</pre><p>记录只读。含有消息送达结果的异常任务，需要先核实是否已经发送。</p>`;$('#detail').showModal();if(member)$('#save-member').onclick=async e=>{e.target.disabled=true;try{const response=await api(`/admin/${state.gid}/commands`,{method:'POST',body:JSON.stringify({operation:'display_name',user_id:r.user_id,display_name:$('#display-name').value.trim()||null,expected_version:row.version})});$('#detail').close();toast(`修改已入队 · ${response.task_id.slice(0,8)}，请在任务记录确认结果`);}catch(error){toast(error.message);}finally{e.target.disabled=false;}};}
 function renderSettings(){const s=state.settings;const fields=[['model_name','文本模型','下次模型请求开始使用此模型','text','',''],['model_timeout','模型请求超时','单位：秒 · 允许 10–300 秒','number',10,300],['max_message_length','消息分段长度','单位：字符 · 允许 200–4000 字符','number',200,4000],['onebot_timeout','OneBot 请求超时','单位：秒 · 允许 5–120 秒','number',5,120]];$('#content').innerHTML=`<div class="settings-grid"><section class="card"><div class="card-head"><div><h2>运行偏好</h2><p>保存至服务器 · 重启后保留</p></div>${icon('settings')}</div><form id="settings-form" class="form-body">${fields.map(([key,name,desc,type,min,max])=>`<div class="form-row"><div><label for="${key}">${name}</label><p>${desc}</p></div><input id="${key}" name="${key}" type="${type}" ${type==='number'?`min="${min}" max="${max}" step="1"`:'maxlength="120"'} value="${esc(s.values[key])}" required></div>`).join('')}<div class="save-row"><span id="save-status">修改将在后续请求中生效</span><button class="primary" type="submit">保存更改</button></div></form></section><section class="card"><div class="card-head"><div><h2>连接与访问</h2><p>当前环境</p></div>${icon('overview')}</div><div class="info-body">${[['机器人账号',s.self_id],['模型协议',s.model_protocol],['视觉模型',s.vision_configured?'已配置':'未配置'],['访问方式','SSH 端口转发'],['会话有效期','8 小时'],['管理密钥','已配置 · 不回显']].map(([k,v])=>`<div class="info-row"><span>${k}</span><strong>${esc(v)}</strong></div>`).join('')}<p class="info-note">模型地址、密钥及数据库连接保留在服务器配置中。网页仅管理上述运行参数。</p></div></section></div>`;$('#settings-form').onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;const values={};fields.forEach(([k,,,type])=>values[k]=type==='number'?Number($('#'+k).value):$('#'+k).value.trim());try{const result=await api('/console/api/settings',{method:'PUT',body:JSON.stringify({values,version:state.settings.version})});state.settings={...state.settings,...result};$('#save-status').textContent='已保存至服务器';toast('设置已保存，后续请求将使用新参数');}catch(error){toast(error.message);}finally{button.disabled=false;}};}
 start().catch(error=>{showLogin();if(!error.message.includes('登录')&&!error.message.includes('authentication'))$('#login-error').textContent=error.message;});

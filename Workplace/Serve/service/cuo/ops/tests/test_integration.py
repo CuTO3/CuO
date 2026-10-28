@@ -129,6 +129,36 @@ async def test_admin_stale_version(ctx):
     member=(await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"123"}))[0]
     t=await task(ctx,"admin_update",operation="display_name",user_id="123",expected_version=version(member),display_name="新名")
     assert (await execute(t,ctx))["status"]=="ok"
+
+@pytest.mark.parametrize('value',[0,-12,42,9007199254740991])
+async def test_admin_fortune_persists_with_audit(ctx,value):
+    from Integration.console.admin import execute,version
+    await task(ctx)
+    member=(await ctx.db.read('members',group_id=ctx.gid,filters={'user_id':'123'}))[0]
+    t=await task(ctx,'admin_update',operation='fortune',user_id='123',fortune=value,expected_version=version(member))
+    r=await execute(t,ctx)
+    updated=(await ctx.db.read('members',group_id=ctx.gid,filters={'user_id':'123'}))[0]
+    assert updated['fortune']==value and updated['nickname']==member['nickname']
+    assert r['status']=='ok' and r['actions']==[] and r['fortune_before']==member['fortune'] and r['fortune_after']==value
+    assert (await stored(ctx,t))['result']==r
+    assert await ctx.db.read('members',group_id=ctx.other,filters={'user_id':'123'})==[]
+    assert not ctx.onebot.calls
+
+async def test_admin_fortune_concurrent_change_is_not_overwritten(ctx):
+    from Integration.console.admin import execute,version
+    await task(ctx)
+    member=(await ctx.db.read('members',group_id=ctx.gid,filters={'user_id':'123'}))[0]
+    t=await task(ctx,'admin_update',operation='fortune',user_id='123',fortune=99,expected_version=version(member))
+    await ctx.db.write('members',[{'user_id':'123','fortune':7}],group_id=ctx.gid,mode='update',key_fields=('user_id',))
+    r=await execute(t,ctx)
+    assert r['error_code']=='version_conflict'
+    assert (await ctx.db.read('members',group_id=ctx.gid,filters={'user_id':'123'}))[0]['fortune']==7
+
+async def test_admin_fortune_missing_member_is_not_created(ctx):
+    from Integration.console.admin import execute
+    t=await task(ctx,'admin_update',operation='fortune',user_id='456',fortune=99,expected_version='missing')
+    assert (await execute(t,ctx))['error_code']=='version_conflict'
+    assert await ctx.db.read('members',group_id=ctx.gid,filters={'user_id':'456'})==[]
 async def test_archive_no_send_and_late_revision(ctx):
     from Core.archive import schedule,run
     # Use yesterday relative to the actual scheduler clock, not the test trigger.
