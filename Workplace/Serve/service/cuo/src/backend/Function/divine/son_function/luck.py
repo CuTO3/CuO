@@ -1,4 +1,10 @@
-"""Explicit game settlement rules for the displayed primary dictum."""
+'''
+本文件用途：根据断辞计算福缘方向与范围。
+
+配置字段：
+无独立外部配置。
+'''
+
 import re
 
 VERSION = "dictum-v3"

@@ -1,0 +1,11 @@
+# 为此调用点配置专用 LiteLLM 虚拟 Key 后启用；禁止填写共享主密钥。
+divine_ai_enabled = false
+divine_ai_api_key = ""
+divine_ai_base_url = ""
+divine_ai_model_name = ""
+divine_ai_evidence_prompt_file = "src/backend/Function/divine/prompts/divine_prompt.txt"
+divine_ai_request_attempt_limit = 2
+divine_ai_request_timeout_seconds = 30.0
+divine_ai_response_max_tokens = 700
+divine_ai_advice_min_characters = 15
+divine_ai_advice_max_characters = 100

@@ -1,23 +1,25 @@
-"""Build a chat message from the supplied tarot artwork."""
+'''
+本文件用途：将塔罗牌图片组成消息。
+
+配置字段：
+divine_tarot_artwork_directory                 塔罗牌图片目录
+divine_tarot_card_image_files                  塔罗牌名称与图片文件名的对应表
+'''
+
+from config.module_config import TarotImageConfig, load_module_config
+
+DIVINE_TAROT_IMAGE_CONFIG = load_module_config(
+    "backend/Function/divine/son_function/tarot_image_config.toml", TarotImageConfig
+)
+
 import base64
 from io import BytesIO
-from pathlib import Path
 
 from PIL import Image
 
 
-ART = Path(__file__).resolve().parents[1] / "data" / "Tarot -version-Arknight"
-# Match names, since this deck numbers Strength differently from our mapping.
-FILES = {
-    "魔术师": "I 魔术师 The Magician.png",
-    "隐者": "IX 隐者 The Hermit.png",
-    "教宗": "V 教宗 The Pope.png",
-    "战车": "VII 战车 The Chariot.png",
-    "力量": "XI 力量 The Strength.png",
-    "倒吊人": "XII 倒吊人 The Hanged One.png",
-    "节制": "XIV 节制 Temperance.png",
-    "星星": "XVII 星 The Star.png",
-}
+ART = DIVINE_TAROT_IMAGE_CONFIG.divine_tarot_artwork_directory
+FILES = DIVINE_TAROT_IMAGE_CONFIG.divine_tarot_card_image_files
 
 
 def message_action(content, tarot):

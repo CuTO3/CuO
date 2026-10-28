@@ -1,0 +1,211 @@
+{
+  "description": "配置位置索引，仅供查找，不存真实值，不参与运行时读取。当前覆盖 divine。",
+  "modules": [
+    {
+      "source": "backend/Function/divine/divine.py",
+      "config": "backend/Function/divine/divine_config.toml",
+      "fields": [
+        "divine_candidate_keyword_rules_file",
+        "divine_repeat_fortune_cost",
+        "divine_candidate_keyword_limit",
+        "divine_candidate_excerpt_count_limit",
+        "divine_candidate_excerpt_character_limit"
+      ],
+      "field_metadata": {
+        "divine_candidate_keyword_rules_file": {
+          "description": "聊天候选关键词规则文件",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_repeat_fortune_cost": {
+          "description": "当日重复占卜扣除的福缘",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_candidate_keyword_limit": {
+          "description": "最多保留的候选关键词数量",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_candidate_excerpt_count_limit": {
+          "description": "每个候选最多保留的聊天摘录数量",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_candidate_excerpt_character_limit": {
+          "description": "每段聊天摘录的字符上限",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        }
+      }
+    },
+    {
+      "source": "backend/Function/divine/son_function/AI_divine.py",
+      "config": "backend/Function/divine/son_function/AI_divine_config.toml",
+      "fields": [
+        "divine_ai_enabled",
+        "divine_ai_api_key",
+        "divine_ai_base_url",
+        "divine_ai_model_name",
+        "divine_ai_evidence_prompt_file",
+        "divine_ai_request_attempt_limit",
+        "divine_ai_request_timeout_seconds",
+        "divine_ai_response_max_tokens",
+        "divine_ai_advice_min_characters",
+        "divine_ai_advice_max_characters"
+      ],
+      "field_metadata": {
+        "divine_ai_enabled": {
+          "description": "启用应事 AI；关闭时使用固定应事内容",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_api_key": {
+          "description": "此调用点专用的 LiteLLM 虚拟 Key",
+          "sensitive": true,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_base_url": {
+          "description": "LiteLLM 接口地址",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_model_name": {
+          "description": "LiteLLM 中配置的模型名称",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_evidence_prompt_file": {
+          "description": "应事提示词文件",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_request_attempt_limit": {
+          "description": "最多调用次数，包含第一次",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_request_timeout_seconds": {
+          "description": "单次调用总超时，包含请求等待",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_response_max_tokens": {
+          "description": "模型输出 token 上限",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_advice_min_characters": {
+          "description": "应事内容最少字符数",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_ai_advice_max_characters": {
+          "description": "应事内容最多字符数",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        }
+      }
+    },
+    {
+      "source": "backend/Function/divine/son_function/readings.py",
+      "config": "backend/Function/divine/son_function/readings_config.toml",
+      "fields": [
+        "divine_fixed_readings_file"
+      ],
+      "field_metadata": {
+        "divine_fixed_readings_file": {
+          "description": "固定解卦资料文件",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        }
+      }
+    },
+    {
+      "source": "backend/Function/divine/son_function/zhou_yi.py",
+      "config": "backend/Function/divine/son_function/zhou_yi_config.toml",
+      "fields": [
+        "divine_zhou_yi_hexagrams_file"
+      ],
+      "field_metadata": {
+        "divine_zhou_yi_hexagrams_file": {
+          "description": "六十四卦资料文件",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        }
+      }
+    },
+    {
+      "source": "backend/Function/divine/son_function/tarot_image.py",
+      "config": "backend/Function/divine/son_function/tarot_image_config.toml",
+      "fields": [
+        "divine_tarot_artwork_directory",
+        "divine_tarot_card_image_files"
+      ],
+      "field_metadata": {
+        "divine_tarot_artwork_directory": {
+          "description": "塔罗牌图片目录",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        },
+        "divine_tarot_card_image_files": {
+          "description": "塔罗牌名称与图片文件名的对应表",
+          "sensitive": false,
+          "editable": true,
+          "restart_required": true
+        }
+      }
+    },
+    {
+      "source": "backend/Function/divine/son_function/dictum.py",
+      "config": null,
+      "fields": []
+    },
+    {
+      "source": "backend/Function/divine/son_function/luck.py",
+      "config": null,
+      "fields": []
+    },
+    {
+      "source": "backend/Function/divine/son_function/tarot.py",
+      "config": null,
+      "fields": []
+    },
+    {
+      "source": "backend/Function/divine/son_function/merge_message.py",
+      "config": null,
+      "fields": []
+    }
+  ],
+  "shared_dependencies": [
+    {
+      "consumer": "backend/Function/divine/divine.py",
+      "object": "ctx.db",
+      "provider": "backend/Integration/postgresql",
+      "config_owner": "backend/config/settings.py:Settings.load",
+      "fields": [
+        "database_url",
+        "groups"
+      ],
+      "status": "现有共享配置，尚未迁移为小配置"
+    }
+  ]
+}

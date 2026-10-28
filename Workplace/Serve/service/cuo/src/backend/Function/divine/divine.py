@@ -1,7 +1,23 @@
-"""Persist randomness before model work; settle account and result in one transaction."""
+'''
+本文件用途：组织占卜流程、候选素材筛选与福缘结算。
+
+配置字段：
+divine_candidate_keyword_rules_file            聊天候选关键词规则文件
+divine_repeat_fortune_cost                     当日重复占卜扣除的福缘
+divine_candidate_keyword_limit                 最多保留的候选关键词数量
+divine_candidate_excerpt_count_limit           每个候选最多保留的聊天摘录数量
+divine_candidate_excerpt_character_limit       每段聊天摘录的字符上限
+数据库连接与群配置                              由运行上下文提供，属于共享数据库配置
+'''
+
+from config.module_config import DivineConfig, load_module_config
+
+DIVINE_MAIN_CONFIG = load_module_config(
+    "backend/Function/divine/divine_config.toml", DivineConfig
+)
+
 import json,math,secrets
 from datetime import timedelta
-from pathlib import Path
 from uuid import uuid4
 import jieba.posseg
 from psycopg import sql
@@ -18,7 +34,6 @@ from .son_function.tarot_image import message_action
 from .son_function.luck import assess_dictum
 from .son_function.readings import select_reading
 
-DATA=Path(__file__).parent/"data"
 
 def luck_weights():
     b=lambda x:math.exp(-x*x/18)
@@ -40,7 +55,7 @@ def draw_dictum_luck(dictum,rng=None):
     return direction*magnitude
 
 def candidates_from(records,ref_map,uid):
-    rules=json.loads((DATA/"keyword_rules.json").read_text(encoding="utf-8"))
+    rules=json.loads(DIVINE_MAIN_CONFIG.divine_candidate_keyword_rules_file.read_text(encoding="utf-8"))
     found={}
     for row in records:
         text=row["text"]
@@ -57,11 +72,11 @@ def candidates_from(records,ref_map,uid):
             c["speakers"].add(ref_map[row["ref"]]["user_id"]);c["last"]=max(c["last"],row["time"])
             if own:c["speaker_relation"]="self"
             elif responds and c["speaker_relation"]!="self":c["speaker_relation"]="reply"
-            if len(c["source_excerpt"])<4:c["source_excerpt"].append({"ref":row["ref"],"text":text[:200]+("…[截断]" if len(text)>200 else "")})
+            if len(c["source_excerpt"])<DIVINE_MAIN_CONFIG.divine_candidate_excerpt_count_limit:c["source_excerpt"].append({"ref":row["ref"],"text":text[:DIVINE_MAIN_CONFIG.divine_candidate_excerpt_character_limit]+("…[截断]" if len(text)>DIVINE_MAIN_CONFIG.divine_candidate_excerpt_character_limit else "")})
     for c in found.values():c["score"]+=min(len(c.pop("speakers")),3)
     selected=sorted(found.values(),key=lambda c:c["keyword"])
     selected.sort(key=lambda c:c["last"],reverse=True);selected.sort(key=lambda c:c["score"],reverse=True)
-    return selected[:5]
+    return selected[:DIVINE_MAIN_CONFIG.divine_candidate_keyword_limit]
 
 async def run(task,ctx):
     old=await saved(task,ctx)
@@ -75,7 +90,7 @@ async def run(task,ctx):
             if any(r["status"]=="generating" for r in rows):
                 return await save(task,ctx,result("skipped",actions=[{"type":"send_message","text":"这卦还在算，稍等一下喵。"}],error_code="divination_pending"),tx=tx)
             latest=next((r for r in rows if r["status"]=="settled"),None)
-            cost=2 if latest else 0
+            cost=DIVINE_MAIN_CONFIG.divine_repeat_fortune_cost if latest else 0
             if cost:
                 members=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE user_id=%s FOR UPDATE").format(ctx.db.table(gid,"members")),(uid,),transaction=tx)
                 fortune=members[0]["fortune"]

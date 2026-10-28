@@ -1,12 +1,24 @@
+'''
+本文件用途：生成六爻并匹配本卦和变卦。
+
+配置字段：
+divine_zhou_yi_hexagrams_file                  六十四卦资料文件
+'''
+
+from config.module_config import ZhouYiConfig, load_module_config
+
+DIVINE_ZHOU_YI_CONFIG = load_module_config(
+    "backend/Function/divine/son_function/zhou_yi_config.toml", ZhouYiConfig
+)
+
 import json
-import os
 import secrets
 from typing import Any, Dict, List, Optional
 
 
 def load_hexagrams(path: Optional[str] = None) -> List[Dict[str, Any]]:
     if path is None:
-        path = os.path.join(os.path.dirname(__file__), '..', 'data', 'hexagrams.json')
+        path = DIVINE_ZHOU_YI_CONFIG.divine_zhou_yi_hexagrams_file
     with open(path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     if not isinstance(data, list) or len(data) != 64:

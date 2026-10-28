@@ -1,0 +1,11 @@
+divine_tarot_artwork_directory = "src/backend/Function/divine/data/Tarot -version-Arknight"
+
+[divine_tarot_card_image_files]
+"魔术师" = "I 魔术师 The Magician.png"
+"隐者" = "IX 隐者 The Hermit.png"
+"教宗" = "V 教宗 The Pope.png"
+"战车" = "VII 战车 The Chariot.png"
+"力量" = "XI 力量 The Strength.png"
+"倒吊人" = "XII 倒吊人 The Hanged One.png"
+"节制" = "XIV 节制 Temperance.png"
+"星星" = "XVII 星 The Star.png"

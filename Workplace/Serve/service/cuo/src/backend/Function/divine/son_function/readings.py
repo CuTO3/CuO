@@ -1,10 +1,20 @@
-"""Fixed, versioned readings. Runtime never asks a model to interpret a hexagram."""
+'''
+本文件用途：读取并选择固定解卦资料。
+
+配置字段：
+divine_fixed_readings_file                     固定解卦资料文件
+'''
+
+from config.module_config import ReadingsConfig, load_module_config
+
+DIVINE_READINGS_CONFIG = load_module_config(
+    "backend/Function/divine/son_function/readings_config.toml", ReadingsConfig
+)
+
 import copy
 import json
 from functools import lru_cache
-from pathlib import Path
 
-DATA = Path(__file__).resolve().parents[1] / "data"
 VERSION = "readings-v1"
 
 
@@ -15,7 +25,7 @@ def reading_key(zhou):
 
 @lru_cache(maxsize=1)
 def load_readings():
-    document = json.loads((DATA / "readings.json").read_text(encoding="utf-8"))
+    document = json.loads(DIVINE_READINGS_CONFIG.divine_fixed_readings_file.read_text(encoding="utf-8"))
     if document["version"] != VERSION or len(document["readings"]) != 4096:
         raise ValueError("invalid fixed readings catalog")
     return document["readings"]

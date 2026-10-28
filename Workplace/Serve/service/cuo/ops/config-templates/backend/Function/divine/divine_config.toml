@@ -1,0 +1,6 @@
+# 路径相对 cuo 应用根目录；修改后重启服务。
+divine_candidate_keyword_rules_file = "src/backend/Function/divine/data/keyword_rules.json"
+divine_repeat_fortune_cost = 2
+divine_candidate_keyword_limit = 5
+divine_candidate_excerpt_count_limit = 4
+divine_candidate_excerpt_character_limit = 200

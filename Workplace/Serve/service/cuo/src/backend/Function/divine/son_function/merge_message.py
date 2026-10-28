@@ -1,3 +1,11 @@
+'''
+本文件用途：组装占卜结果消息。
+
+配置字段：
+无独立外部配置。
+divine_fixed_readings_file                     由 readings 模块读取固定解卦资料
+'''
+
 from .readings import select_reading
 
 def render(zhou, tarot, ai, luck_delta, fortune_after):
