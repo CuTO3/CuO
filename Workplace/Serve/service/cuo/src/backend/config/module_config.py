@@ -43,8 +43,8 @@ class ZhouYiConfig(ModuleConfig):
 
 
 class TarotImageConfig(ModuleConfig):
-    divine_tarot_artwork_directory: Path
-    divine_tarot_card_image_files: dict[str, str]
+    divine_tarot_picture_directory: Path
+    divine_tarot_version: str = Field(strict=True, pattern=r"^[A-Za-z0-9_-]+$")
 
 
 def load_module_config(relative_path: str, schema, *, config_root=None):
@@ -83,7 +83,7 @@ def load_module_config(relative_path: str, schema, *, config_root=None):
         if not valid_url or not config.divine_ai_api_key.get_secret_value().strip() or not config.divine_ai_model_name.strip():
             raise ValueError(f"模块配置缺少有效的 LiteLLM 地址、专用密钥或模型名称：{path}")
     if isinstance(config, TarotImageConfig):
-        for filename in config.divine_tarot_card_image_files.values():
-            if not filename or "/" in filename or "\\" in filename or ":" in filename or filename in (".", ".."):
-                raise ValueError(f"模块配置图片文件名无效：{path} [divine_tarot_card_image_files]")
+        deck = config.divine_tarot_picture_directory / ("Tarot -version-" + config.divine_tarot_version)
+        if not deck.is_dir() or deck.is_symlink():
+            raise ValueError(f"模块配置牌组目录不存在或无效：{path} [divine_tarot_version]")
     return config

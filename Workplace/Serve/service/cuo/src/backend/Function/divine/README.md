@@ -22,8 +22,8 @@
 | 卦运 | 新卦读取固定记录中的方向和幅度范围，再随机确定数值 |
 | 再次占卜 | 同群、同用户、同业务日首次免费，其后每次消耗 2 点福缘 |
 | 历史结果 | 已保存结果直接返回，不因资料升级重新抽卦或结算 |
-| 塔罗视觉 | 当前仍使用 `Tarot -version-Arknight` 的文件映射 |
-| TrueDark | 素材已整理，尚未接入 `tarot_image.py` |
+| 塔罗视觉 | 独立 TOML 按目录后缀选择牌组，按标准牌名自动找图 |
+| TrueDark | 已支持，通过 `divine_tarot_version` 切换；默认仍为 Arknight |
 
 ## 目录与职责
 
@@ -203,8 +203,19 @@ python -m ops.build_readings
 
 `tarot.py` 使用有变化时的变卦、否则使用本卦，按上卦选择三张候选牌，再以动爻数模 3 选一张。当前映射覆盖 18 种牌，并未覆盖全部 22 张。卦运非负为正位，负数为逆位；塔罗不独立决定福缘。
 
-`tarot_image.py` 当前硬编码读取 Arknight，并按牌名映射现有 8 张素材。缺少映射或文件时退回纯文字；逆位旋转 180°，以 PNG 编码为 OneBot image 消息段，插入塔罗标题之后。
+`tarot_image.py` 从独立模块配置读取图片根目录和牌组后缀，组成 `Picture根目录 / Tarot -version-{后缀}`。例如 `Arknight` 和 `TrueDark`，无需为每套牌维护文件名映射。缺图退回纯文字；逆位旋转 180°，以 PNG 编码为 OneBot image 消息段插在塔罗标题之后。
 
-TrueDark 根目录的标准 22 张大牌及英文补充包已整理，主要扫描尺寸为 550 × 984；这只是素材准备完成。更换默认牌组还需要修改图片选择逻辑，不能只把文件放进目录便认为已启用。切换时应按牌名对应，注意 Arknight 与 TrueDark 的力量/正义编号差异，模型牌名“星星”与文件名“星”也需映射。
+修改 `var/config/backend/Function/divine/son_function/tarot_image_config.toml`：
+
+```toml
+divine_tarot_picture_directory = "src/backend/Function/divine/data"
+divine_tarot_version = "TrueDark"
+```
+
+根目录配置相对于 cuo 项目根目录解析，也可指定绝对路径。配置示例在 `ops/config-templates` 的相同子路径；修改配置后重启生效。原先的完整牌组目录和逐牌映射配置字段已移除，升级时须同步使用这两个新字段。
+
+图片文件遵循“编号 中文牌名 英文牌名.ext”，如 `XVII 星 The Star.jpg`。只匹配中文牌名，支持 PNG、JPG、JPEG、WebP；不依赖编号，兼容不同牌组力量/正义编号差异。星星/星、教皇/教宗、女皇/皇后、塔/高塔做名称统一。只扫描牌组根目录，Supplementary Pack 不参与常规选牌；同一牌名有多个图片时明确报错，避免随机选中。
+
+新增牌组只需添加 `Tarot -version-新后缀` 目录、按规则命名图片，再切换后缀。TrueDark 标准 22 张大牌均已验证匹配，主要扫描尺寸为 550 × 984。内部调用也可显式指定 `message_action(content, tarot, version="TrueDark")`。
 
 图片来源、原作者及使用条件应随素材保留；图鉴公开展示不自动构成再分发授权。
