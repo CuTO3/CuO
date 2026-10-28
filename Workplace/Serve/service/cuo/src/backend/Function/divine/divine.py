@@ -24,6 +24,7 @@ def luck_weights():
     b=lambda x:math.exp(-x*x/18)
     flat=sum(b(x) for x in (1,2,3))/3
     return [b(5) if x==0 else flat if 1<=abs(x)<=3 else b(x) for x in range(-10,11)]
+
 def draw_luck(rng=None):
     rng=rng or secrets.SystemRandom();weights=luck_weights();total=sum(weights);u=rng.random();c=0
     if not 0<=u<1:raise ValueError("invalid random draw")
@@ -110,8 +111,11 @@ async def run(task,ctx):
         members=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE user_id=%s FOR UPDATE").format(ctx.db.table(gid,"members")),(uid,),transaction=tx)
         before=members[0]["fortune"];after=before+draft["luck_delta"];ai=zhou["ai_result"]
         content=render(zhou,draft["tarot"],ai,draft["luck_delta"],after)
-        if zhou.get("repeat_cost"):
-            content="往日福缘深厚，尚可再问天机。\n\n"+content
+        
         await ctx.db.write("members",[{"user_id":uid,"fortune":after,"updated_at":now()}],group_id=gid,mode="update",key_fields=("user_id",),transaction=tx)
         await ctx.db.write("divinations",[{"id":draft["id"],"status":"settled","keyword":ai["keyword"],"advice":ai["advice"],"fortune_before":before,"fortune_after":after,"content":content,"settled_at":now()}],group_id=gid,mode="update",key_fields=("id",),transaction=tx)
-        return await save(task,ctx,result(result_id=draft["id"],actions=[message_action(content,draft["tarot"])]),tx=tx)
+        
+        if zhou.get("repeat_cost"):
+            return await save(task,ctx,result(result_id=draft["id"],actions=[message_action("往日福缘深厚，尚可再问天机。\n"+content,draft["tarot"])]),tx=tx)
+        else:
+            return await save(task,ctx,result(result_id=draft["id"],actions=[message_action(content,draft["tarot"])]),tx=tx)
