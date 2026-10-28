@@ -48,7 +48,8 @@ async def test_rollback(ctx):
             await ctx.db.write("members",[{"user_id":"55","nickname":"rollback"}],group_id=ctx.gid,transaction=tx)
             raise RuntimeError()
     assert not await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"55"})
-async def test_divine_once_and_recovery(ctx):
+async def test_divine_once_and_recovery(ctx,monkeypatch):
+    monkeypatch.setattr("Function.divine.divine.draw_luck",lambda:0)
     from Function.divine.divine import run
     t=await task(ctx)
     first=await run(t,ctx);again=await run(t,ctx)
@@ -57,7 +58,9 @@ async def test_divine_once_and_recovery(ctx):
     m=(await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"123"}))[0]
     assert m["fortune"]==record["fortune_after"]==record["luck_delta"]
     second=await run(await task(ctx),ctx)
-    assert second["error_code"]=="already_divined"
+    assert second["error_code"]=="insufficient_fortune"
+    assert second["actions"][0]["text"]=="今日缘法已尽，且待明日再问。"
+    assert second["actions"][1]["text"]==record["content"]
     assert not ctx.model.calls
     ctx.onebot.fail=NotConnected()
     with pytest.raises(RetryDelivery):await deliver(t,ctx,first)
@@ -139,3 +142,42 @@ async def test_archive_no_send_and_late_revision(ctx):
     await schedule(ctx)
     rows=await ctx.db.read("log",group_id=ctx.gid,filters={"request_type":"archive_day"})
     assert len(rows)==2 and any(r["result"].get("source_dirty") for r in rows)
+
+async def test_divine_repeat_fee_latest_and_idempotency(ctx,monkeypatch):
+    from Function.divine.divine import run
+    from ops.database.scripts.migrate import migrate
+    monkeypatch.setattr("Function.divine.divine.draw_luck",lambda:0)
+    await run(await task(ctx),ctx)
+    await ctx.db.write("members",[{"user_id":"123","fortune":4}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
+    for expected in (2,0):
+        t=await task(ctx)
+        value=await run(t,ctx)
+        assert value["status"]=="ok"
+        assert value["actions"][0]["text"].startswith("往日福缘深厚，尚可再问天机。")
+        assert await run(t,ctx)==value
+        member=(await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"123"}))[0]
+        assert member["fortune"]==expected
+    latest=value
+    denied=await run(await task(ctx),ctx)
+    assert denied["error_code"]=="insufficient_fortune"
+    assert denied["result_id"]==latest["result_id"]
+    assert denied["actions"][1]==latest["actions"][0]
+    assert len(await ctx.db.read("divinations",group_id=ctx.gid,filters={}))==3
+    await migrate(ctx.db)
+
+async def test_divine_repeat_resume_does_not_charge_twice(ctx,monkeypatch):
+    from Function.divine import divine
+    monkeypatch.setattr(divine,"draw_luck",lambda:0)
+    await divine.run(await task(ctx),ctx)
+    await ctx.db.write("members",[{"user_id":"123","fortune":2}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
+    t=await task(ctx)
+    original=divine.generate
+    async def fail(*args):raise RuntimeError("temporary model failure")
+    monkeypatch.setattr(divine,"generate",fail)
+    with pytest.raises(RuntimeError):await divine.run(t,ctx)
+    pending=await divine.run(await task(ctx),ctx)
+    assert pending["error_code"]=="divination_pending"
+    monkeypatch.setattr(divine,"generate",original)
+    assert (await divine.run(t,ctx))["status"]=="ok"
+    member=(await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"123"}))[0]
+    assert member["fortune"]==0

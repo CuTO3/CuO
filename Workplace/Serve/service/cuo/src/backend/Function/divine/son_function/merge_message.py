@@ -8,6 +8,7 @@ def render(zhou,tarot,dictum,ai,luck_delta,fortune_after):
         names.append("初"+stem if pos==1 else "上"+stem if pos==6 else stem+"一二三四五六"[pos-1])
     second="、".join(names)+" · 有变卦" if names else "无动爻 · 无变卦"
     delta=f"{luck_delta:+d}" if luck_delta else "0"
+    quote=dictum.get("primary",dictum)["text_display"]
     return (f'{first}\n{second}\n塔罗｜{tarot["name"]} · {tarot["orientation"]}\n\n'
-            f'「{dictum["primary"]["text_display"]}」\n\n今日应事 · {ai["keyword"]}\n{ai["advice"]}\n\n'
+            f'「{quote}」\n\n今日应事 · {ai["keyword"]}\n{ai["advice"]}\n\n'
             f'卦运 {delta} · 福缘 {fortune_after}')

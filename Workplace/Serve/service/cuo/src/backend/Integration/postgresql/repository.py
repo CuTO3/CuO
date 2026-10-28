@@ -30,7 +30,7 @@ UNIQUE_KEYS = {
     'messages': (frozenset({'id'}), frozenset({'message_id'})),
     'members': (frozenset({'user_id'}),),
     'summaries': (frozenset({'id'}), frozenset({'task_id'})),
-    'divinations': (frozenset({'id'}), frozenset({'task_id'}), frozenset({'user_id', 'business_date'})),
+    'divinations': (frozenset({'id'}), frozenset({'task_id'})),
 }
 STATES = {('log', 'status'): {'pending', 'running', 'completed', 'failed', 'needs_review'}, ('log', 'business_status'): {'pending', 'running', 'completed', 'failed'}, ('divinations', 'status'): {'generating', 'settled', 'failed'}}
 

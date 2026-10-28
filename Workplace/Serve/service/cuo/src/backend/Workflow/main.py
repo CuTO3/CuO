@@ -26,7 +26,7 @@ async def dispatch(task,ctx):
 async def verify_schema(db):
     for gid in db.groups:
         rows=await db.fetch(gid,"SELECT current_database() AS name, obj_description(oid,'pg_namespace') AS version FROM pg_namespace WHERE nspname=%s",(db.schemas[gid],))
-        if not rows or rows[0]["name"]!="CuO" or rows[0]["version"]!="cuo-schema-v1":raise RuntimeError("run reviewed migration before startup")
+        if not rows or rows[0]["name"]!="CuO" or rows[0]["version"]!="cuo-schema-v2":raise RuntimeError("run reviewed migration before startup")
         for table in ("log","messages","members","summaries","divinations"):
             await db.fetch(gid,sql.SQL("SELECT 1 FROM {} LIMIT 0").format(db.table(gid,table)))
 

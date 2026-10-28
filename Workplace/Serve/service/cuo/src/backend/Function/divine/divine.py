@@ -5,15 +5,20 @@ from pathlib import Path
 from uuid import uuid4
 import jieba.posseg
 from psycopg import sql
+
 from Core.clock import business_date,now
 from Core.results import result,save,saved,jsonable
 from Function.summary.son_function.normalize_messages import normalize_messages
+
 from .son_function.zhou_yi import cast
 from .son_function.tarot import map_tarot
 from .son_function.dictum import select_dictum
 from .son_function.AI_divine import generate
 from .son_function.merge_message import render
+from .son_function.tarot_image import message_action
+
 DATA=Path(__file__).parent/"data"
+
 def luck_weights():
     b=lambda x:math.exp(-x*x/18)
     flat=sum(b(x) for x in (1,2,3))/3
@@ -55,19 +60,28 @@ async def run(task,ctx):
     gid=ctx.db.check_group(task["group_id"]);uid=task["user_id"];day=business_date(task["triggered_at"])
     async with ctx.db.transaction(gid) as tx:
         await ctx.db.fetch(gid,"SELECT pg_advisory_xact_lock(hashtextextended(%s, 43))",(gid+":"+uid+":"+str(day),),transaction=tx)
-        rows=await ctx.db.read("divinations",group_id=gid,filters={"user_id":uid,"business_date":day},transaction=tx)
-        if rows:
-            draft=rows[0]
-            if str(draft["task_id"])!=str(task["task_id"]):
-                text="今日已占卜，明日再来喵。" if draft["status"]=="settled" else "这卦还在算，稍等一下喵。"
-                return await save(task,ctx,result("skipped",actions=[{"type":"send_message","text":text}],error_code="already_divined" if draft["status"]=="settled" else "divination_pending"),tx=tx)
-        else:
+        rows=await ctx.db.read("divinations",group_id=gid,filters={"user_id":uid,"business_date":day},order_by=(("created_at","desc"),("id","desc")),transaction=tx)
+        draft=next((r for r in rows if str(r["task_id"])==str(task["task_id"])),None)
+        if draft is None:
+            if any(r["status"]=="generating" for r in rows):
+                return await save(task,ctx,result("skipped",actions=[{"type":"send_message","text":"这卦还在算，稍等一下喵。"}],error_code="divination_pending"),tx=tx)
+            latest=next((r for r in rows if r["status"]=="settled"),None)
+            cost=2 if latest else 0
+            if cost:
+                members=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE user_id=%s FOR UPDATE").format(ctx.db.table(gid,"members")),(uid,),transaction=tx)
+                fortune=members[0]["fortune"]
+                if fortune<cost:
+                    actions=[{"type":"send_message","text":"今日缘法已尽，且待明日再问。"},message_action(latest["content"],latest["tarot"])]
+                    return await save(task,ctx,result("skipped",actions=actions,result_id=latest["id"],error_code="insufficient_fortune"),tx=tx)
             zhou=cast();delta=draw_luck()
             zhou["luck_version"]="v1";zhou["snapshot_seq"]=task["params"].get("snapshot_seq",task["params"].get("message_row_id"))
+            zhou["repeat_cost"]=cost
             if type(zhou["snapshot_seq"]) is not int:raise ValueError("snapshot required")
+            if cost:
+                await ctx.db.write("members",[{"user_id":uid,"fortune":fortune-cost,"updated_at":now()}],group_id=gid,mode="update",key_fields=("user_id",),transaction=tx)
             draft=(await ctx.db.write("divinations",[{"id":str(uuid4()),"task_id":task["task_id"],"user_id":uid,"business_date":day,"zhou_yi":zhou,"tarot":map_tarot(zhou,delta),"dictum":select_dictum(zhou),"luck_delta":delta}],group_id=gid,transaction=tx))[0]
     if draft["status"]=="settled":
-        return await save(task,ctx,result(result_id=draft["id"],actions=[{"type":"send_message","text":draft["content"]}]))
+        return await save(task,ctx,result(result_id=draft["id"],actions=[message_action(draft["content"],draft["tarot"])]))
     zhou=draft["zhou_yi"]
     if "ai_result" not in zhou:
         rows=await ctx.db.read("messages",group_id=gid,filters={"business_date":day-timedelta(days=1),"id":{"lte":zhou["snapshot_seq"]}},order_by=(("sent_at","asc"),("id","asc")))
@@ -80,10 +94,12 @@ async def run(task,ctx):
     async with ctx.db.transaction(gid) as tx:
         rows=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE id=%s FOR UPDATE").format(ctx.db.table(gid,"divinations")),(draft["id"],),transaction=tx)
         locked=rows[0]
-        if locked["status"]=="settled":return await save(task,ctx,result(result_id=locked["id"],actions=[{"type":"send_message","text":locked["content"]}]),tx=tx)
+        if locked["status"]=="settled":return await save(task,ctx,result(result_id=locked["id"],actions=[message_action(locked["content"],locked["tarot"]) ]),tx=tx)
         members=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE user_id=%s FOR UPDATE").format(ctx.db.table(gid,"members")),(uid,),transaction=tx)
         before=members[0]["fortune"];after=before+draft["luck_delta"];ai=zhou["ai_result"]
         content=render(zhou,draft["tarot"],draft["dictum"],ai,draft["luck_delta"],after)
+        if zhou.get("repeat_cost"):
+            content="往日福缘深厚，尚可再问天机。\n\n"+content
         await ctx.db.write("members",[{"user_id":uid,"fortune":after,"updated_at":now()}],group_id=gid,mode="update",key_fields=("user_id",),transaction=tx)
         await ctx.db.write("divinations",[{"id":draft["id"],"status":"settled","keyword":ai["keyword"],"advice":ai["advice"],"fortune_before":before,"fortune_after":after,"content":content,"settled_at":now()}],group_id=gid,mode="update",key_fields=("id",),transaction=tx)
-        return await save(task,ctx,result(result_id=draft["id"],actions=[{"type":"send_message","text":content}]),tx=tx)
+        return await save(task,ctx,result(result_id=draft["id"],actions=[message_action(content,draft["tarot"])]),tx=tx)

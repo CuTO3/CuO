@@ -26,10 +26,11 @@ async def generate(records,scope,ctx):
         if size+length>12000 and current:chunks.append(current);current=[];size=0
         current.append(row);size+=length
     if current:chunks.append(current)
-    if len(chunks)>12:raise SummaryError("summary exceeds budget")
     events=[]
-    async with asyncio.timeout(120):
-        for chunk in chunks:
+    # Bound each batch independently: a busy day must not exhaust a shared deadline.
+    # Sequential calls retain the provider's existing single-request concurrency.
+    for chunk in chunks:
+        async with asyncio.timeout(120):
             error=None
             for attempt in range(2):
                 raw=await ctx.model.complete(messages=[{"role":"system","content":prompt},{"role":"user","content":json.dumps({"scope":scope,"records":chunk,"repair":error},ensure_ascii=False)}],max_tokens=5000,response_format={"type":"json_object"})

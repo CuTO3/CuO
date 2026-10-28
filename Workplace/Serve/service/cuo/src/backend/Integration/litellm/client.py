@@ -26,6 +26,9 @@ class ModelClient:
             if response_format:
                 body["response_format"]=response_format
                 body["thinking"]={"type":"disabled"}
+                # LiteLLM drops unsupported top-level OpenAI parameters.
+                # extra_body forwards this provider option through the gateway.
+                body["extra_body"]={"thinking":{"type":"disabled"}}
         async with self.lock:
             try:
                 r=await self.client.post(endpoint,headers=headers,json=body)

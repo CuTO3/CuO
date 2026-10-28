@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import binascii
 import hashlib
 import os
 import shutil
@@ -25,6 +27,29 @@ def _hash(path):
     return digest.hexdigest()
 
 
+def _segments(value):
+    if not isinstance(value, list) or not value:
+        raise ValueError("invalid_segments")
+    clean = []
+    for segment in value:
+        if not isinstance(segment, dict) or set(segment) != {"type", "data"}:
+            raise ValueError("invalid_segments")
+        kind, data = segment["type"], segment["data"]
+        if kind == "text" and isinstance(data, dict) and set(data) == {"text"} and isinstance(data["text"], str):
+            clean.append({"type": kind, "data": dict(data)})
+        elif kind == "image" and isinstance(data, dict) and set(data) == {"file"} and isinstance(data["file"], str) and data["file"].startswith("base64://"):
+            try:
+                raw = base64.b64decode(data["file"][9:], validate=True)
+            except (ValueError, binascii.Error):
+                raise ValueError("invalid_segments") from None
+            if not raw.startswith(b"\x89PNG\r\n\x1a\n"):
+                raise ValueError("invalid_segments")
+            clean.append({"type": kind, "data": dict(data)})
+        else:
+            raise ValueError("invalid_segments")
+    return clean
+
+
 def _prepare(group_id, task_id, actions, context):
     group_id = _group(group_id, context)
     UUID(str(task_id))
@@ -35,14 +60,17 @@ def _prepare(group_id, task_id, actions, context):
     for index, action in enumerate(actions):
         if not isinstance(action, dict) or action.get("type") not in ("send_message", "upload_file"):
             raise ValueError("invalid_action")
-        if set(action) - {"type", "text", "path", "name"}:
+        if set(action) - {"type", "text", "path", "name", "segments"}:
             raise ValueError("invalid_action")
         payloads = []
         if action["type"] == "send_message":
             text = action.get("text")
             if not isinstance(text, str) or not text.strip():
                 raise ValueError("invalid_text")
-            payloads = [{"text": chunk} for chunk in split_text(text, context.settings.max_message_length)]
+            if "segments" in action:
+                payloads = [{"text": text, "segments": _segments(action["segments"])}]
+            else:
+                payloads = [{"text": chunk} for chunk in split_text(text, context.settings.max_message_length)]
         else:
             path = Path(action.get("path", ""))
             name = action.get("name", path.name)
@@ -89,7 +117,8 @@ async def run(group_id, task_id, action, *, context):
             if not isinstance(text, str) or not text.strip():
                 raise ValueError("invalid_text")
             api = "send_group_msg"
-            params = {"group_id": int(group_id), "message": [{"type": "text", "data": {"text": text}}]}
+            message = _segments(payload["segments"]) if "segments" in payload else [{"type": "text", "data": {"text": text}}]
+            params = {"group_id": int(group_id), "message": message}
         elif action["type"] == "upload_file":
             path = Path(payload["snapshot_path"]).resolve()
             group_root = (context.settings.data_root / "groups" / group_id / "outgoing" / str(task_id)).resolve()
