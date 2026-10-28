@@ -44,6 +44,8 @@ def create_app(settings=None):
             await db.open();await verify_schema(db)
             from Function.divine.son_function.zhou_yi import load_hexagrams
             load_hexagrams()
+            from Function.divine.son_function.readings import load_readings
+            load_readings()
             await ctx.queue.start(launch=False)
             from Workflow._analyzer_ import synchronize
             await synchronize(ctx)

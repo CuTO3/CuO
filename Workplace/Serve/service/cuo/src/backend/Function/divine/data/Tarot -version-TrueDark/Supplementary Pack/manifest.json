@@ -1,0 +1,728 @@
+{
+  "source_page": "http://www.marytcusack.com/maryc/decks/html/Tarot/TrueBlack.html",
+  "download_date": "2026-10-28",
+  "images": [
+    {
+      "file": "0 愚者 The Fool.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/00%20Fool.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 76025,
+      "sha256": "0ef0f1d9f5fc70cea65c5d9210c2ad14c97a16bbf4495c74734568aad9b0108a",
+      "source_file": "00 Fool.jpg"
+    },
+    {
+      "file": "I 魔术师 The Magician.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/01%20Magician.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 117433,
+      "sha256": "cd621cc8d0125ba99b9947d26f0243c6a6a00bba4d80fd5d201d4c682dbbd42b",
+      "source_file": "01 Magician.jpg"
+    },
+    {
+      "file": "II 女祭司 The High Priestess.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/02%20Priestess.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 112346,
+      "sha256": "2c59911b68d6f22976469cf1797f63cd8ab4b3488fdc7f5e8abd5739f5316721",
+      "source_file": "02 Priestess.jpg"
+    },
+    {
+      "file": "III 皇后 The Empress.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/03%20Empress.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 100650,
+      "sha256": "7e63a0d8a84ed60f5964bed3134429b5f23fa35ada86dca1894671896722ec31",
+      "source_file": "03 Empress.jpg"
+    },
+    {
+      "file": "IV 皇帝 The Emperor.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/04%20Emperor.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 104263,
+      "sha256": "9157fd3f1f28a543e259709367a8970c2af42efb93584a4ca630016c6a717558",
+      "source_file": "04 Emperor.jpg"
+    },
+    {
+      "file": "V 教宗 The Hierophant.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/05%20Hierophant.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 98980,
+      "sha256": "e65210d5909703d6ed79b9223fdecd2b36be5ad117734ea0d7bcfa7493237b66",
+      "source_file": "05 Hierophant.jpg"
+    },
+    {
+      "file": "VI 恋人 The Lovers.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/06%20Lovers.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 108113,
+      "sha256": "4d2cb792e9f23e5665887618808dd7a9c725aa54bf4345022cc38f01f9fc7d11",
+      "source_file": "06 Lovers.jpg"
+    },
+    {
+      "file": "VII 战车 The Chariot.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/07%20Chariot.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 86008,
+      "sha256": "8c1c2f9450df9a6de559ed3ba662c780da19b05450be1838fe2e5a8bdda6e94c",
+      "source_file": "07 Chariot.jpg"
+    },
+    {
+      "file": "VIII 力量 The Strength.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/08%20Strength.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 106062,
+      "sha256": "83544f8f9d869704d58ead810002f0e3d45ca31cea447f6abd5dc372c68e468c",
+      "source_file": "08 Strength.jpg"
+    },
+    {
+      "file": "IX 隐者 The Hermit.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/09%20Hermit.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 76856,
+      "sha256": "fe6f42fdb13e8bdb336b1922c86e6f39c112bc44429ff89ad2c7a1a939e73b6b",
+      "source_file": "09 Hermit.jpg"
+    },
+    {
+      "file": "X 命运之轮 Wheel of Fortune.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/10%20Destiny.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 93336,
+      "sha256": "b6dafd86730c21dd53ac574b8f5665a738353396c079fd23c4d92ea992b4439c",
+      "source_file": "10 Destiny.jpg"
+    },
+    {
+      "file": "XI 正义 Justice.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/11%20Justice.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 68996,
+      "sha256": "f252f8e9f7636067b149aef6d431ad527845551dd6a2c4aa6cacc4dcca057ea8",
+      "source_file": "11 Justice.jpg"
+    },
+    {
+      "file": "XII 倒吊人 The Hanged One.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/12%20Hanged.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 132393,
+      "sha256": "594686abfc388b023504627c789088ada9699ddd958247568dd64093ab8969cd",
+      "source_file": "12 Hanged.jpg"
+    },
+    {
+      "file": "XIII 死神 Death.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/13%20Death.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 95606,
+      "sha256": "e368c139b58f3c00c32f0a7f30494f773a91ecc37f7b934293ead6537ea60d66",
+      "source_file": "13 Death.jpg"
+    },
+    {
+      "file": "XIV 节制 Temperance.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/14%20Temperance.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 93523,
+      "sha256": "8b2dccdf296ec291fe941d03de13c0f3d1123acd7620e381df03da81f269507c",
+      "source_file": "14 Temperance.jpg"
+    },
+    {
+      "file": "XV 恶魔 The Devil.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/15%20Devil.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 113147,
+      "sha256": "26a3239e575d90014399afb94539c168652cce169aedf9a2765421646444c2a5",
+      "source_file": "15 Devil.jpg"
+    },
+    {
+      "file": "XVI 高塔 The Tower.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/16%20Tower.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 100824,
+      "sha256": "d8ada757448eb36691a568c3bec897cf4931da47a592900b6c696b0a3c171f41",
+      "source_file": "16 Tower.jpg"
+    },
+    {
+      "file": "XVII 星 The Star.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/17%20Star.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 91936,
+      "sha256": "35e899cd2acf40a2a6755f010913c765f4012ef13801e983bafc84a38b1024fc",
+      "source_file": "17 Star.jpg"
+    },
+    {
+      "file": "XVIII 月亮 The Moon.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/18%20Moon.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 89193,
+      "sha256": "0fe28fc96280d54c98e88b83488a5b70dbae3df6f68629ef6ba90308c52f3f2e",
+      "source_file": "18 Moon.jpg"
+    },
+    {
+      "file": "XIX 太阳 The Sun.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/19%20Sun.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 101202,
+      "sha256": "6a515333ce696be0bf1de178d3611cf19f9ecaad1bf94393f6dc1d2207c548d6",
+      "source_file": "19 Sun.jpg"
+    },
+    {
+      "file": "XX 审判 Judgement.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/20%20Judgement.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 82486,
+      "sha256": "79b62a594c8cdae7ed0582d3d1ca1cf4214ff036cc59ad5be4e7a13ed076c1c6",
+      "source_file": "20 Judgement.jpg"
+    },
+    {
+      "file": "XXI 世界 The World.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/21%20World.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 93408,
+      "sha256": "80214b28619b9d834e3daf98547d67b259e94238b8001f4108f54bbc3e0ec10e",
+      "source_file": "21 World.jpg"
+    },
+    {
+      "file": "Supplementary Pack/I 宝剑首牌 Ace of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S01.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 87673,
+      "sha256": "2f91193a49a639c0217ba46f5f26108eed28818137074e8740975ece74dfc980",
+      "source_file": "S01.jpg"
+    },
+    {
+      "file": "Supplementary Pack/II 宝剑二 Two of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S02.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 77229,
+      "sha256": "ed0f977c234c196ae348d3f0eb8478b53847bf6aa54700c3c2410666adc6090b",
+      "source_file": "S02.jpg"
+    },
+    {
+      "file": "Supplementary Pack/III 宝剑三 Three of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S03.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 69916,
+      "sha256": "01b56b83940522612b75c93fec4f67c87179cac6d86a9d13cb610c56149719cc",
+      "source_file": "S03.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IV 宝剑四 Four of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S04.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 79100,
+      "sha256": "3704d7a8da0d2c4f1aa877e1d2fba4ca767158bc5fb49b9b553ab73a7d4f1388",
+      "source_file": "S04.jpg"
+    },
+    {
+      "file": "Supplementary Pack/V 宝剑五 Five of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S05.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 80117,
+      "sha256": "28b5897804450b20e4efba31ef0ba25153c6ec38b275c92488102e55d4222404",
+      "source_file": "S05.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VI 宝剑六 Six of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S06.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 72930,
+      "sha256": "1a2e9fa263e7f413317f8f32c4e51cea386f6f0692d6f84f46ca32151c1cb9a9",
+      "source_file": "S06.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VII 宝剑七 Seven of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S07.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 77753,
+      "sha256": "9bafd6413849136ad6d514f691476d54a552b479aeec94f7dd8004f8b82c1f43",
+      "source_file": "S07.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VIII 宝剑八 Eight of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S08.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 66587,
+      "sha256": "21684bce84faf995602cb16018154f80c2e2343d718e2acf36a42868a418e5f3",
+      "source_file": "S08.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IX 宝剑九 Nine of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S09.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 75000,
+      "sha256": "ff7053da61bfc8939c3f4fd39bb65057620aa1b07f9762b4ef7b78d467bf21ee",
+      "source_file": "S09.jpg"
+    },
+    {
+      "file": "Supplementary Pack/X 宝剑十 Ten of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/S10.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 83431,
+      "sha256": "4f1de72afc3bc2de76784a8949ec1c74d14532b71c157acfc88d1c2c8bd1a6a7",
+      "source_file": "S10.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XI 宝剑侍从 Page of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/SC1P.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 80226,
+      "sha256": "9c75ac365ccd0207400d9658c69407ddfa1c3c8e4cd6197885a46d78a317f4df",
+      "source_file": "SC1P.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XII 宝剑骑士 Knight of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/SC2K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 72508,
+      "sha256": "ca8b39a28469a88885c20017a06ab4a0434b9de9ef4720ceb1559018aa67484d",
+      "source_file": "SC2K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIII 宝剑王后 Queen of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/SC3Q.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 78629,
+      "sha256": "098cdc346208527877e0affe5e71e91de332ba1b97a137009fa1eb84117959ce",
+      "source_file": "SC3Q.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIV 宝剑国王 King of Swords.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/SC4K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 73643,
+      "sha256": "093fc576b6fb71c493dab10bbe28e505a7d341a9b48bb3984122638cd1ca53b2",
+      "source_file": "SC4K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/I 圣杯首牌 Ace of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C01.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 80068,
+      "sha256": "ed3eb8c67ef2d54262bfb436ea7fa4042d415b6eeeede093a4e2b54d60ab32ac",
+      "source_file": "C01.jpg"
+    },
+    {
+      "file": "Supplementary Pack/II 圣杯二 Two of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C02.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 80683,
+      "sha256": "0b6a0c421d67aeeecc3614a155350e045526290fd0d9002b913ed6629db1bba5",
+      "source_file": "C02.jpg"
+    },
+    {
+      "file": "Supplementary Pack/III 圣杯三 Three of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C03.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 95618,
+      "sha256": "de8de51d957c15f24c9cdc6d472e335f75edb6b7ac46c264ca40dac5be0355c6",
+      "source_file": "C03.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IV 圣杯四 Four of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C04.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 108774,
+      "sha256": "d0c75373b0452b8dbe22a5f0444ad703a97e652cb71b1f59190c72b5e20345ef",
+      "source_file": "C04.jpg"
+    },
+    {
+      "file": "Supplementary Pack/V 圣杯五 Five of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C05.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 79499,
+      "sha256": "884397c6f0d65d2fb87dfdcc113a30b56c63a6dab4675fbc18f388caba81254d",
+      "source_file": "C05.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VI 圣杯六 Six of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C06.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 78211,
+      "sha256": "ab55017d948f665ab69f717bb2244c4ad58fff0e4535cae9208a7dd8a70b0726",
+      "source_file": "C06.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VII 圣杯七 Seven of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C07.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 92113,
+      "sha256": "d391f13eb770f7171ee1a868aa32334cc2c237f13a16974b96b1b16c83b6e021",
+      "source_file": "C07.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VIII 圣杯八 Eight of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C08.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 89758,
+      "sha256": "5cb06e91ddade1cc9502da8e38434728a6096f10a03379312bccfd167eae6ae8",
+      "source_file": "C08.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IX 圣杯九 Nine of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C09.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 103294,
+      "sha256": "d119d69b2e60a47c0e01434c4dc6839c152b08039b74985151762df11e829a42",
+      "source_file": "C09.jpg"
+    },
+    {
+      "file": "Supplementary Pack/X 圣杯十 Ten of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/C10.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 83893,
+      "sha256": "c66eb33d79086ec78577c6e8d15229cdd94a9e0053fc25919d1d539412f803a1",
+      "source_file": "C10.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XI 圣杯侍从 Page of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/CC1P.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 70848,
+      "sha256": "3257f9888eee6eed1251afcd01af0b0bd1a68f4d52b41a12dc4a9b4d93733c59",
+      "source_file": "CC1P.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XII 圣杯骑士 Knight of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/CC2K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 77373,
+      "sha256": "ed40d302ee76758277f035c685789ced5016ecab5010ea9ecac1a22c4d76e466",
+      "source_file": "CC2K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIII 圣杯王后 Queen of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/CC3Q.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 72070,
+      "sha256": "cdb97e8aeda969495332c3db8ca831a7bd201c63fc42af3d7f3d4050e0431891",
+      "source_file": "CC3Q.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIV 圣杯国王 King of Cups.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/CC4K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 77820,
+      "sha256": "06d6533567c74f3563fe54b42c45d593ff91554e14ccc452b25acd7aa86ec73d",
+      "source_file": "CC4K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/I 权杖首牌 Ace of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R01.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 81606,
+      "sha256": "84f2672bcf1c9ba1b592cbfb8a63b66129b6c57f905f9e8c1d0d19512299649c",
+      "source_file": "R01.jpg"
+    },
+    {
+      "file": "Supplementary Pack/II 权杖二 Two of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R02.jpg",
+      "width": 550,
+      "height": 976,
+      "bytes": 69119,
+      "sha256": "084b446e6fce4c0b2769f83093e28b062b3b194f8c0480c5514d84ff76a8751c",
+      "source_file": "R02.jpg"
+    },
+    {
+      "file": "Supplementary Pack/III 权杖三 Three of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R03.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 83340,
+      "sha256": "7eff31affb7403f24aef6f8f122599bb58cf5b5e49ccf842470049d9fe4ad7bd",
+      "source_file": "R03.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IV 权杖四 Four of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R04.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 85706,
+      "sha256": "23c874c6575eed881427486e801b2fd4d1b6f2145ba68f330e68094d46894fb3",
+      "source_file": "R04.jpg"
+    },
+    {
+      "file": "Supplementary Pack/V 权杖五 Five of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R05.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 63497,
+      "sha256": "6d73210284c1f7249638757937a29d2f6b878d10c1b7b8b80dc311f7f968211f",
+      "source_file": "R05.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VI 权杖六 Six of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R06.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 79649,
+      "sha256": "72c7c32d7f2584de2ab2a3229e30e7c0bebab5432d6174ff0ed94f679039c495",
+      "source_file": "R06.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VII 权杖七 Seven of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R07.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 70150,
+      "sha256": "ec6c5ba262d1f9c33ae4e4edbe7465b0c99de7d13d530fe9030604562b7ca502",
+      "source_file": "R07.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VIII 权杖八 Eight of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R08.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 73264,
+      "sha256": "d7f105c4d1c9d5c979f29af9bbd0f9c0b3f55ada3f69f77f37bd546d80099cee",
+      "source_file": "R08.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IX 权杖九 Nine of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R09.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 68633,
+      "sha256": "1f82eef7fd0c0111108eba456618dd1627b0cc6cb55d39a48f5f2d8a055ec295",
+      "source_file": "R09.jpg"
+    },
+    {
+      "file": "Supplementary Pack/X 权杖十 Ten of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/R10.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 74371,
+      "sha256": "036d308deadc72912caf91d4f127171ad7bf53967ea3b455c708fdf91a899f3c",
+      "source_file": "R10.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XI 权杖侍从 Page of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/RC1P.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 103921,
+      "sha256": "c03054a3277197956f165739ab4c76932e19ba144cc23fed3e8f5928ad93862d",
+      "source_file": "RC1P.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XII 权杖骑士 Knight of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/RC2K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 105553,
+      "sha256": "491944a971d643e13dccdd3ca0fbcd5a3d441b3ce713634e680cf03ff739336d",
+      "source_file": "RC2K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIII 权杖王后 Queen of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/RC3Q.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 107492,
+      "sha256": "eeff33bee8da1b03c74e9db1fed6ae8d0dab5fc1353b27c8a11573c8f0e5fbb1",
+      "source_file": "RC3Q.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIV 权杖国王 King of Wands.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/RC4K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 104576,
+      "sha256": "aa170e5f5555c4f87aca6c71d57bbef6ef64d0281e1bd51757c04ba7230360e3",
+      "source_file": "RC4K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/I 星币首牌 Ace of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P01.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 111023,
+      "sha256": "33cfdbe7f062c0c2323b975685f8ed3fc5792e0066a4ff893d0987e289d3e491",
+      "source_file": "P01.jpg"
+    },
+    {
+      "file": "Supplementary Pack/II 星币二 Two of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P02.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 85818,
+      "sha256": "7965a6ac69913ae4be257090e34433cc4204280a33902041875d6a9d226d30fc",
+      "source_file": "P02.jpg"
+    },
+    {
+      "file": "Supplementary Pack/III 星币三 Three of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P03.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 81062,
+      "sha256": "416149ea48ceb9a43832515665f7fe0d6214ad6ff815915259212849d6b45990",
+      "source_file": "P03.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IV 星币四 Four of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P04.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 92929,
+      "sha256": "c38a2c2a33d94ea5d4a3144f93ca2f9d432af305ddb5c1ef0606ff6c5def9db6",
+      "source_file": "P04.jpg"
+    },
+    {
+      "file": "Supplementary Pack/V 星币五 Five of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P05.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 83306,
+      "sha256": "06354d94a99ad93e0ec50aeb2bdaf3f51953c8eaed993e43c5d786a7718a35ee",
+      "source_file": "P05.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VI 星币六 Six of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P06.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 87177,
+      "sha256": "6ce02b3f1bb20213f2ec3d291f2da1de911ff834971c914c1378355f01d2b1fd",
+      "source_file": "P06.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VII 星币七 Seven of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P07.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 86753,
+      "sha256": "25452bb933ccdc789b1573636ce3e35141c99af06de090f9b1cb75389b40c15c",
+      "source_file": "P07.jpg"
+    },
+    {
+      "file": "Supplementary Pack/VIII 星币八 Eight of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P08.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 84299,
+      "sha256": "43c8219b179a6772e76875fbb0217ae06bf54b658d582fc1d143451ff83b8853",
+      "source_file": "P08.jpg"
+    },
+    {
+      "file": "Supplementary Pack/IX 星币九 Nine of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P09.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 75746,
+      "sha256": "c5238d931f8cd3354c74808eb97ab61022ca9e83551ef9adf03791d91e2dc202",
+      "source_file": "P09.jpg"
+    },
+    {
+      "file": "Supplementary Pack/X 星币十 Ten of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/P10.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 154047,
+      "sha256": "2672e40fa4b5bbe1c254eae5689f2fe2d2e2be1cdf3f6766e01c8d5bf5b9cd1e",
+      "source_file": "P10.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XI 星币侍从 Page of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/PC1P.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 125647,
+      "sha256": "2bdef33474858aba93e6d79eb3e4bc55a4ea06fb67f9083ce2ba071f6b87ad0f",
+      "source_file": "PC1P.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XII 星币骑士 Knight of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/PC2K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 127280,
+      "sha256": "85519e74e247ce142a1e562ea3c91bc63fef0d51cad8f0a1cc719112a27a48f7",
+      "source_file": "PC2K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIII 星币王后 Queen of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/PC3Q.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 81383,
+      "sha256": "f46e92d7330ff14de788846f1b9b91cf788c7d84661c0b9f039405d1ba166012",
+      "source_file": "PC3Q.jpg"
+    },
+    {
+      "file": "Supplementary Pack/XIV 星币国王 King of Pentacles.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/PC4K.jpg",
+      "width": 550,
+      "height": 984,
+      "bytes": 83914,
+      "sha256": "768c8314886315340409cc046123aadfa18b2a3a66cd8ae8e7a7722c1ca02663",
+      "source_file": "PC4K.jpg"
+    },
+    {
+      "file": "Supplementary Pack/EX 无尽 Anant.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/Anant.jpg",
+      "width": 550,
+      "height": 976,
+      "bytes": 89260,
+      "sha256": "872f2230e2618610010aafbb0df4b3403cf4d866286e1aa1d99bb6e27af17dcf",
+      "source_file": "Anant.jpg"
+    },
+    {
+      "file": "Supplementary Pack/BACK 牌背 Card Back.jpg",
+      "url": "http://www.marytcusack.com/maryc/decks/Images/Tarot/TrueBlack/zback.jpg",
+      "width": 787,
+      "height": 1397,
+      "bytes": 121522,
+      "sha256": "934dcf04d76080f21252cc7ffc87cf0bfc4ab1927b8fb2f5d69ebbc82a449e19",
+      "source_file": "zback.jpg"
+    }
+  ],
+  "naming": "Roman numeral + Chinese card name + English card name; 0 for Fool, EX for Anant, BACK for reverse. Minor arcana use I-XIV within each suit.",
+  "layout": "Root: 22 standard Major Arcana. Supplementary Pack/: 56 Minor Arcana, Anant extra card, and card back."
+}

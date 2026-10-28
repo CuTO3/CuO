@@ -7,15 +7,16 @@ import jieba.posseg
 from psycopg import sql
 
 from Core.clock import business_date,now
-from Core.results import result,save,saved,jsonable
+from Core.results import result,save,saved
 from Function.summary.son_function.normalize_messages import normalize_messages
 
 from .son_function.zhou_yi import cast
 from .son_function.tarot import map_tarot
-from .son_function.dictum import select_dictum
 from .son_function.AI_divine import generate
 from .son_function.merge_message import render
 from .son_function.tarot_image import message_action
+from .son_function.luck import assess_dictum
+from .son_function.readings import select_reading
 
 DATA=Path(__file__).parent/"data"
 
@@ -29,6 +30,13 @@ def draw_luck(rng=None):
     for x,w in zip(range(-10,11),weights):
         c+=w/total
         if u<c or x==10:return x
+
+def draw_dictum_luck(dictum,rng=None):
+    assessment=dictum.get("reading_fortune") or assess_dictum(dictum)
+    direction=assessment["direction"]
+    if not direction:return 0
+    magnitude=min(assessment["magnitude_max"],max(assessment["magnitude_min"],abs(draw_luck(rng))))
+    return direction*magnitude
 
 def candidates_from(records,ref_map,uid):
     rules=json.loads((DATA/"keyword_rules.json").read_text(encoding="utf-8"))
@@ -73,13 +81,17 @@ async def run(task,ctx):
                 if fortune<cost:
                     actions=[{"type":"send_message","text":"今日缘法已尽，且待明日再问。"},message_action(latest["content"],latest["tarot"])]
                     return await save(task,ctx,result("skipped",actions=actions,result_id=latest["id"],error_code="insufficient_fortune"),tx=tx)
-            zhou=cast();delta=draw_luck()
-            zhou["luck_version"]="v1";zhou["snapshot_seq"]=task["params"].get("snapshot_seq",task["params"].get("message_row_id"))
+            zhou=cast();reading=select_reading(zhou)
+            dictum={"primary":reading["primary"],"auxiliary":reading["auxiliary"],"rule_version":reading["version"],"reading_fortune":reading["fortune"]}
+            delta=draw_dictum_luck(dictum)
+            zhou["reading"]=reading
+            zhou["luck_version"]=reading["version"];zhou["luck_judgment"]=reading["fortune"]
+            zhou["snapshot_seq"]=task["params"].get("snapshot_seq",task["params"].get("message_row_id"))
             zhou["repeat_cost"]=cost
             if type(zhou["snapshot_seq"]) is not int:raise ValueError("snapshot required")
             if cost:
                 await ctx.db.write("members",[{"user_id":uid,"fortune":fortune-cost,"updated_at":now()}],group_id=gid,mode="update",key_fields=("user_id",),transaction=tx)
-            draft=(await ctx.db.write("divinations",[{"id":str(uuid4()),"task_id":task["task_id"],"user_id":uid,"business_date":day,"zhou_yi":zhou,"tarot":map_tarot(zhou,delta),"dictum":select_dictum(zhou),"luck_delta":delta}],group_id=gid,transaction=tx))[0]
+            draft=(await ctx.db.write("divinations",[{"id":str(uuid4()),"task_id":task["task_id"],"user_id":uid,"business_date":day,"zhou_yi":zhou,"tarot":map_tarot(zhou,delta),"dictum":dictum,"luck_delta":delta}],group_id=gid,transaction=tx))[0]
     if draft["status"]=="settled":
         return await save(task,ctx,result(result_id=draft["id"],actions=[message_action(draft["content"],draft["tarot"])]))
     zhou=draft["zhou_yi"]
@@ -97,7 +109,7 @@ async def run(task,ctx):
         if locked["status"]=="settled":return await save(task,ctx,result(result_id=locked["id"],actions=[message_action(locked["content"],locked["tarot"]) ]),tx=tx)
         members=await ctx.db.fetch(gid,sql.SQL("SELECT * FROM {} WHERE user_id=%s FOR UPDATE").format(ctx.db.table(gid,"members")),(uid,),transaction=tx)
         before=members[0]["fortune"];after=before+draft["luck_delta"];ai=zhou["ai_result"]
-        content=render(zhou,draft["tarot"],draft["dictum"],ai,draft["luck_delta"],after)
+        content=render(zhou,draft["tarot"],ai,draft["luck_delta"],after)
         if zhou.get("repeat_cost"):
             content="往日福缘深厚，尚可再问天机。\n\n"+content
         await ctx.db.write("members",[{"user_id":uid,"fortune":after,"updated_at":now()}],group_id=gid,mode="update",key_fields=("user_id",),transaction=tx)

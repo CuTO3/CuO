@@ -1,5 +1,4 @@
 from typing import Any, Dict, List
-from .zhou_yi import load_hexagrams
 
 
 def _make_quote(hexagram: Dict[str, Any], position: int, source_label: str) -> Dict[str, Any]:

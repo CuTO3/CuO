@@ -27,7 +27,7 @@ def test_all_4096_divinations():
 def test_independent_quotes():
     z=from_lines([9,7,7,7,7,9]);q=select_dictum(z)
     assert q["primary"]["line_position"]==6
-    assert "亢龍有悔" in q["primary"]["text_original"].replace("，","")
+    assert "亢龙有悔" in q["primary"]["text_original"].replace("，","")
     z=from_lines([6]*6);q=select_dictum(z)
     assert q["primary"]["source_label"]=="用六" and len(q["auxiliary"])==1
     z=from_lines([9,9,7,7,9,9]);q=select_dictum(z)
@@ -41,10 +41,14 @@ def test_luck_distribution():
     assert draw_luck(type("R",(),{"random":lambda self:.99999999999})())==10
 def test_render():
     z=from_lines([7]*6);q=select_dictum(z);t=map_tarot(z,0)
-    text=render(z,t,q,{"keyword":"今日小事","advice":"吃饭"},0,-20)
-    assert "无动爻 · 无变卦" in text and "· 正位" in text and "卦运 0 · 福缘 -20" in text
+    text=render(z,t,{"keyword":"今日小事","advice":"吃饭"},0,-20)
+    assert " | " in text.splitlines()[0] and "→" not in text.splitlines()[0]
+    assert "\n解卦\n" in text and "· 正位" in text and "卦运 0 · 福缘 -20" in text
+    assert "无动爻" not in text and "今日应事" not in text
     z=from_lines([7,9,7,7,7,7])
-    assert "九二 · 有变卦" in render(z,t,select_dictum(z),{"keyword":"x","advice":"y"},1,1)
+    changed=render(z,t,{"keyword":"x","advice":"y"},1,1)
+    assert "→" in changed.splitlines()[0] and " | " in changed.splitlines()[0]
+    assert "九二 · 有变卦" not in changed and "\n应事 · x\n" in changed
 def test_graphemes():
     emoji="👨‍👩‍👧‍👦"
     parts=split_nickname("最爱ABC"+emoji+"马铃薯",[None]*6)

@@ -49,7 +49,7 @@ async def test_rollback(ctx):
             raise RuntimeError()
     assert not await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"55"})
 async def test_divine_once_and_recovery(ctx,monkeypatch):
-    monkeypatch.setattr("Function.divine.divine.draw_luck",lambda:0)
+    monkeypatch.setattr("Function.divine.divine.draw_dictum_luck",lambda dictum:0)
     from Function.divine.divine import run
     t=await task(ctx)
     first=await run(t,ctx);again=await run(t,ctx)
@@ -146,7 +146,7 @@ async def test_archive_no_send_and_late_revision(ctx):
 async def test_divine_repeat_fee_latest_and_idempotency(ctx,monkeypatch):
     from Function.divine.divine import run
     from ops.database.scripts.migrate import migrate
-    monkeypatch.setattr("Function.divine.divine.draw_luck",lambda:0)
+    monkeypatch.setattr("Function.divine.divine.draw_dictum_luck",lambda dictum:0)
     await run(await task(ctx),ctx)
     await ctx.db.write("members",[{"user_id":"123","fortune":4}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
     for expected in (2,0):
@@ -167,7 +167,7 @@ async def test_divine_repeat_fee_latest_and_idempotency(ctx,monkeypatch):
 
 async def test_divine_repeat_resume_does_not_charge_twice(ctx,monkeypatch):
     from Function.divine import divine
-    monkeypatch.setattr(divine,"draw_luck",lambda:0)
+    monkeypatch.setattr(divine,"draw_dictum_luck",lambda dictum:0)
     await divine.run(await task(ctx),ctx)
     await ctx.db.write("members",[{"user_id":"123","fortune":2}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
     t=await task(ctx)
@@ -181,3 +181,28 @@ async def test_divine_repeat_resume_does_not_charge_twice(ctx,monkeypatch):
     assert (await divine.run(t,ctx))["status"]=="ok"
     member=(await ctx.db.read("members",group_id=ctx.gid,filters={"user_id":"123"}))[0]
     assert member["fortune"]==0
+
+async def test_divine_dictum_direction_and_repeat_cost(ctx,monkeypatch):
+    from Function.divine import divine
+    from Function.divine.son_function.zhou_yi import from_lines
+    monkeypatch.setattr(divine,"cast",lambda:from_lines([7]*6))
+    # Even a negative legacy random draw must become a positive auspicious result.
+    monkeypatch.setattr(divine,"draw_luck",lambda rng=None:-1)
+    first=await divine.run(await task(ctx),ctx)
+    assert "卦运 +1 · 福缘 1" in first["actions"][0]["text"]
+    await ctx.db.write("members",[{"user_id":"123","fortune":2}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
+    t=await task(ctx)
+    repeat=await divine.run(t,ctx)
+    assert "卦运 +1 · 福缘 1" in repeat["actions"][0]["text"]
+    assert await divine.run(t,ctx)==repeat
+    record=(await ctx.db.read("divinations",group_id=ctx.gid,filters={"task_id":t["task_id"]}))[0]
+    assert record["luck_delta"]==1
+    assert record["zhou_yi"]["repeat_cost"]==2
+    assert record["zhou_yi"]["luck_version"]=="readings-v1"
+    assert record["zhou_yi"]["luck_judgment"]["direction"]==1
+    assert record["tarot"]["orientation"]=="正位"
+    await ctx.db.write("members",[{"user_id":"123","fortune":2}],group_id=ctx.gid,mode="update",key_fields=("user_id",))
+    monkeypatch.setattr(divine,"cast",lambda:from_lines([7,7,7,7,7,9]))
+    monkeypatch.setattr(divine,"draw_luck",lambda rng=None:3)
+    bad=await divine.run(await task(ctx),ctx)
+    assert "卦运 -3 · 福缘 -3" in bad["actions"][0]["text"]
