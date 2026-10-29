@@ -1,7 +1,0 @@
-workflow_intent_ai_enabled = false
-workflow_intent_ai_api_key = ""
-workflow_intent_ai_base_url = ""
-workflow_intent_ai_model_name = ""
-workflow_intent_ai_request_timeout_seconds = 60.0
-workflow_intent_ai_response_max_tokens = 1000
-workflow_intent_ai_total_timeout_seconds = 15.0

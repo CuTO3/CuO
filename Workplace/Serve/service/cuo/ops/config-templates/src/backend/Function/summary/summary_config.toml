@@ -1,6 +1,0 @@
-summary_scope_ai_enabled = false
-summary_scope_ai_api_key = ""
-summary_scope_ai_base_url = ""
-summary_scope_ai_model_name = ""
-summary_scope_ai_request_timeout_seconds = 60.0
-summary_scope_ai_response_max_tokens = 500

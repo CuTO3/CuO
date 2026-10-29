@@ -1,4 +1,0 @@
-# 目录名规则：Tarot -version-{后缀}；修改后重启生效。
-# 可选后缀：Arknight、TrueDark。新增同格式目录即可扩展。
-divine_tarot_picture_directory = "src/backend/Function/divine/data"
-divine_tarot_version = "Arknight"
