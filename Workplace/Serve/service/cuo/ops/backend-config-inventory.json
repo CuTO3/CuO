@@ -1,0 +1,446 @@
+{
+  "scope": "backend",
+  "note": "仅配置名称与迁移状态，不含真实值；自动盘点不能替代逐文件审查。",
+  "files": [
+    {
+      "source": "backend/config/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/config/module_config.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/settings.py",
+      "settings_fields": [],
+      "environment_names": [
+        "ADMIN_TOKEN",
+        "CUO_DATA_ROOT",
+        "CUO_ENV_FILE",
+        "CUO_FIRST_BUSINESS_DATE",
+        "CUO_GROUPS_FILE",
+        "DATABASE_URL",
+        "LITELLM_API_KEY",
+        "LITELLM_BASE_URL",
+        "LITELLM_MODEL",
+        "MODEL_API_KEY",
+        "MODEL_BASE_URL",
+        "MODEL_NAME",
+        "MODEL_PROTOCOL",
+        "MODEL_TIMEOUT",
+        "NAPCAT_UPLOAD_ROOT",
+        "ONEBOT_SELF_ID",
+        "ONEBOT_TOKEN",
+        "VISION_API_KEY",
+        "VISION_BASE_URL",
+        "VISION_MODEL_NAME"
+      ],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/archive.py",
+      "settings_fields": [
+        "first_business_date"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Core/cache.py",
+      "settings_fields": [
+        "cache_root"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/clock.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/context.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/results.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Core/task_queue.py",
+      "settings_fields": [
+        "database_url"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/conversation/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/conversation/conversation.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/divine/divine.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/AI_divine.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/dictum.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/luck.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/merge_message.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/readings.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/tarot.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/tarot_image.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/divine/son_function/zhou_yi.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "divine module config connected"
+    },
+    {
+      "source": "backend/Function/memento/memento.py",
+      "settings_fields": [
+        "data_root"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/memento/son_function/align_slots.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/memento/son_function/nickname_segmenter.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/memento/son_function/write_in_excel.py",
+      "settings_fields": [
+        "cell",
+        "title"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/summary/son_function/AI_sum.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/summary/son_function/image_processor.py",
+      "settings_fields": [
+        "data_root"
+      ],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Function/summary/son_function/merge_message.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/summary/son_function/normalize_messages.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Function/summary/summary.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Integration/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/console/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/console/admin.py",
+      "settings_fields": [
+        "admin_token"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/console/media.py",
+      "settings_fields": [
+        "data_root"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/console/routes.py",
+      "settings_fields": [
+        "admin_token",
+        "data_root",
+        "model_name",
+        "model_protocol",
+        "self_id",
+        "vision_api_key",
+        "vision_model_name"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Integration/console/settings.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/litellm/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/litellm/client.py",
+      "settings_fields": [
+        "model_api_key",
+        "model_base_url",
+        "model_name",
+        "model_protocol",
+        "model_timeout",
+        "vision_api_key",
+        "vision_base_url",
+        "vision_model_name"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/napcat/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/napcat/client.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Integration/napcat/delivery.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/napcat/text.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/postgresql/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Integration/postgresql/connection.py",
+      "settings_fields": [
+        "database_url"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Integration/postgresql/repository.py",
+      "settings_fields": [
+        "groups"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Workflow/__init__.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Workflow/_analyzer_.py",
+      "settings_fields": [
+        "config_root",
+        "groups",
+        "model_name"
+      ],
+      "environment_names": [],
+      "ai_call_count": 1,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Workflow/_receiver_.py",
+      "settings_fields": [
+        "groups",
+        "self_id"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Workflow/_router_.py",
+      "settings_fields": [],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "shared config consumer or fixed business rules"
+    },
+    {
+      "source": "backend/Workflow/_sender_.py",
+      "settings_fields": [
+        "data_root",
+        "groups",
+        "max_message_length",
+        "napcat_upload_root"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    },
+    {
+      "source": "backend/Workflow/main.py",
+      "settings_fields": [
+        "inbound_queue_size",
+        "napcat_token",
+        "onebot_timeout",
+        "self_id"
+      ],
+      "environment_names": [],
+      "ai_call_count": 0,
+      "status": "module config connected"
+    }
+  ]
+}

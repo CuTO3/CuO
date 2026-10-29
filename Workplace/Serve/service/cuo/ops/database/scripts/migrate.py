@@ -2,7 +2,7 @@
 import asyncio
 from pathlib import Path
 from psycopg import sql
-from config.settings import Settings
+from Core.settings import Settings
 from Integration.postgresql import Database
 async def migrate(db):
     template=(Path(__file__).resolve().parents[1]/"migrations/001_fuku.sql").read_text(encoding="utf-8")

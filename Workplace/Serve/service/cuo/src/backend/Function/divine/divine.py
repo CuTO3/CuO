@@ -10,7 +10,7 @@ divine_candidate_excerpt_character_limit       每段聊天摘录的字符上限
 数据库连接与群配置                              由运行上下文提供，属于共享数据库配置
 '''
 
-from config.module_config import DivineConfig, load_module_config
+from Core.module_config import DivineConfig, load_module_config
 
 DIVINE_MAIN_CONFIG = load_module_config(
     "backend/Function/divine/divine_config.toml", DivineConfig

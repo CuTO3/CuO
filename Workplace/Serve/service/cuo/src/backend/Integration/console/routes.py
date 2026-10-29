@@ -1,4 +1,16 @@
-"""Same-origin operator console; no secrets returned to browsers."""
+'''
+本文件用途：Same-origin operator console; no secrets returned to browsers.
+
+配置字段：
+admin_token                          控制台访问凭据
+data_root                            私有运行数据根目录
+model_name                           模型名称
+model_protocol                       模型接口协议
+self_id                              机器人账号标识
+vision_api_key                       图片识别接口密钥
+vision_model_name                    图片识别模型名称
+'''
+
 import asyncio
 import hashlib
 import hmac
@@ -35,10 +47,13 @@ def require(request):
 def install(app):
     from Integration.console.media import install as install_media
     install_media(app, require)
+    from Integration.console.configuration import install as install_configuration
+    install_configuration(app, require)
     app.state.console_sessions = {}
     app.state.console_attempts = []
     lock = asyncio.Lock()
-    root = Path(__file__).resolve().parents[3] / "frontend"
+    from Core.configuration import load, resource
+    root = resource(load("console")["console_frontend_directory"])
     app.mount("/console/assets", StaticFiles(directory=root), name="console-assets")
 
     @app.middleware("http")
@@ -96,42 +111,16 @@ def install(app):
         response.delete_cookie("cuo_session", path="/")
         return response
 
-    def settings_payload(ctx):
-        data = {key: getattr(ctx.settings, key) for key in ConsoleSettings.model_fields}
-        version = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
-        return {"values": data, "version": version}
-
     @app.get("/console/api/settings")
     async def settings(request: Request):
-        ctx = require(request)
-        return {**settings_payload(ctx), "model_protocol": ctx.settings.model_protocol,
-                "vision_configured": bool(ctx.settings.vision_model_name and ctx.settings.vision_api_key),
-                "self_id": ctx.settings.self_id}
+        require(request)
+        return {"migration_required": True, "configuration_url": "/console/api/configuration",
+                "message": "模型配置已按调用点拆分，请使用模块配置接口；保存后重启。"}
 
     @app.put("/console/api/settings")
     async def update_settings(request: Request):
-        ctx = require(request)
-        body = await request.body()
-        if len(body) > 4096:
-            raise HTTPException(413)
-        try:
-            payload = json.loads(body)
-            values = ConsoleSettings.model_validate(payload["values"])
-        except (ValueError, KeyError, TypeError):
-            raise HTTPException(422, "参数格式或范围不正确") from None
-        async with lock:
-            if payload.get("version") != settings_payload(ctx)["version"]:
-                raise HTTPException(409, "配置已被其他会话修改，请刷新后重试")
-            path = getattr(ctx.settings, "config_root", ctx.settings.data_root) / "console-settings.json"
-            temporary = path.with_suffix(".tmp")
-            temporary.write_text(values.model_dump_json(indent=2), encoding="utf-8")
-            os.chmod(temporary, 0o600)
-            os.replace(temporary, path)
-            for key, value in values.model_dump().items():
-                setattr(ctx.settings, key, value)
-            ctx.model.client.timeout = httpx.Timeout(values.model_timeout)
-            ctx.onebot.timeout = values.onebot_timeout
-        return settings_payload(ctx)
+        require(request)
+        raise HTTPException(409, "旧共享设置接口已停用，请使用 /console/api/configuration/{模块名}")
 
     @app.get("/console/api/overview/{gid}")
     async def overview(gid: str, request: Request):

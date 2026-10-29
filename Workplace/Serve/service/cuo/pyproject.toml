@@ -19,4 +19,4 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src/backend"]
-include = ["config*", "Core*", "Function*", "Integration*", "Workflow*"]
+include = ["Core*", "Function*", "Integration*", "Workflow*"]

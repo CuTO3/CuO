@@ -1,4 +1,10 @@
-"""Revisioned daily snapshots, scheduled without sending or deleting source messages."""
+'''
+本文件用途：Revisioned daily snapshots, scheduled without sending or deleting source messages.
+
+配置字段：
+first_business_date                  首次业务日期
+'''
+
 import asyncio,hashlib,json,logging
 from datetime import date,timedelta
 from uuid import uuid5,NAMESPACE_URL

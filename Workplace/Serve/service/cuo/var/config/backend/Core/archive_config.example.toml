@@ -1,0 +1,6 @@
+# 部署示例：复制为 archive_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# archive_first_business_date：首次业务日期，空值从数据库确定
+
+archive_first_business_date = ""

@@ -1,3 +1,11 @@
+'''
+本文件用途：Function/memento/son_function/write_in_excel.py 的后端实现。
+
+配置字段：
+cell                                 共享运行配置字段
+title                                共享运行配置字段
+'''
+
 import hashlib
 import json
 import os

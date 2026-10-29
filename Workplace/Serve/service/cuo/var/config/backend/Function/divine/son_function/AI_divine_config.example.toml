@@ -1,0 +1,25 @@
+# 部署示例：复制为 AI_divine_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# divine_ai_enabled：启用应事 AI；关闭时使用固定应事内容
+# divine_ai_api_key：此调用点专用的 LiteLLM 虚拟 Key
+# divine_ai_base_url：LiteLLM 接口地址
+# divine_ai_model_name：LiteLLM 中配置的模型名称
+# divine_ai_evidence_prompt_file：应事提示词文件
+# divine_ai_request_attempt_limit：最多调用次数，包含第一次
+# divine_ai_request_timeout_seconds：单次调用总超时，包含请求等待
+# divine_ai_response_max_tokens：模型输出 token 上限
+# divine_ai_advice_min_characters：应事内容最少字符数
+# divine_ai_advice_max_characters：应事内容最多字符数
+
+# 为此调用点配置专用 LiteLLM 虚拟 Key 后启用；禁止填写共享主密钥。
+divine_ai_enabled = false
+divine_ai_api_key = ""
+divine_ai_base_url = ""
+divine_ai_model_name = ""
+divine_ai_evidence_prompt_file = "src/backend/Function/divine/prompts/divine_prompt.txt"
+divine_ai_request_attempt_limit = 2
+divine_ai_request_timeout_seconds = 30.0
+divine_ai_response_max_tokens = 700
+divine_ai_advice_min_characters = 15
+divine_ai_advice_max_characters = 100

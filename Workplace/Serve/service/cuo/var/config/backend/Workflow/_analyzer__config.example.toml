@@ -1,0 +1,18 @@
+# 部署示例：复制为 _analyzer__config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# workflow_intent_ai_enabled：启用此 AI 调用点
+# workflow_intent_ai_api_key：此调用点专用 LiteLLM 虚拟 Key
+# workflow_intent_ai_base_url：LiteLLM 接口地址
+# workflow_intent_ai_model_name：LiteLLM 模型名称
+# workflow_intent_ai_request_timeout_seconds：单次请求超时（秒）
+# workflow_intent_ai_response_max_tokens：意图识别输出 token 上限
+# workflow_intent_ai_total_timeout_seconds：意图识别总超时
+
+workflow_intent_ai_enabled = false
+workflow_intent_ai_api_key = ""
+workflow_intent_ai_base_url = ""
+workflow_intent_ai_model_name = ""
+workflow_intent_ai_request_timeout_seconds = 60.0
+workflow_intent_ai_response_max_tokens = 1000
+workflow_intent_ai_total_timeout_seconds = 15.0

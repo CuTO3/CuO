@@ -1,4 +1,10 @@
-"""Select and execute the business handler for a classified durable task."""
+'''
+本文件用途：Select and execute the business handler for a classified durable task.
+
+配置字段：
+未检测到直接读取共享 Settings 或环境变量；局部参数与间接依赖仍需逐项核查。
+'''
+
 from Core import archive
 from Core.results import result, save
 from Integration.console.admin import execute

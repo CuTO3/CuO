@@ -1,0 +1,10 @@
+# 部署示例：复制为 connection_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# postgresql_connection_url：数据库连接字符串
+# postgresql_pool_min_connections：最少连接数
+# postgresql_pool_max_connections：最多连接数
+
+postgresql_connection_url = ""
+postgresql_pool_min_connections = 1
+postgresql_pool_max_connections = 8

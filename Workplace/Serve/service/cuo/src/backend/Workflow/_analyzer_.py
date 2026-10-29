@@ -1,5 +1,23 @@
-"""Single-message classification; calendar arithmetic always runs in Python."""
+'''
+本文件用途：Single-message classification; calendar arithmetic always runs in Python.
+
+配置字段：
+workflow_intent_ai_enabled                           启用此 AI 调用点
+workflow_intent_ai_api_key                           此调用点专用 LiteLLM 虚拟 Key
+workflow_intent_ai_base_url                          LiteLLM 接口地址
+workflow_intent_ai_model_name                        LiteLLM 模型名称
+workflow_intent_ai_request_timeout_seconds           单次请求超时（秒）
+workflow_intent_ai_response_max_tokens               意图识别输出 token 上限
+workflow_intent_ai_total_timeout_seconds             意图识别总超时
+'''
+
 from __future__ import annotations
+
+from Core.configuration import load, resource
+
+CONFIG = load("analyzer")
+from Integration.litellm.callsite import CallsiteModel
+MODEL = CallsiteModel(CONFIG, 'workflow_intent_ai')
 
 import asyncio
 import json
@@ -181,7 +199,7 @@ async def run(text, triggered_at, *, context, group_id=None):
             source = "AI"
             for attempt in range(2):
                 try:
-                    raw = await asyncio.wait_for(context.model.complete(messages=[{"role": "system", "content": PROMPT + "\n固定示例：" + json.dumps(corpus.get("examples", EXAMPLES), ensure_ascii=False)}, {"role": "user", "content": text}], temperature=0, max_tokens=1000, response_format={"type": "json_object"}), timeout=15)
+                    raw = await asyncio.wait_for(MODEL.complete(messages=[{"role": "system", "content": PROMPT + "\n固定示例：" + json.dumps(corpus.get("examples", EXAMPLES), ensure_ascii=False)}, {"role": "user", "content": text}], temperature=0, max_tokens=CONFIG["workflow_intent_ai_response_max_tokens"], response_format={"type": "json_object"}), timeout=CONFIG["workflow_intent_ai_total_timeout_seconds"])
                     semantic = validate_semantic(json.loads(raw), normalized)
                     break
                 except (asyncio.TimeoutError, ValueError, TypeError, RuntimeError):
@@ -191,7 +209,7 @@ async def run(text, triggered_at, *, context, group_id=None):
         if not usable:return result
         timestamp = now().isoformat()
         if entry is None:
-            entry = {"id": str(uuid5(NAMESPACE_URL, normalized + POLICY_VERSION + PROMPT_VERSION)), "raw_text": text, "normalized_text": normalized, "policy_version": POLICY_VERSION, "prompt_version": PROMPT_VERSION, "created_at": timestamp, "hit_count": 0, "enabled": True, "template_status": "candidate", "template_text": normalized, "source": source, "model": context.settings.model_name if source == "AI" else None}
+            entry = {"id": str(uuid5(NAMESPACE_URL, normalized + POLICY_VERSION + PROMPT_VERSION)), "raw_text": text, "normalized_text": normalized, "policy_version": POLICY_VERSION, "prompt_version": PROMPT_VERSION, "created_at": timestamp, "hit_count": 0, "enabled": True, "template_status": "candidate", "template_text": normalized, "source": source, "model": MODEL.model_name if source == "AI" else None}
             corpus["entries"].append(entry)
         entry.update(opt=semantic["opt"], semantic_params=semantic["params"], last_resolved_params=result["params"], updated_at=timestamp, hit_count=entry.get("hit_count", 0) + 1)
         corpus["revision"] += 1

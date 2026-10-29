@@ -1,10 +1,19 @@
-"""FastAPI service: authenticated reverse WS, continuous intake, one business worker."""
+'''
+本文件用途：FastAPI service: authenticated reverse WS, continuous intake, one business worker.
+
+配置字段：
+inbound_queue_size                   接收队列容量
+napcat_token                         NapCat 接入凭据
+onebot_timeout                       OneBot 调用超时（秒）
+self_id                              机器人账号标识
+'''
+
 import asyncio,hmac,logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI,WebSocket,WebSocketDisconnect,HTTPException,Request
 from fastapi.responses import JSONResponse
 from psycopg import sql
-from config.settings import Settings
+from Core.settings import Settings
 from Integration.postgresql import Database
 from Core.cache import CacheManager
 from Core.context import RuntimeContext
@@ -35,7 +44,7 @@ def create_app(settings=None):
     async def lifespan(app):
         s=settings or Settings.load()
         if not s.napcat_token or not s.self_id:raise RuntimeError("ONEBOT_TOKEN and ONEBOT_SELF_ID required")
-        db=Database(s);model=ModelClient(s);onebot=OneBotClient(s.onebot_timeout)
+        db=Database(s);model=None;onebot=OneBotClient(s.onebot_timeout)
         ctx=RuntimeContext(s,db,model,onebot);app.state.ctx=ctx
         ctx.cache=CacheManager(s,db);ctx.queue=TaskQueue(ctx,dispatch)
         app.state.inbound=asyncio.Queue(maxsize=s.inbound_queue_size)
@@ -72,7 +81,7 @@ def create_app(settings=None):
                 try:await asyncio.wait_for(app.state.inbound.join(),30)
                 except TimeoutError:pass
                 consumer.cancel();await asyncio.gather(consumer,return_exceptions=True)
-            await ctx.queue.stop();await onebot.close();await model.close();await db.close()
+            await ctx.queue.stop();await onebot.close();await db.close()
     app=FastAPI(lifespan=lifespan)
     @app.get("/health")
     async def health():return {"status":"alive"}

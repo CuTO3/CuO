@@ -1,3 +1,25 @@
+'''
+本文件用途：Function/summary/son_function/AI_sum.py 的后端实现。
+
+配置字段：
+summary_text_ai_enabled                              启用此 AI 调用点
+summary_text_ai_api_key                              此调用点专用 LiteLLM 虚拟 Key
+summary_text_ai_base_url                             LiteLLM 接口地址
+summary_text_ai_model_name                           LiteLLM 模型名称
+summary_text_ai_request_timeout_seconds              单次请求超时（秒）
+summary_text_ai_prompt_file                          总结提示词文件
+summary_text_chunk_character_limit                   每批消息序列化字符上限
+summary_text_batch_timeout_seconds                   每批总超时
+summary_text_ai_request_attempt_limit                最多尝试次数
+summary_text_ai_response_max_tokens                  输出 token 上限
+'''
+
+from Core.configuration import load, resource
+
+CONFIG = load("summary_text")
+from Integration.litellm.callsite import CallsiteModel
+MODEL = CallsiteModel(CONFIG, 'summary_text_ai')
+
 import asyncio,json
 from pathlib import Path
 class SummaryError(ValueError):pass
@@ -18,24 +40,24 @@ def validate(data,records):
         if any(r in e["title"]+e["body"] for r in refs):raise SummaryError("ref exposed")
     return data["events"]
 async def generate(records,scope,ctx):
-    prompt=(Path(__file__).parents[1]/"prompts/summary_prompt.txt").read_text(encoding="utf-8")
+    prompt=resource(CONFIG["summary_text_ai_prompt_file"]).read_text(encoding="utf-8")
     chunks=[];current=[];size=0
     for row in records:
         length=len(json.dumps(row,ensure_ascii=False))
-        if length>12000:raise SummaryError("message exceeds budget")
-        if size+length>12000 and current:chunks.append(current);current=[];size=0
+        if length>CONFIG["summary_text_chunk_character_limit"]:raise SummaryError("message exceeds budget")
+        if size+length>CONFIG["summary_text_chunk_character_limit"] and current:chunks.append(current);current=[];size=0
         current.append(row);size+=length
     if current:chunks.append(current)
     events=[]
     # Bound each batch independently: a busy day must not exhaust a shared deadline.
     # Sequential calls retain the provider's existing single-request concurrency.
     for chunk in chunks:
-        async with asyncio.timeout(120):
+        async with asyncio.timeout(CONFIG["summary_text_batch_timeout_seconds"]):
             error=None
-            for attempt in range(2):
-                raw=await ctx.model.complete(messages=[{"role":"system","content":prompt},{"role":"user","content":json.dumps({"scope":scope,"records":chunk,"repair":error},ensure_ascii=False)}],max_tokens=5000,response_format={"type":"json_object"})
+            for attempt in range(CONFIG["summary_text_ai_request_attempt_limit"]):
+                raw=await MODEL.complete(messages=[{"role":"system","content":prompt},{"role":"user","content":json.dumps({"scope":scope,"records":chunk,"repair":error},ensure_ascii=False)}],max_tokens=CONFIG["summary_text_ai_response_max_tokens"],response_format={"type":"json_object"})
                 try:events.extend(validate(parse_json(raw),chunk));break
                 except (ValueError,TypeError,KeyError) as exc:
                     error=type(exc).__name__
-                    if attempt:raise SummaryError("evidence validation failed") from None
+                    if attempt == CONFIG["summary_text_ai_request_attempt_limit"] - 1:raise SummaryError("evidence validation failed") from None
     return events

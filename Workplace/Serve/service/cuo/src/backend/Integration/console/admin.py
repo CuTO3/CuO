@@ -1,4 +1,10 @@
-"""Authenticated reads and version-checked mutations through the worker."""
+'''
+本文件用途：Authenticated reads and version-checked mutations through the worker.
+
+配置字段：
+admin_token                          控制台访问凭据
+'''
+
 import hashlib,hmac,json
 from uuid import uuid4
 from fastapi import Request,HTTPException

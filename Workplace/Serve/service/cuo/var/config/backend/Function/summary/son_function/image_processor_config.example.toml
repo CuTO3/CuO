@@ -1,0 +1,24 @@
+# 部署示例：复制为 image_processor_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# summary_image_ai_enabled：启用此 AI 调用点
+# summary_image_ai_api_key：此调用点专用 LiteLLM 虚拟 Key
+# summary_image_ai_base_url：LiteLLM 接口地址
+# summary_image_ai_model_name：LiteLLM 模型名称
+# summary_image_ai_request_timeout_seconds：单次请求超时（秒）
+# summary_image_download_byte_limit：下载字节上限
+# summary_image_download_timeout_seconds：下载超时秒
+# summary_image_pixel_limit：图片像素上限
+# summary_image_thumbnail_side_pixels：缩略图边长像素
+# summary_image_description_character_limit：图片描述字符上限
+
+summary_image_ai_enabled = false
+summary_image_ai_api_key = ""
+summary_image_ai_base_url = ""
+summary_image_ai_model_name = ""
+summary_image_ai_request_timeout_seconds = 60.0
+summary_image_download_byte_limit = 10485760
+summary_image_download_timeout_seconds = 20.0
+summary_image_pixel_limit = 25000000
+summary_image_thumbnail_side_pixels = 1280
+summary_image_description_character_limit = 4000

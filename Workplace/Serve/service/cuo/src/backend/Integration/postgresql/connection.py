@@ -1,4 +1,10 @@
-"""PostgreSQL pool construction and lifecycle."""
+'''
+本文件用途：PostgreSQL pool construction and lifecycle.
+
+配置字段：
+database_url                         私有数据库连接信息
+'''
+
 from psycopg.rows import dict_row
 from psycopg_pool import AsyncConnectionPool
 def create_pool(settings):

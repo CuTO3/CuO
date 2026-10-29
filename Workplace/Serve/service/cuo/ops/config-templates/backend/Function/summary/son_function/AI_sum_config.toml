@@ -1,0 +1,10 @@
+summary_text_ai_enabled = false
+summary_text_ai_api_key = ""
+summary_text_ai_base_url = ""
+summary_text_ai_model_name = ""
+summary_text_ai_request_timeout_seconds = 60.0
+summary_text_ai_prompt_file = "src/backend/Function/summary/prompts/summary_prompt.txt"
+summary_text_chunk_character_limit = 12000
+summary_text_batch_timeout_seconds = 120.0
+summary_text_ai_request_attempt_limit = 2
+summary_text_ai_response_max_tokens = 5000

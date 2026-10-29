@@ -17,10 +17,13 @@ HEADERS = {"X-Cuo-Request": "console"}
 @pytest.fixture
 def client(tmp_path):
     app = FastAPI()
-    settings = SimpleNamespace(admin_token="test-admin-secret", data_root=tmp_path,
+    settings = SimpleNamespace(config_root=tmp_path/"config", admin_token="test-admin-secret", data_root=tmp_path,
         model_name="deepseek-flash", model_timeout=60.0, max_message_length=1500,
         onebot_timeout=20.0, model_protocol="openai", vision_model_name="",
         vision_api_key="", self_id="12345")
+    from Core.configuration import APP_ROOT
+    import shutil
+    shutil.copytree(APP_ROOT / 'ops/config-templates', settings.config_root)
     app.state.ctx = SimpleNamespace(settings=settings, model=SimpleNamespace(client=SimpleNamespace(timeout=None)),
         onebot=SimpleNamespace(timeout=20), db=SimpleNamespace(groups={"123"}), corpus_conflict=False)
     install(app)
@@ -53,20 +56,50 @@ def test_static_and_protected_routes(client):
 
 def test_settings_validation_persistence_and_conflict(client):
     login(client)
-    initial = client.get("/console/api/settings", headers=HEADERS).json()
-    assert "test-admin-secret" not in str(initial)
-    invalid = {**initial["values"], "model_timeout": 0}
-    assert client.put("/console/api/settings", headers=HEADERS, json={"values": invalid, "version": initial["version"]}).status_code == 422
-    values = {**initial["values"], "model_timeout": 90.0, "max_message_length": 1200}
-    response = client.put("/console/api/settings", headers=HEADERS, json={"values": values, "version": initial["version"]})
+    url = '/console/api/configuration/sender'
+    initial = client.get(url, headers=HEADERS).json()
+    assert 'test-admin-secret' not in str(initial)
+    assert client.put(url, headers=HEADERS, json={'values': {'sender_message_character_limit': 0}, 'version': initial['version']}).status_code == 422
+    response = client.put(url, headers=HEADERS, json={'values': {'sender_message_character_limit': 1200}, 'version': initial['version']})
     assert response.status_code == 200
-    ctx = client.app.state.ctx
-    assert ctx.settings.model_timeout == 90
-    assert ctx.model.client.timeout.read == 90
-    stored = ConsoleSettings.model_validate_json((ctx.settings.data_root / "console-settings.json").read_text())
-    assert stored.max_message_length == 1200
-    assert client.put("/console/api/settings", headers=HEADERS, json={"values": values, "version": initial["version"]}).status_code == 409
-    assert client.put("/console/api/settings", headers=HEADERS, json={"values": {**values,"admin_token":"injected"}, "version":response.json()["version"]}).status_code == 422
+    assert response.json()['restart_required'] is True
+    from Core.configuration import read
+    assert read('sender', root=client.app.state.ctx.settings.config_root)['sender_message_character_limit'] == 1200
+    assert client.put(url, headers=HEADERS, json={'values': {}, 'version': initial['version']}).status_code == 409
+    assert client.put(url, headers=HEADERS, json={'values': {'admin_token': 'injected'}, 'version': response.json()['version']}).status_code == 422
+    assert client.put('/console/api/settings', headers=HEADERS, json={}).status_code == 409
+
+
+def test_module_secret_is_write_only_and_omission_preserves_it(client):
+    login(client)
+    url='/console/api/configuration/conversation'
+    initial=client.get(url,headers=HEADERS).json()
+    secret='synthetic-independent-key'
+    response=client.put(url,headers=HEADERS,json={'version':initial['version'],'values':{'conversation_reply_ai_api_key':secret}})
+    assert response.status_code==200
+    assert secret not in response.text
+    assert 'conversation_reply_ai_api_key' not in response.json()['values']
+    response=client.put(url,headers=HEADERS,json={'version':response.json()['version'],'values':{'conversation_reply_ai_model_name':'synthetic-model'}})
+    assert response.status_code==200
+    from Core.configuration import read
+    assert read('conversation',root=client.app.state.ctx.settings.config_root)['conversation_reply_ai_api_key']==secret
+    assert client.get('/console/api/configuration/unregistered',headers=HEADERS).status_code==404
+
+
+def test_divine_editor_uses_index_schema_and_cross_field_validation(client):
+    login(client)
+    url='/console/api/configuration/DivineAIConfig'
+    response=client.get(url,headers=HEADERS)
+    assert response.status_code==200
+    initial=response.json()
+    assert 'divine_ai_api_key' not in initial['values']
+    assert client.put(url,headers=HEADERS,json={'version':initial['version'],'values':{'divine_ai_enabled':True}}).status_code==422
+    assert client.put(url,headers=HEADERS,json={'version':initial['version'],'values':{'divine_ai_advice_min_characters':101}}).status_code==422
+    response=client.put(url,headers=HEADERS,json={'version':initial['version'],'values':{'divine_ai_request_attempt_limit':3}})
+    assert response.status_code==200
+    from Core.module_config import DivineAIConfig, load_module_config
+    config=load_module_config('backend/Function/divine/son_function/AI_divine_config.toml',DivineAIConfig,config_root=client.app.state.ctx.settings.config_root)
+    assert config.divine_ai_request_attempt_limit==3
 
 
 def test_rate_limit_and_expired_session(client):

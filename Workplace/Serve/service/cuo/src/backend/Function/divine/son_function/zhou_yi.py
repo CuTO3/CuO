@@ -5,7 +5,7 @@
 divine_zhou_yi_hexagrams_file                  六十四卦资料文件
 '''
 
-from config.module_config import ZhouYiConfig, load_module_config
+from Core.module_config import ZhouYiConfig, load_module_config
 
 DIVINE_ZHOU_YI_CONFIG = load_module_config(
     "backend/Function/divine/son_function/zhou_yi_config.toml", ZhouYiConfig

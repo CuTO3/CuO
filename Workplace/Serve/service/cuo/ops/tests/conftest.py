@@ -3,7 +3,7 @@ if sys.platform=="win32":asyncio.set_event_loop_policy(asyncio.WindowsSelectorEv
 from uuid import uuid4
 from types import SimpleNamespace
 import pytest
-from config.settings import Settings
+from Core.settings import Settings
 from Integration.postgresql import Database
 from ops.database.scripts.migrate import migrate
 from Core.context import RuntimeContext

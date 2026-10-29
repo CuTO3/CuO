@@ -1,4 +1,17 @@
-"""Model API adapter; supports LiteLLM and the existing provider during migration."""
+'''
+本文件用途：Model API adapter; supports LiteLLM and the existing provider during migration.
+
+配置字段：
+model_api_key                        模型接口密钥
+model_base_url                       模型接口地址
+model_name                           模型名称
+model_protocol                       模型接口协议
+model_timeout                        模型客户端超时（秒）
+vision_api_key                       图片识别接口密钥
+vision_base_url                      图片识别接口地址
+vision_model_name                    图片识别模型名称
+'''
+
 import asyncio
 import httpx
 class ModelUnavailable(RuntimeError):

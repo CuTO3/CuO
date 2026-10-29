@@ -1,4 +1,14 @@
-"""One global worker, guarded by a dedicated PostgreSQL advisory-lock session."""
+'''
+本文件用途：One global worker, guarded by a dedicated PostgreSQL advisory-lock session.
+
+配置字段：
+task_queue_retry_delays_seconds                      失败后的各次重试延迟（秒）
+'''
+
+from Core.configuration import load, resource
+
+CONFIG = load("queue")
+
 import asyncio,logging
 from datetime import datetime,timedelta
 from psycopg import AsyncConnection
@@ -52,9 +62,9 @@ class TaskQueue:
         for a in value.get("actions",[]):
             if a.get("status")=="sending":a["status"]="unknown"
         count=p.get("_retry_count",0)
-        retry=not ambiguous and count<3 and not isinstance(exc,(ValueError,TypeError,KeyError))
+        retry=not ambiguous and count<len(CONFIG["task_queue_retry_delays_seconds"]) and not isinstance(exc,(ValueError,TypeError,KeyError))
         if retry:
-            p["_retry_count"]=count+1;p["_retry_at"]=(now()+timedelta(seconds=(10,30,120)[count])).isoformat()
+            p["_retry_count"]=count+1;p["_retry_at"]=(now()+timedelta(seconds=int(CONFIG["task_queue_retry_delays_seconds"][count]))).isoformat()
         await self.ctx.db.write("log",[{"task_id":task["task_id"],"status":"needs_review" if ambiguous else "pending" if retry else "failed","params":jsonable(p),"result":jsonable(value),"error":{"code":type(exc).__name__,"retryable":retry},"step":"retry_wait" if retry else "failed"}],group_id=task["group_id"],mode="update",key_fields=("task_id",))
     async def loop(self):
         try:

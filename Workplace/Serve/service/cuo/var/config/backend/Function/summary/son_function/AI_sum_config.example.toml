@@ -1,0 +1,24 @@
+# 部署示例：复制为 AI_sum_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# summary_text_ai_enabled：启用此 AI 调用点
+# summary_text_ai_api_key：此调用点专用 LiteLLM 虚拟 Key
+# summary_text_ai_base_url：LiteLLM 接口地址
+# summary_text_ai_model_name：LiteLLM 模型名称
+# summary_text_ai_request_timeout_seconds：单次请求超时（秒）
+# summary_text_ai_prompt_file：总结提示词文件
+# summary_text_chunk_character_limit：每批消息序列化字符上限
+# summary_text_batch_timeout_seconds：每批总超时
+# summary_text_ai_request_attempt_limit：最多尝试次数
+# summary_text_ai_response_max_tokens：输出 token 上限
+
+summary_text_ai_enabled = false
+summary_text_ai_api_key = ""
+summary_text_ai_base_url = ""
+summary_text_ai_model_name = ""
+summary_text_ai_request_timeout_seconds = 60.0
+summary_text_ai_prompt_file = "src/backend/Function/summary/prompts/summary_prompt.txt"
+summary_text_chunk_character_limit = 12000
+summary_text_batch_timeout_seconds = 120.0
+summary_text_ai_request_attempt_limit = 2
+summary_text_ai_response_max_tokens = 5000

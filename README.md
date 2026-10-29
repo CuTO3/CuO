@@ -33,8 +33,8 @@ python -m venv .venv
 .venv/Scripts/pip install -e ".[test]"      # Linux 用 .venv/bin/pip
 ```
 
-1. 把 `config/groups.example.json` 复制为 `groups.json`，填入真实群号与 schema（不要提交）。
-2. 把 `.env.example` 复制为 `.env`，填写数据库、模型和 NapCat 配置。生产环境用 `CUO_ENV_FILE` 指向 `/serve/config/cuo/backend.env`，凭据不进源码目录。
+1. 当前应用位于 `Workplace/Serve/service/cuo`。将应用 `var/config` 下各 `*_config.example.toml` 复制为同目录的 `*_config.toml`，不要覆盖已有配置。
+2. 在小配置中填写数据库、群映射、各调用点的 LiteLLM 配置和 NapCat 参数，真实值不提交。配置根目录通过 `CUO_CONFIG_ROOT` 指定，默认为应用的 `var/config`。详见应用 `src/README.md`。
 3. 初始化数据库：`.venv/bin/python -m scripts.migrate`。
 4. 启动：`.venv/bin/python -m uvicorn Main:app --host 127.0.0.1 --port 8080`。
 

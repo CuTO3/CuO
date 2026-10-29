@@ -1,3 +1,13 @@
+'''
+本文件用途：Workflow/_sender_.py 的后端实现。
+
+配置字段：
+data_root                            私有运行数据根目录
+groups                               启用的群及数据库映射
+max_message_length                   单条消息长度上限
+napcat_upload_root                   NapCat 上传目录
+'''
+
 from __future__ import annotations
 
 import asyncio

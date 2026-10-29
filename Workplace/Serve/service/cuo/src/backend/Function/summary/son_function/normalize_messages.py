@@ -1,3 +1,10 @@
+'''
+本文件用途：Function/summary/son_function/normalize_messages.py 的后端实现。
+
+配置字段：
+未检测到直接读取共享 Settings 或环境变量；局部参数与间接依赖仍需逐项核查。
+'''
+
 import re,regex
 from .image_processor import segment_key
 def clean(text):return re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]","",str(text)).replace("\r\n","\n")

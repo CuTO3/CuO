@@ -1,0 +1,32 @@
+# 部署示例：复制为 conversation_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# conversation_reply_ai_enabled：启用此 AI 调用点
+# conversation_reply_ai_api_key：此调用点专用 LiteLLM 虚拟 Key
+# conversation_reply_ai_base_url：LiteLLM 接口地址
+# conversation_reply_ai_model_name：LiteLLM 模型名称
+# conversation_reply_ai_request_timeout_seconds：单次请求超时（秒）
+# conversation_persona_file：人格提示词文件
+# conversation_history_message_limit：历史消息数上限
+# conversation_history_character_limit：历史字符上限
+# conversation_reply_character_limit：回复字符上限
+# conversation_recent_result_limit：近期聊天结果数量
+# conversation_user_content_character_limit：用户上下文字符上限
+# conversation_nickname_grapheme_limit：显示昵称字素上限
+# conversation_reply_ai_response_max_tokens：输出 token 上限
+# conversation_reply_ai_temperature：生成温度
+
+conversation_reply_ai_enabled = false
+conversation_reply_ai_api_key = ""
+conversation_reply_ai_base_url = ""
+conversation_reply_ai_model_name = ""
+conversation_reply_ai_request_timeout_seconds = 60.0
+conversation_persona_file = "src/backend/Function/conversation/prompts/persona.md"
+conversation_history_message_limit = 40
+conversation_history_character_limit = 16000
+conversation_reply_character_limit = 6000
+conversation_recent_result_limit = 10
+conversation_user_content_character_limit = 16500
+conversation_nickname_grapheme_limit = 4
+conversation_reply_ai_response_max_tokens = 2048
+conversation_reply_ai_temperature = 0.7

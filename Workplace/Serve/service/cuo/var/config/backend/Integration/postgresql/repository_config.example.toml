@@ -1,0 +1,7 @@
+# 部署示例：复制为 repository_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# postgresql_registered_groups：群号到 schema 和启用状态的映射
+
+
+["postgresql_registered_groups"]

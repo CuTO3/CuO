@@ -1,0 +1,15 @@
+# 部署示例：复制为 divine_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# divine_candidate_keyword_rules_file：聊天候选关键词规则文件
+# divine_repeat_fortune_cost：当日重复占卜扣除的福缘
+# divine_candidate_keyword_limit：最多保留的候选关键词数量
+# divine_candidate_excerpt_count_limit：每个候选最多保留的聊天摘录数量
+# divine_candidate_excerpt_character_limit：每段聊天摘录的字符上限
+
+# 路径相对 cuo 应用根目录；修改后重启服务。
+divine_candidate_keyword_rules_file = "src/backend/Function/divine/data/keyword_rules.json"
+divine_repeat_fortune_cost = 2
+divine_candidate_keyword_limit = 5
+divine_candidate_excerpt_count_limit = 4
+divine_candidate_excerpt_character_limit = 200

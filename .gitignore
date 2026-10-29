@@ -1,6 +1,3 @@
-# 本地私有原件（脱敏前的版本，见 README 说明，不进入公开仓库）
-.private-originals/
-
 # Syncthing 同步标记
 .stfolder/
 .stignore

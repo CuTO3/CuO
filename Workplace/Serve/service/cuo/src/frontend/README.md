@@ -12,7 +12,7 @@
 ssh -N -o ServerAliveInterval=30 -L 127.0.0.1:9080:127.0.0.1:8080 cucl
 ```
 
-访问 <http://127.0.0.1:9080/console/>。登录使用服务器 `/serve/config/cuo/backend.env` 内现有 `ADMIN_TOKEN`，不要将密钥提交到仓库或聊天。当前使用 SSH 隧道，不对公网开放管理接口。关闭隧道不影响服务器上的机器人服务。
+访问 <http://127.0.0.1:9080/console/>。登录使用服务器私有 `var/config/backend/Integration/console/routes_config.toml` 中的 `console_admin_token`，不要将密钥提交到仓库或聊天。当前使用 SSH 隧道，不对公网开放管理接口。关闭隧道不影响服务器上的机器人服务。
 
 ## 功能
 

@@ -1,4 +1,10 @@
-"""Image-only views and reviewed descriptions, backed by PostgreSQL JSONB."""
+'''
+本文件用途：Image-only views and reviewed descriptions, backed by PostgreSQL JSONB.
+
+配置字段：
+data_root                            私有运行数据根目录
+'''
+
 import asyncio
 import copy
 import hashlib

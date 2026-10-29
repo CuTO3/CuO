@@ -1,0 +1,12 @@
+# 部署示例：复制为 client_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# napcat_bot_self_id：机器人账号标识
+# napcat_access_token：OneBot 接入凭据
+# napcat_request_timeout_seconds：OneBot 请求超时（秒）
+# napcat_upload_directory：NapCat 上传目录
+
+napcat_bot_self_id = ""
+napcat_access_token = ""
+napcat_request_timeout_seconds = 20.0
+napcat_upload_directory = ""

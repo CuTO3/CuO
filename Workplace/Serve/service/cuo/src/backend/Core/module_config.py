@@ -1,4 +1,10 @@
-"""模块配置读取：只读小配置；路径相对 cuo 根目录；修改后重启生效。"""
+'''
+本文件用途：模块配置读取：只读小配置；路径相对 cuo 根目录；修改后重启生效。
+
+配置字段：
+CUO_CONFIG_ROOT    配置根目录，包含 config_index.json 与私有小配置
+'''
+
 from pathlib import Path
 import os
 import tomllib
@@ -13,42 +19,30 @@ class ModuleConfig(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
 
-class DivineConfig(ModuleConfig):
-    divine_candidate_keyword_rules_file: Path
-    divine_repeat_fortune_cost: int = Field(strict=True, ge=0)
-    divine_candidate_keyword_limit: int = Field(strict=True, gt=0)
-    divine_candidate_excerpt_count_limit: int = Field(strict=True, gt=0)
-    divine_candidate_excerpt_character_limit: int = Field(strict=True, gt=0)
+def _models_from_index():
+    import json
+    from pydantic import create_model
+    directory = Path(os.environ.get("CUO_CONFIG_ROOT") or APP_ROOT / "var/config")
+    if not directory.is_absolute(): directory = APP_ROOT / directory
+    document = json.loads((directory / "config_index.json").read_text(encoding="utf-8"))
+    result = {}
+    for entry in document["modules"]:
+        if not entry.get("model_class"): continue
+        fields = {}
+        for name, spec in entry["json_schema"]["properties"].items():
+            kind = Path if spec.get("format") == "path" else SecretStr if spec.get("writeOnly") else {"string": str, "integer": int, "number": float, "boolean": bool}[spec["type"]]
+            constraints = {target: spec[source] for source, target in (("minimum","ge"),("maximum","le"),("exclusiveMinimum","gt"),("pattern","pattern"),("minLength","min_length")) if source in spec}
+            if kind in (str,int,float,bool): constraints["strict"] = True
+            fields[name] = (kind, Field(repr=not spec.get("writeOnly",False), **constraints))
+        result[entry["model_class"]] = create_model(entry["model_class"], __base__=ModuleConfig, **fields)
+    return result
 
 
-class DivineAIConfig(ModuleConfig):
-    divine_ai_enabled: bool = Field(strict=True, description="启用应事 AI；关闭时使用固定应事内容")
-    divine_ai_api_key: SecretStr = Field(repr=False, description="此调用点专用的 LiteLLM 虚拟 Key")
-    divine_ai_base_url: str = Field(strict=True, description="LiteLLM 接口地址")
-    divine_ai_model_name: str = Field(strict=True, description="LiteLLM 中配置的模型名称")
-    divine_ai_evidence_prompt_file: Path
-    divine_ai_request_attempt_limit: int = Field(strict=True, ge=1, le=10)
-    divine_ai_request_timeout_seconds: float = Field(strict=True, gt=0)
-    divine_ai_response_max_tokens: int = Field(strict=True, gt=0)
-    divine_ai_advice_min_characters: int = Field(strict=True, ge=0)
-    divine_ai_advice_max_characters: int = Field(strict=True, gt=0)
-
-
-class ReadingsConfig(ModuleConfig):
-    divine_fixed_readings_file: Path
-
-
-class ZhouYiConfig(ModuleConfig):
-    divine_zhou_yi_hexagrams_file: Path
-
-
-class TarotImageConfig(ModuleConfig):
-    divine_tarot_picture_directory: Path
-    divine_tarot_version: str = Field(strict=True, pattern=r"^[A-Za-z0-9_-]+$")
+globals().update(_models_from_index())
 
 
 def load_module_config(relative_path: str, schema, *, config_root=None):
-    """在模块导入时调用一次；不写文件、不读取总索引、不回退示例配置。"""
+    """在模块导入时调用一次；不写文件；字段结构来自总索引；不回退示例配置。"""
     root = Path(config_root or os.environ.get("CUO_CONFIG_ROOT") or APP_ROOT / "var/config")
     if not root.is_absolute():
         root = APP_ROOT / root
@@ -63,6 +57,10 @@ def load_module_config(relative_path: str, schema, *, config_root=None):
     except ValidationError as error:
         fields = ", ".join(".".join(map(str, item["loc"])) for item in error.errors())
         raise ValueError(f"模块配置字段无效：{path} [{fields}]") from None
+    return validate_config(config, path)
+
+
+def validate_config(config, path):
     for name in type(config).model_fields:
         value = getattr(config, name)
         if isinstance(value, Path):

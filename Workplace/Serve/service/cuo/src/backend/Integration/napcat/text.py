@@ -1,3 +1,10 @@
+'''
+本文件用途：Integration/napcat/text.py 的后端实现。
+
+配置字段：
+未检测到直接读取共享 Settings 或环境变量；局部参数与间接依赖仍需逐项核查。
+'''
+
 # Drafted by DS-Flash, reviewed and tested in this workspace.
 def split_text(text: str, limit: int = 1500, reserve: int = 20) -> list[str]:
     if not isinstance(text, str):

@@ -5,7 +5,7 @@
 divine_fixed_readings_file                     固定解卦资料文件
 '''
 
-from config.module_config import ReadingsConfig, load_module_config
+from Core.module_config import ReadingsConfig, load_module_config
 
 DIVINE_READINGS_CONFIG = load_module_config(
     "backend/Function/divine/son_function/readings_config.toml", ReadingsConfig

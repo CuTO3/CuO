@@ -1,4 +1,10 @@
-"""Rebuildable caches. PostgreSQL remains authoritative; files never decide settlement."""
+'''
+本文件用途：Rebuildable caches. PostgreSQL remains authoritative; files never decide settlement.
+
+配置字段：
+cache_root                           私有缓存根目录
+'''
+
 import asyncio
 import json
 import os

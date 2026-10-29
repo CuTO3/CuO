@@ -1,0 +1,3 @@
+postgresql_connection_url = ""
+postgresql_pool_min_connections = 1
+postgresql_pool_max_connections = 8

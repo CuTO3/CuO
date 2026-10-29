@@ -1,0 +1,8 @@
+# 部署示例：复制为 nickname_segmenter_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# memento_nickname_protected_words：私有昵称分词保护词
+# memento_nickname_character_limit：昵称字符上限
+
+memento_nickname_protected_words = []
+memento_nickname_character_limit = 256

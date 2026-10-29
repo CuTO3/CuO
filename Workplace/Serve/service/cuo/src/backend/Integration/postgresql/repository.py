@@ -1,4 +1,10 @@
-"""Typed, allowlisted PostgreSQL access. SQL identifiers never come from messages."""
+'''
+本文件用途：Typed, allowlisted PostgreSQL access. SQL identifiers never come from messages.
+
+配置字段：
+groups                               启用的群及数据库映射
+'''
+
 from __future__ import annotations
 
 import asyncio

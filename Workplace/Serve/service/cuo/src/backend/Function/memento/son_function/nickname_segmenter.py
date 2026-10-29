@@ -1,12 +1,24 @@
+'''
+本文件用途：Function/memento/son_function/nickname_segmenter.py 的后端实现。
+
+配置字段：
+memento_nickname_protected_words                     私有昵称分词保护词
+memento_nickname_character_limit                     昵称字符上限
+'''
+
+from Core.configuration import load, resource
+
+CONFIG = load("nickname")
+
 import re
 from pathlib import Path
 import jieba
 import regex
-PROTECTED=("囧菌在怀","马铃薯","不学日语","最弱","之乳酸菌","乳酸菌")
+PROTECTED=tuple(CONFIG["memento_nickname_protected_words"])
 TOKENIZER=jieba.Tokenizer()
 for word in PROTECTED:TOKENIZER.add_word(word,100000)
 def split_nickname(nickname,old_slots):
-    if not isinstance(nickname,str) or not nickname.strip() or len(nickname)>256:
+    if not isinstance(nickname,str) or not nickname.strip() or len(nickname)>CONFIG["memento_nickname_character_limit"]:
         raise ValueError("invalid nickname")
     if not isinstance(old_slots,list) or len(old_slots)!=6 or any(x is not None and (not isinstance(x,str) or not x) for x in old_slots):
         raise ValueError("six slots required")

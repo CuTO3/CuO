@@ -9,7 +9,7 @@ User=cuo
 Group=cuo
 SupplementaryGroups=cuo-files
 WorkingDirectory=/serve/service/cuo/src/backend
-Environment=CUO_ENV_FILE=/serve/service/cuo/var/config/backend.env
+Environment=CUO_CONFIG_ROOT=/serve/service/cuo/var/config
 Environment=HOME=/serve/service/cuo/var/home
 Environment=PYTHONUNBUFFERED=1
 Environment=PYTHONDONTWRITEBYTECODE=1

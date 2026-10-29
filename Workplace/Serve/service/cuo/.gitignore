@@ -11,3 +11,6 @@ __pycache__/
 **/.env.*
 !**/.env.example
 **/nickname_dictionary.txt
+
+# 仅公开部署示例，真实配置继续忽略
+!var/config/**/*.example.toml

@@ -1,6 +1,6 @@
 import pytest
 
-from config.module_config import APP_ROOT, DivineAIConfig, load_module_config
+from Core.module_config import APP_ROOT, DivineAIConfig, load_module_config
 
 
 def test_divine_config_paths_are_independent_of_working_directory(tmp_path, monkeypatch):

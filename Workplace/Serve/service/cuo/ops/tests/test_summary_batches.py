@@ -20,18 +20,20 @@ async def test_large_day_keeps_all_batches_and_individual_deadlines(monkeypatch)
         seen.extend(batch)
         return json.dumps({'events':[{'title':'讨论','body':'群友交流。','refs':[batch[0]['ref']],'quotes':[]}]})
     monkeypatch.setattr(AI_sum.asyncio,'timeout',deadline)
+    monkeypatch.setattr(AI_sum,'MODEL',SimpleNamespace(complete=complete))
     result=await AI_sum.generate(records,{},SimpleNamespace(model=SimpleNamespace(complete=complete)))
     assert seen==records
     assert len(result)==18
     assert deadlines==[120]*18
 
 @pytest.mark.asyncio
-async def test_large_day_does_not_relax_evidence_validation():
+async def test_large_day_does_not_relax_evidence_validation(monkeypatch):
     calls=0
     async def complete(**kw):
         nonlocal calls
         calls+=1
         return json.dumps({'events':[{'title':'讨论','body':'群友交流。','refs':['missing'],'quotes':[]}]})
+    monkeypatch.setattr(AI_sum,'MODEL',SimpleNamespace(complete=complete))
     with pytest.raises(AI_sum.SummaryError,match='evidence validation failed'):
         await AI_sum.generate([{'ref':f'm{i:05}','text':'甲'*6500} for i in range(18)],{},SimpleNamespace(model=SimpleNamespace(complete=complete)))
     assert calls==2

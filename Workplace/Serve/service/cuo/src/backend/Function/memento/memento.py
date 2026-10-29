@@ -1,3 +1,14 @@
+'''
+本文件用途：Function/memento/memento.py 的后端实现。
+
+配置字段：
+memento_workbook_filename                            昵称历史工作簿文件名
+'''
+
+from Core.configuration import load, resource
+
+CONFIG = load("memento")
+
 import asyncio
 import hashlib
 import os
@@ -59,7 +70,7 @@ async def run(task,ctx):
             await ctx.db.write("log",[{"task_id":task["task_id"],"result":{"alignment_required":True,"new_nickname":new},"step":"alignment_required"}],group_id=gid,mode="update",key_fields=("task_id",))
             return result("error",error_code="nickname_alignment_required")
         sheet=(member or {}).get("sheet_name") or uid
-        workbook=ctx.settings.data_root/"groups"/gid/"memento"/"鸿爪录.xlsx"
+        workbook=ctx.settings.data_root/"groups"/gid/"memento"/CONFIG["memento_workbook_filename"]
         if not (member or {}).get("sheet_name") and workbook.exists():
             from openpyxl import load_workbook
             book=await asyncio.to_thread(load_workbook,workbook,read_only=True)
@@ -71,13 +82,13 @@ async def run(task,ctx):
         state={"event":event,"sheet_name":sheet,"initial":initial,"phase":"aligned"}
         await ctx.db.write("log",[{"task_id":task["task_id"],"result":state,"step":"aligned"}],group_id=gid,mode="update",key_fields=("task_id",))
     event=state["event"];sheet=state["sheet_name"]
-    workbook=ctx.settings.data_root/"groups"/gid/"memento"/"鸿爪录.xlsx"
+    workbook=ctx.settings.data_root/"groups"/gid/"memento"/CONFIG["memento_workbook_filename"]
     await asyncio.to_thread(write_event,workbook,sheet,event)
     actions=[]
     if not state["initial"]:
-        dest=ctx.settings.data_root/"groups"/gid/"outgoing"/str(task["task_id"])/"0"/"鸿爪录.xlsx"
+        dest=ctx.settings.data_root/"groups"/gid/"outgoing"/str(task["task_id"])/"0"/CONFIG["memento_workbook_filename"]
         path=await asyncio.to_thread(snapshot,workbook,dest)
-        actions=[{"type":"upload_file","path":path,"name":"鸿爪录.xlsx"},{"type":"send_message","text":f'鸿爪已录：{event["display_name"]}\n旧名：{event["old_nickname"] or ""}\n新名：{new}\n《鸿爪录》已更新。'}]
+        actions=[{"type":"upload_file","path":path,"name":CONFIG["memento_workbook_filename"]},{"type":"send_message","text":f'鸿爪已录：{event["display_name"]}\n旧名：{event["old_nickname"] or ""}\n新名：{new}\n《鸿爪录》已更新。'}]
     value=result(actions=actions,result_id=task["task_id"],event=event,sheet_name=sheet,phase="exported")
     async with ctx.db.transaction(gid) as tx:
         await ctx.db.write("members",[{"user_id":uid,"nickname":new,"slots":event["new_slots"],"sheet_name":sheet,"updated_at":now()}],group_id=gid,mode="upsert",key_fields=("user_id",),transaction=tx)

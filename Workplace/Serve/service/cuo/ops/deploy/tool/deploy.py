@@ -26,7 +26,6 @@ SOURCE = REPO / "Workplace/Serve/service/cuo"
 SERVICE = Path("/serve/service/cuo")
 UNIT = "cuo-backend.service"
 PYTHON = "/serve/software/python/environments/cuo/bin/python"
-ENV_FILE = SERVICE / "var/config/backend.env"
 
 
 def run(*args, **kwargs):
@@ -99,7 +98,7 @@ for line in unit.splitlines():
             key,value=item.split('=',1);os.environ[key]=value
 root=Path('/serve/service/cuo')
 sys.path[:0]=[str(root/'src/backend'),str(root)]
-from config.settings import Settings
+from Core.settings import Settings
 s=Settings.load()
 '''
     run("sudo", "-n", "-u", "cuo", PYTHON, "-c", loader + body, cwd=SERVICE)

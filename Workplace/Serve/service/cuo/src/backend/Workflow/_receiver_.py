@@ -1,4 +1,11 @@
-"""Inbound OneBot events only persist; no model or sending occurs here."""
+'''
+本文件用途：Inbound OneBot events only persist; no model or sending occurs here.
+
+配置字段：
+groups                               启用的群及数据库映射
+self_id                              机器人账号标识
+'''
+
 from __future__ import annotations
 
 import json

@@ -1,0 +1,10 @@
+# 部署示例：复制为 tarot_image_config.toml 后填写私有参数。
+# 此文件可提交；实际配置不可提交。已有配置请勿覆盖。
+# AI 默认关闭，填写专用 LiteLLM Key、地址和模型名称后再启用。
+# divine_tarot_artwork_directory：塔罗牌图片目录
+# divine_tarot_card_image_files：塔罗牌名称与图片文件名的对应表
+
+# 目录名规则：Tarot -version-{后缀}；修改后重启生效。
+# 可选后缀：Arknight、TrueDark。新增同格式目录即可扩展。
+divine_tarot_picture_directory = "src/backend/Function/divine/data"
+divine_tarot_version = "Arknight"

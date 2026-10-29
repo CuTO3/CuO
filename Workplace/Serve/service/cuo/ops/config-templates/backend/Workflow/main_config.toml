@@ -1,0 +1,2 @@
+workflow_data_directory = "var/data"
+workflow_inbound_queue_capacity = 1000

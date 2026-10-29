@@ -39,7 +39,7 @@ Windows 使用 `.venv/Scripts/python`。数据库集成测试需显式设置 `CU
 ## 部署配置
 
 1. 参考 `ops/deploy/deploy.env.example` 指定代码、Python 环境和生产配置位置。
-2. 按 `src/backend/.env.example` 和 `src/backend/config/groups.example.json` 创建服务器专用配置，保存到 `var/config`。
+2. 将 `var/config` 下的 `*_config.example.toml` 复制为同目录的 `*_config.toml`，补齐服务器专用配置，不覆盖已有配置。群映射填写在 `backend/Integration/postgresql/repository_config.toml` 中；真实值不提交。默认读取应用根目录下的 `var/config`，也可用 `CUO_CONFIG_ROOT` 指定。
 3. 为业务库创建专用数据库角色，并显式运行 `ops.database.scripts.migrate`。
 4. 通过 systemd 原稿部署，入口为 `Workflow.main:app`。修改路径时同时调整服务单元。
 

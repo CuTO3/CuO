@@ -1,4 +1,30 @@
+'''
+本文件用途：Function/conversation/conversation.py 的后端实现。
+
+配置字段：
+conversation_reply_ai_enabled                        启用此 AI 调用点
+conversation_reply_ai_api_key                        此调用点专用 LiteLLM 虚拟 Key
+conversation_reply_ai_base_url                       LiteLLM 接口地址
+conversation_reply_ai_model_name                     LiteLLM 模型名称
+conversation_reply_ai_request_timeout_seconds        单次请求超时（秒）
+conversation_persona_file                            人格提示词文件
+conversation_history_message_limit                   历史消息数上限
+conversation_history_character_limit                 历史字符上限
+conversation_reply_character_limit                   回复字符上限
+conversation_recent_result_limit                     近期聊天结果数量
+conversation_user_content_character_limit            用户上下文字符上限
+conversation_nickname_grapheme_limit                 显示昵称字素上限
+conversation_reply_ai_response_max_tokens            输出 token 上限
+conversation_reply_ai_temperature                    生成温度
+'''
+
 from __future__ import annotations
+
+from Core.configuration import load, resource
+
+CONFIG = load("conversation")
+from Integration.litellm.callsite import CallsiteModel
+MODEL = CallsiteModel(CONFIG, 'conversation_reply_ai')
 
 import json
 import regex as re
@@ -8,12 +34,12 @@ from pathlib import Path
 from typing import Any
 
 PROMPT_VERSION = "cuo-persona-v1"
-MAX_HISTORY_MESSAGES = 40
-MAX_HISTORY_CHARS = 16000
-MAX_REPLY_CHARS = 6000
-RECENT_CONVERSATION_LIMIT = 10
-MAX_USER_CONTENT_CHARS = 16500
-NICKNAME_DEFAULT_GRAPHEME_LIMIT = 4
+MAX_HISTORY_MESSAGES = CONFIG["conversation_history_message_limit"]
+MAX_HISTORY_CHARS = CONFIG["conversation_history_character_limit"]
+MAX_REPLY_CHARS = CONFIG["conversation_reply_character_limit"]
+RECENT_CONVERSATION_LIMIT = CONFIG["conversation_recent_result_limit"]
+MAX_USER_CONTENT_CHARS = CONFIG["conversation_user_content_character_limit"]
+NICKNAME_DEFAULT_GRAPHEME_LIMIT = CONFIG["conversation_nickname_grapheme_limit"]
 
 
 def _jsonable(value: Any) -> Any:
@@ -29,7 +55,7 @@ def _jsonable(value: Any) -> Any:
 
 
 def _load_persona(settings: Any) -> str:
-    path: Path = Path(__file__).parent / "prompts" / "persona.md"
+    path: Path = resource(CONFIG["conversation_persona_file"])
     fallback = "你是氧化铜（CuO），一只蓝色鲸鱼娘。像熟悉的网友一样简短、自然地聊天。"
     try:
         text = path.read_text(encoding="utf-8").strip()
@@ -354,13 +380,13 @@ async def run(task: dict, ctx) -> dict:
     system_prompt = _load_persona(ctx.settings)
 
     try:
-        reply_raw = await ctx.model.complete(
+        reply_raw = await MODEL.complete(
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content},
             ],
-            temperature=0.7,
-            max_tokens=2048,
+            temperature=CONFIG["conversation_reply_ai_temperature"],
+            max_tokens=CONFIG["conversation_reply_ai_response_max_tokens"],
         )
     except Exception:
         return _build_result("error", error_code="model_failed")
