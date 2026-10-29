@@ -1,0 +1,1 @@
+ops_migrate_sql_file = "ops/database/migrations/001_fuku.sql"

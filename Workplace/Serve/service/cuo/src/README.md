@@ -130,7 +130,7 @@ DIVINE_AI_CONFIG = load_module_config(
 
 ## 配置根目录映射
 
-`var/config` 与 CuO 应用根目录对应，一级目录为 `src`、`ops`。例如 `src/backend/Function/divine/divine.py` 对应 `var/config/src/backend/Function/divine/divine_config.toml`；将来 ops 脚本的配置位于 `var/config/ops` 下的对应路径。当前没有需要迁移的 ops 小配置，保留目录占位。
+`var/config` 与 CuO 应用根目录对应，一级目录为 `src`、`ops`。例如 `src/backend/Function/divine/divine.py` 对应 `var/config/src/backend/Function/divine/divine_config.toml`；将来 ops 脚本的配置位于 `var/config/ops` 下的对应路径。ops 的同步、部署、数据库迁移与资料构建参数已归入对应小配置。
 
 `config_index.json` 是配置根目录的总索引，仍放在根目录。`CUO_CONFIG_ROOT` 仍指向 `var/config`，不要改为 `var/config/src`。部署模板采用相同目录层级。小配置内部的资源相对路径仍以 CuO 应用根目录为基准。
 

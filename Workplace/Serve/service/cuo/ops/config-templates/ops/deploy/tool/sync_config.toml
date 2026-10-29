@@ -1,0 +1,5 @@
+ops_deploy_ssh_host = ""
+ops_deploy_repository_url = ""
+ops_deploy_repository_directory = "/serve/repos/CuO"
+ops_deploy_lock_file = "/run/lock/cuo-deploy.lock"
+ops_deploy_ssh_connect_timeout_seconds = 10

@@ -1,0 +1,2 @@
+# 部署示例：填写 SSH 目标与仓库地址；不要覆盖已有私有配置。
+ops_migrate_sql_file = "ops/database/migrations/001_fuku.sql"

@@ -994,6 +994,193 @@
         }
       },
       "module_id": "queue"
+    },
+    {
+      "source": "ops/deploy/tool/deploy.py",
+      "config": "ops/deploy/tool/deploy_config.toml",
+      "module_id": "ops_deploy_config",
+      "fields": [
+        "ops_deploy_ssh_host",
+        "ops_deploy_repository_url",
+        "ops_deploy_repository_directory",
+        "ops_deploy_lock_file",
+        "ops_deploy_ssh_connect_timeout_seconds",
+        "ops_deploy_source_relative_directory",
+        "ops_deploy_service_directory",
+        "ops_deploy_service_unit",
+        "ops_deploy_python_executable",
+        "ops_deploy_service_user",
+        "ops_deploy_service_group",
+        "ops_deploy_ready_url",
+        "ops_deploy_ready_timeout_seconds",
+        "ops_deploy_ready_attempt_limit"
+      ],
+      "field_metadata": {
+        "ops_deploy_ssh_host": {
+          "type": "str",
+          "description": "ops_deploy_ssh_host",
+          "sensitive": true,
+          "restart_required": false
+        },
+        "ops_deploy_repository_url": {
+          "type": "str",
+          "description": "ops_deploy_repository_url",
+          "sensitive": true,
+          "restart_required": false
+        },
+        "ops_deploy_repository_directory": {
+          "type": "str",
+          "description": "ops_deploy_repository_directory",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_lock_file": {
+          "type": "str",
+          "description": "ops_deploy_lock_file",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_ssh_connect_timeout_seconds": {
+          "type": "int",
+          "description": "ops_deploy_ssh_connect_timeout_seconds",
+          "sensitive": false,
+          "restart_required": false,
+          "min": 1
+        },
+        "ops_deploy_source_relative_directory": {
+          "type": "str",
+          "description": "ops_deploy_source_relative_directory",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_service_directory": {
+          "type": "str",
+          "description": "ops_deploy_service_directory",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_service_unit": {
+          "type": "str",
+          "description": "ops_deploy_service_unit",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_python_executable": {
+          "type": "str",
+          "description": "ops_deploy_python_executable",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_service_user": {
+          "type": "str",
+          "description": "ops_deploy_service_user",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_service_group": {
+          "type": "str",
+          "description": "ops_deploy_service_group",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_ready_url": {
+          "type": "str",
+          "description": "ops_deploy_ready_url",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_ready_timeout_seconds": {
+          "type": "int",
+          "description": "ops_deploy_ready_timeout_seconds",
+          "sensitive": false,
+          "restart_required": false,
+          "min": 1
+        },
+        "ops_deploy_ready_attempt_limit": {
+          "type": "int",
+          "description": "ops_deploy_ready_attempt_limit",
+          "sensitive": false,
+          "restart_required": false,
+          "min": 1
+        }
+      }
+    },
+    {
+      "source": "ops/deploy/tool/sync.py",
+      "config": "ops/deploy/tool/sync_config.toml",
+      "module_id": "ops_sync_config",
+      "fields": [
+        "ops_deploy_ssh_host",
+        "ops_deploy_repository_url",
+        "ops_deploy_repository_directory",
+        "ops_deploy_lock_file",
+        "ops_deploy_ssh_connect_timeout_seconds"
+      ],
+      "field_metadata": {
+        "ops_deploy_ssh_host": {
+          "type": "str",
+          "description": "ops_deploy_ssh_host",
+          "sensitive": true,
+          "restart_required": false
+        },
+        "ops_deploy_repository_url": {
+          "type": "str",
+          "description": "ops_deploy_repository_url",
+          "sensitive": true,
+          "restart_required": false
+        },
+        "ops_deploy_repository_directory": {
+          "type": "str",
+          "description": "ops_deploy_repository_directory",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_lock_file": {
+          "type": "str",
+          "description": "ops_deploy_lock_file",
+          "sensitive": false,
+          "restart_required": false
+        },
+        "ops_deploy_ssh_connect_timeout_seconds": {
+          "type": "int",
+          "description": "ops_deploy_ssh_connect_timeout_seconds",
+          "sensitive": false,
+          "restart_required": false,
+          "min": 1
+        }
+      }
+    },
+    {
+      "source": "ops/database/scripts/migrate.py",
+      "config": "ops/database/scripts/migrate_config.toml",
+      "module_id": "ops_migrate_config",
+      "fields": [
+        "ops_migrate_sql_file"
+      ],
+      "field_metadata": {
+        "ops_migrate_sql_file": {
+          "type": "str",
+          "description": "ops_migrate_sql_file",
+          "sensitive": false,
+          "restart_required": false
+        }
+      }
+    },
+    {
+      "source": "ops/build_readings.py",
+      "config": "ops/build_readings_config.toml",
+      "module_id": "ops_build_readings_config",
+      "fields": [
+        "ops_readings_output_file"
+      ],
+      "field_metadata": {
+        "ops_readings_output_file": {
+          "type": "str",
+          "description": "ops_readings_output_file",
+          "sensitive": false,
+          "restart_required": false
+        }
+      }
     }
   ],
   "shared_dependencies": [

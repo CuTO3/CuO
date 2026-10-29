@@ -1,6 +1,6 @@
 # 本地同步与部署
 
-两个独立 Python 脚本，在本机运行。要求 Python 3.10+、系统 SSH 及已配置的 `cucl` SSH 别名；服务器需要非交互 sudo、Git、rsync、Python 3.11+ 和现有 CuO 服务环境。本机不需要安装项目依赖。
+两个独立 Python 脚本，在本机运行。要求 Python 3.11+、系统 SSH 及已配置的 SSH 目标；服务器需要非交互 sudo、Git、rsync、Python 3.11+ 和现有 CuO 服务环境。本机不需要安装项目依赖。
 
 在这个目录打开终端，依次执行：
 
@@ -30,3 +30,11 @@ python deploy.py --migrate
 备份及发布记录保存在 `/serve/service/cuo/var/backups/deploy-<时间>/`，当前成功发布记录为 `var/deployed-version.json`。未尝试迁移前失败会恢复旧源码并启动服务；一旦尝试数据库迁移后失败，停止服务并保留备份，需先核查数据库再恢复，不自动覆盖数据库。
 
 仅运行帮助或创建这些工具不会部署；`deploy.py --dry-run` 仅预览差异。正式部署操作可能短暂停服。
+
+## 运维参数配置
+
+同步和部署分别读取 `var/config/ops/deploy/tool/sync_config.toml`、`deploy_config.toml`。首次使用先复制同目录 `.example.toml`，填写 SSH 目标、仓库地址及实际目录。脚本不再内置真实 SSH 别名或仓库地址；这些字段默认留空。
+
+`--config` 可指定配置文件，`CUO_CONFIG_ROOT` 可指定根目录，`--host` 可临时覆盖 SSH 目标。运行 `--help` 不需要配置，也不会连接服务器。填写配置本身不会执行部署。
+
+迁移脚本的 SQL 文件路径位于 `var/config/ops/database/scripts/migrate_config.toml`；解卦资料构建输出路径位于 `var/config/ops/build_readings_config.toml`。数据库版本标记和固定业务规则仍由代码控制，不作为普通运维参数编辑。

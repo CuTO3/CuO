@@ -3,9 +3,11 @@ import asyncio
 from pathlib import Path
 from psycopg import sql
 from Core.settings import Settings
+from Core.configuration import load, resource
+CONFIG = load("ops_migrate_config")
 from Integration.postgresql import Database
 async def migrate(db):
-    template=(Path(__file__).resolve().parents[1]/"migrations/001_fuku.sql").read_text(encoding="utf-8")
+    template=resource(CONFIG["ops_migrate_sql_file"]).read_text(encoding="utf-8")
     for gid in db.groups:
         schema=db.schemas[gid]
         async with db.transaction(gid) as tx:

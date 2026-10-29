@@ -1,0 +1,14 @@
+ops_deploy_ssh_host = ""
+ops_deploy_repository_url = ""
+ops_deploy_repository_directory = "/serve/repos/CuO"
+ops_deploy_lock_file = "/run/lock/cuo-deploy.lock"
+ops_deploy_ssh_connect_timeout_seconds = 10
+ops_deploy_source_relative_directory = "Workplace/Serve/service/cuo"
+ops_deploy_service_directory = "/serve/service/cuo"
+ops_deploy_service_unit = "cuo-backend.service"
+ops_deploy_python_executable = "/serve/software/python/environments/cuo/bin/python"
+ops_deploy_service_user = "cuo"
+ops_deploy_service_group = "cuo"
+ops_deploy_ready_url = "http://127.0.0.1:8080/ready"
+ops_deploy_ready_timeout_seconds = 2
+ops_deploy_ready_attempt_limit = 45

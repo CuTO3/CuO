@@ -9,7 +9,9 @@ import json
 
 from Function.divine.son_function.dictum import select_dictum
 from Function.divine.son_function.luck import assess_dictum
-from Function.divine.son_function.readings import DATA, VERSION, reading_key
+from Function.divine.son_function.readings import VERSION, reading_key
+from Core.configuration import load, resource
+CONFIG = load("ops_build_readings_config")
 from Function.divine.son_function.zhou_yi import from_lines, load_hexagrams
 
 GUIDANCE = {
@@ -66,7 +68,7 @@ def build():
         }
     assert len(records) == 4096
     document = {"version": VERSION, "editorial_status": "initial_rule_composed", "readings": records}
-    (DATA / "readings.json").write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    resource(CONFIG["ops_readings_output_file"]).write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Built {len(records)} fixed readings")
 
 
