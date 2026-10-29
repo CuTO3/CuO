@@ -14,3 +14,6 @@ __pycache__/
 
 # 仅公开部署示例，真实配置继续忽略
 !var/config/**/*.example.toml
+
+# 总索引只保存字段结构，随部署示例提交
+!var/config/config_index.json

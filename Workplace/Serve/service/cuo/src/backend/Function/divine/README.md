@@ -212,7 +212,7 @@ divine_tarot_picture_directory = "src/backend/Function/divine/data"
 divine_tarot_version = "TrueDark"
 ```
 
-根目录配置相对于 cuo 项目根目录解析，也可指定绝对路径。配置示例在 `ops/config-templates` 的相同子路径；修改配置后重启生效。原先的完整牌组目录和逐牌映射配置字段已移除，升级时须同步使用这两个新字段。
+根目录配置相对于 cuo 项目根目录解析，也可指定绝对路径。配置示例在 `var/config` 下与实际配置同目录的 `.example.toml` 文件中；修改配置后重启生效。原先的完整牌组目录和逐牌映射配置字段已移除，升级时须同步使用这两个新字段。
 
 图片文件遵循“编号 中文牌名 英文牌名.ext”，如 `XVII 星 The Star.jpg`。只匹配中文牌名，支持 PNG、JPG、JPEG、WebP；不依赖编号，兼容不同牌组力量/正义编号差异。星星/星、教皇/教宗、女皇/皇后、塔/高塔做名称统一。只扫描牌组根目录，Supplementary Pack 不参与常规选牌；同一牌名有多个图片时明确报错，避免随机选中。
 

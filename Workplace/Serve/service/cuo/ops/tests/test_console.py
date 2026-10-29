@@ -15,7 +15,7 @@ HEADERS = {"X-Cuo-Request": "console"}
 
 
 @pytest.fixture
-def client(tmp_path):
+def client(tmp_path, example_config_root):
     app = FastAPI()
     settings = SimpleNamespace(config_root=tmp_path/"config", admin_token="test-admin-secret", data_root=tmp_path,
         model_name="deepseek-flash", model_timeout=60.0, max_message_length=1500,
@@ -23,7 +23,7 @@ def client(tmp_path):
         vision_api_key="", self_id="12345")
     from Core.configuration import APP_ROOT
     import shutil
-    shutil.copytree(APP_ROOT / 'ops/config-templates', settings.config_root)
+    shutil.copytree(example_config_root, settings.config_root)
     app.state.ctx = SimpleNamespace(settings=settings, model=SimpleNamespace(client=SimpleNamespace(timeout=None)),
         onebot=SimpleNamespace(timeout=20), db=SimpleNamespace(groups={"123"}), corpus_conflict=False)
     install(app)

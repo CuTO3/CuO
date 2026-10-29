@@ -3,6 +3,21 @@ if sys.platform=="win32":asyncio.set_event_loop_policy(asyncio.WindowsSelectorEv
 from uuid import uuid4
 from types import SimpleNamespace
 import pytest
+import pytest
+# 在导入业务模块前建立独立测试配置，仅从公开 example 复制。
+import atexit
+import tempfile
+from pathlib import Path
+from ops.configure import initialize
+_example_directory = tempfile.TemporaryDirectory(prefix="cuo-example-tests-")
+initialize(_example_directory.name)
+os.environ["CUO_CONFIG_ROOT"] = _example_directory.name
+atexit.register(_example_directory.cleanup)
+
+@pytest.fixture(scope="session")
+def example_config_root():
+    return Path(_example_directory.name)
+
 from Core.settings import Settings
 from Integration.postgresql import Database
 from ops.database.scripts.migrate import migrate

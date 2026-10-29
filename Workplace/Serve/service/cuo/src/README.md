@@ -20,7 +20,7 @@
 | `src/frontend` | 前端源码 |
 | `var/config` | 私有运行配置，保存实际值，不提交 Git |
 | `var/config/config_index.json` | 配置索引，只记录字段、所属小配置、使用者和管理元数据，不重复保存实际值 |
-| `ops/config-templates` | 可提交的安全配置模板及索引模板，不包含真实私有信息 |
+| `var/config/**/*.example.toml` | 唯一部署示例来源，不包含真实私有信息 |
 
 小配置按照源码在 CuO 应用根目录下的相对目录创建，名称为 `<代码文件名去掉扩展名>_config.toml`：
 
@@ -126,7 +126,7 @@ DIVINE_AI_CONFIG = load_module_config(
 
 示例文件不会被运行时自动加载，也不作为缺失配置时的回退。
 
-部署时须同时提供不含真实值的 `config_index.json` 和各私有小配置；安全索引模板在 `ops/config-templates/config_index.json`。不存在索引时启动报错，不回退到另一套源码字段清单。
+部署时须同时提供不含真实值的 `config_index.json` 和各私有小配置；可提交的结构索引位于 `var/config/config_index.json`。不存在索引时启动报错，不回退到另一套源码字段清单。
 
 ## 配置根目录映射
 
@@ -135,3 +135,11 @@ DIVINE_AI_CONFIG = load_module_config(
 `config_index.json` 是配置根目录的总索引，仍放在根目录。`CUO_CONFIG_ROOT` 仍指向 `var/config`，不要改为 `var/config/src`。部署模板采用相同目录层级。小配置内部的资源相对路径仍以 CuO 应用根目录为基准。
 
 已有部署需将私有 `var/config/backend` 移至 `var/config/src/backend`，并同步新版索引。保留原值，不用示例覆盖真实配置。
+
+## 部署初始化
+
+配置示例只保留 `var/config` 中的 `*.example.toml`，结构索引只保留 `var/config/config_index.json`，均可提交。真实运行 TOML 继续忽略。
+
+在应用根目录运行 `python -m ops.configure`，按索引将 example 复制为缺失的实际 TOML，不覆盖已有文件。也可用 `--destination <目录>` 建立独立配置目录，再以 `CUO_CONFIG_ROOT` 指向它。空的密钥、群映射和数据库参数仍需填写；运行时不会自动回退 example。
+
+测试在临时目录中从 example 初始化配置，不读取或复制本机真实配置。
