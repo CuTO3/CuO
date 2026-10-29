@@ -22,11 +22,11 @@
 | `var/config/config_index.json` | 配置索引，只记录字段、所属小配置、使用者和管理元数据，不重复保存实际值 |
 | `ops/config-templates` | 可提交的安全配置模板及索引模板，不包含真实私有信息 |
 
-小配置按照源码在 `src` 下的相对目录创建，名称为 `<代码文件名去掉扩展名>_config.toml`：
+小配置按照源码在 CuO 应用根目录下的相对目录创建，名称为 `<代码文件名去掉扩展名>_config.toml`：
 
 ```text
 src/backend/Function/divine/son_function/AI_divine.py
-var/config/backend/Function/divine/son_function/AI_divine_config.toml
+var/config/src/backend/Function/divine/son_function/AI_divine_config.toml
 ```
 
 每个源码文件都检查配置依赖；只有确实需要独立配置的文件才创建小配置。纯规则文件不创建空配置文件。共享配置只维护一份，由索引列出使用者。
@@ -77,7 +77,7 @@ divine_ai_advice_max_characters      应事内容最多字符数
 from Core.module_config import DivineAIConfig, load_module_config
 
 DIVINE_AI_CONFIG = load_module_config(
-    "backend/Function/divine/son_function/AI_divine_config.toml",
+    "src/backend/Function/divine/son_function/AI_divine_config.toml",
     DivineAIConfig,
 )
 ```
@@ -127,3 +127,11 @@ DIVINE_AI_CONFIG = load_module_config(
 示例文件不会被运行时自动加载，也不作为缺失配置时的回退。
 
 部署时须同时提供不含真实值的 `config_index.json` 和各私有小配置；安全索引模板在 `ops/config-templates/config_index.json`。不存在索引时启动报错，不回退到另一套源码字段清单。
+
+## 配置根目录映射
+
+`var/config` 与 CuO 应用根目录对应，一级目录为 `src`、`ops`。例如 `src/backend/Function/divine/divine.py` 对应 `var/config/src/backend/Function/divine/divine_config.toml`；将来 ops 脚本的配置位于 `var/config/ops` 下的对应路径。当前没有需要迁移的 ops 小配置，保留目录占位。
+
+`config_index.json` 是配置根目录的总索引，仍放在根目录。`CUO_CONFIG_ROOT` 仍指向 `var/config`，不要改为 `var/config/src`。部署模板采用相同目录层级。小配置内部的资源相对路径仍以 CuO 应用根目录为基准。
+
+已有部署需将私有 `var/config/backend` 移至 `var/config/src/backend`，并同步新版索引。保留原值，不用示例覆盖真实配置。

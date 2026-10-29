@@ -98,7 +98,7 @@ def test_divine_editor_uses_index_schema_and_cross_field_validation(client):
     response=client.put(url,headers=HEADERS,json={'version':initial['version'],'values':{'divine_ai_request_attempt_limit':3}})
     assert response.status_code==200
     from Core.module_config import DivineAIConfig, load_module_config
-    config=load_module_config('backend/Function/divine/son_function/AI_divine_config.toml',DivineAIConfig,config_root=client.app.state.ctx.settings.config_root)
+    config=load_module_config('src/backend/Function/divine/son_function/AI_divine_config.toml',DivineAIConfig,config_root=client.app.state.ctx.settings.config_root)
     assert config.divine_ai_request_attempt_limit==3
 
 

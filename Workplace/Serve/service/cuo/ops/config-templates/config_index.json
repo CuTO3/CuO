@@ -2,8 +2,8 @@
   "description": "后端配置索引：仅记录位置、字段、说明与管理属性，不含真实值。",
   "modules": [
     {
-      "source": "backend/Function/divine/divine.py",
-      "config": "backend/Function/divine/divine_config.toml",
+      "source": "src/backend/Function/divine/divine.py",
+      "config": "src/backend/Function/divine/divine_config.toml",
       "fields": [
         "divine_candidate_keyword_rules_file",
         "divine_repeat_fortune_cost",
@@ -87,8 +87,8 @@
       "module_id": "DivineConfig"
     },
     {
-      "source": "backend/Function/divine/son_function/AI_divine.py",
-      "config": "backend/Function/divine/son_function/AI_divine_config.toml",
+      "source": "src/backend/Function/divine/son_function/AI_divine.py",
+      "config": "src/backend/Function/divine/son_function/AI_divine_config.toml",
       "fields": [
         "divine_ai_enabled",
         "divine_ai_api_key",
@@ -241,8 +241,8 @@
       "module_id": "DivineAIConfig"
     },
     {
-      "source": "backend/Function/divine/son_function/readings.py",
-      "config": "backend/Function/divine/son_function/readings_config.toml",
+      "source": "src/backend/Function/divine/son_function/readings.py",
+      "config": "src/backend/Function/divine/son_function/readings_config.toml",
       "fields": [
         "divine_fixed_readings_file"
       ],
@@ -273,8 +273,8 @@
       "module_id": "ReadingsConfig"
     },
     {
-      "source": "backend/Function/divine/son_function/zhou_yi.py",
-      "config": "backend/Function/divine/son_function/zhou_yi_config.toml",
+      "source": "src/backend/Function/divine/son_function/zhou_yi.py",
+      "config": "src/backend/Function/divine/son_function/zhou_yi_config.toml",
       "fields": [
         "divine_zhou_yi_hexagrams_file"
       ],
@@ -305,8 +305,8 @@
       "module_id": "ZhouYiConfig"
     },
     {
-      "source": "backend/Function/divine/son_function/tarot_image.py",
-      "config": "backend/Function/divine/son_function/tarot_image_config.toml",
+      "source": "src/backend/Function/divine/son_function/tarot_image.py",
+      "config": "src/backend/Function/divine/son_function/tarot_image_config.toml",
       "fields": [
         "divine_tarot_artwork_directory",
         "divine_tarot_card_image_files"
@@ -350,28 +350,28 @@
       "module_id": "TarotImageConfig"
     },
     {
-      "source": "backend/Function/divine/son_function/dictum.py",
+      "source": "src/backend/Function/divine/son_function/dictum.py",
       "config": null,
       "fields": []
     },
     {
-      "source": "backend/Function/divine/son_function/luck.py",
+      "source": "src/backend/Function/divine/son_function/luck.py",
       "config": null,
       "fields": []
     },
     {
-      "source": "backend/Function/divine/son_function/tarot.py",
+      "source": "src/backend/Function/divine/son_function/tarot.py",
       "config": null,
       "fields": []
     },
     {
-      "source": "backend/Function/divine/son_function/merge_message.py",
+      "source": "src/backend/Function/divine/son_function/merge_message.py",
       "config": null,
       "fields": []
     },
     {
-      "source": "backend/Integration/postgresql/connection.py",
-      "config": "backend/Integration/postgresql/connection_config.toml",
+      "source": "src/backend/Integration/postgresql/connection.py",
+      "config": "src/backend/Integration/postgresql/connection_config.toml",
       "fields": [
         "postgresql_connection_url",
         "postgresql_pool_min_connections",
@@ -402,8 +402,8 @@
       "module_id": "database"
     },
     {
-      "source": "backend/Integration/postgresql/repository.py",
-      "config": "backend/Integration/postgresql/repository_config.toml",
+      "source": "src/backend/Integration/postgresql/repository.py",
+      "config": "src/backend/Integration/postgresql/repository_config.toml",
       "fields": [
         "postgresql_registered_groups"
       ],
@@ -418,8 +418,8 @@
       "module_id": "groups"
     },
     {
-      "source": "backend/Integration/napcat/client.py",
-      "config": "backend/Integration/napcat/client_config.toml",
+      "source": "src/backend/Integration/napcat/client.py",
+      "config": "src/backend/Integration/napcat/client_config.toml",
       "fields": [
         "napcat_bot_self_id",
         "napcat_access_token",
@@ -456,8 +456,8 @@
       "module_id": "napcat"
     },
     {
-      "source": "backend/Workflow/main.py",
-      "config": "backend/Workflow/main_config.toml",
+      "source": "src/backend/Workflow/main.py",
+      "config": "src/backend/Workflow/main_config.toml",
       "fields": [
         "workflow_data_directory",
         "workflow_inbound_queue_capacity"
@@ -480,8 +480,8 @@
       "module_id": "runtime"
     },
     {
-      "source": "backend/Workflow/_sender_.py",
-      "config": "backend/Workflow/_sender__config.toml",
+      "source": "src/backend/Workflow/_sender_.py",
+      "config": "src/backend/Workflow/_sender__config.toml",
       "fields": [
         "sender_message_character_limit"
       ],
@@ -497,8 +497,8 @@
       "module_id": "sender"
     },
     {
-      "source": "backend/Core/archive.py",
-      "config": "backend/Core/archive_config.toml",
+      "source": "src/backend/Core/archive.py",
+      "config": "src/backend/Core/archive_config.toml",
       "fields": [
         "archive_first_business_date"
       ],
@@ -513,8 +513,8 @@
       "module_id": "archive"
     },
     {
-      "source": "backend/Integration/console/routes.py",
-      "config": "backend/Integration/console/routes_config.toml",
+      "source": "src/backend/Integration/console/routes.py",
+      "config": "src/backend/Integration/console/routes_config.toml",
       "fields": [
         "console_admin_token",
         "console_frontend_directory"
@@ -536,8 +536,8 @@
       "module_id": "console"
     },
     {
-      "source": "backend/Function/summary/summary.py",
-      "config": "backend/Function/summary/summary_config.toml",
+      "source": "src/backend/Function/summary/summary.py",
+      "config": "src/backend/Function/summary/summary_config.toml",
       "fields": [
         "summary_scope_ai_enabled",
         "summary_scope_ai_api_key",
@@ -590,8 +590,8 @@
       "ai_prefix": "summary_scope_ai"
     },
     {
-      "source": "backend/Function/summary/son_function/AI_sum.py",
-      "config": "backend/Function/summary/son_function/AI_sum_config.toml",
+      "source": "src/backend/Function/summary/son_function/AI_sum.py",
+      "config": "src/backend/Function/summary/son_function/AI_sum_config.toml",
       "fields": [
         "summary_text_ai_enabled",
         "summary_text_ai_api_key",
@@ -675,8 +675,8 @@
       "ai_prefix": "summary_text_ai"
     },
     {
-      "source": "backend/Function/summary/son_function/image_processor.py",
-      "config": "backend/Function/summary/son_function/image_processor_config.toml",
+      "source": "src/backend/Function/summary/son_function/image_processor.py",
+      "config": "src/backend/Function/summary/son_function/image_processor_config.toml",
       "fields": [
         "summary_image_ai_enabled",
         "summary_image_ai_api_key",
@@ -761,8 +761,8 @@
       "ai_prefix": "summary_image_ai"
     },
     {
-      "source": "backend/Function/conversation/conversation.py",
-      "config": "backend/Function/conversation/conversation_config.toml",
+      "source": "src/backend/Function/conversation/conversation.py",
+      "config": "src/backend/Function/conversation/conversation_config.toml",
       "fields": [
         "conversation_reply_ai_enabled",
         "conversation_reply_ai_api_key",
@@ -878,8 +878,8 @@
       "ai_prefix": "conversation_reply_ai"
     },
     {
-      "source": "backend/Workflow/_analyzer_.py",
-      "config": "backend/Workflow/_analyzer__config.toml",
+      "source": "src/backend/Workflow/_analyzer_.py",
+      "config": "src/backend/Workflow/_analyzer__config.toml",
       "fields": [
         "workflow_intent_ai_enabled",
         "workflow_intent_ai_api_key",
@@ -940,8 +940,8 @@
       "ai_prefix": "workflow_intent_ai"
     },
     {
-      "source": "backend/Function/memento/son_function/nickname_segmenter.py",
-      "config": "backend/Function/memento/son_function/nickname_segmenter_config.toml",
+      "source": "src/backend/Function/memento/son_function/nickname_segmenter.py",
+      "config": "src/backend/Function/memento/son_function/nickname_segmenter_config.toml",
       "fields": [
         "memento_nickname_protected_words",
         "memento_nickname_character_limit"
@@ -964,8 +964,8 @@
       "module_id": "nickname"
     },
     {
-      "source": "backend/Function/memento/memento.py",
-      "config": "backend/Function/memento/memento_config.toml",
+      "source": "src/backend/Function/memento/memento.py",
+      "config": "src/backend/Function/memento/memento_config.toml",
       "fields": [
         "memento_workbook_filename"
       ],
@@ -980,8 +980,8 @@
       "module_id": "memento"
     },
     {
-      "source": "backend/Core/task_queue.py",
-      "config": "backend/Core/task_queue_config.toml",
+      "source": "src/backend/Core/task_queue.py",
+      "config": "src/backend/Core/task_queue_config.toml",
       "fields": [
         "task_queue_retry_delays_seconds"
       ],
@@ -999,14 +999,14 @@
   "shared_dependencies": [
     {
       "consumer": "backend 各数据库调用模块",
-      "config": "backend/Integration/postgresql/connection_config.toml",
+      "config": "src/backend/Integration/postgresql/connection_config.toml",
       "fields": [
         "postgresql_connection_url"
       ]
     },
     {
       "consumer": "backend 群访问模块",
-      "config": "backend/Integration/postgresql/repository_config.toml",
+      "config": "src/backend/Integration/postgresql/repository_config.toml",
       "fields": [
         "postgresql_registered_groups"
       ]

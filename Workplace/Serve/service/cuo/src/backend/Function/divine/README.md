@@ -205,7 +205,7 @@ python -m ops.build_readings
 
 `tarot_image.py` 从独立模块配置读取图片根目录和牌组后缀，组成 `Picture根目录 / Tarot -version-{后缀}`。例如 `Arknight` 和 `TrueDark`，无需为每套牌维护文件名映射。缺图退回纯文字；逆位旋转 180°，以 PNG 编码为 OneBot image 消息段插在塔罗标题之后。
 
-修改 `var/config/backend/Function/divine/son_function/tarot_image_config.toml`：
+修改 `var/config/src/backend/Function/divine/son_function/tarot_image_config.toml`：
 
 ```toml
 divine_tarot_picture_directory = "src/backend/Function/divine/data"

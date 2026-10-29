@@ -1,6 +1,6 @@
 # Divine 配置试点
 
-真实值位于应用根目录的 `var/config/backend/Function/divine/`，按源码目录对应到 `<代码名>_config.toml`。`config_index.json` 只列文件、字段和使用者，不参与运行时读取。
+真实值位于应用根目录的 `var/config/src/backend/Function/divine/`，按相对于 CuO 应用根目录的源码目录对应到 `<代码名>_config.toml`。`config_index.json` 只列文件、字段和使用者，不参与运行时读取。
 
 本目录是可提交的初始模板；首次安装时将需要的文件复制到 `var/config`，不要覆盖已有运行配置。可以通过启动环境变量 `CUO_CONFIG_ROOT` 指定另一配置根目录。配置内的相对资源路径始终相对 cuo 应用根目录，修改配置后重启。
 

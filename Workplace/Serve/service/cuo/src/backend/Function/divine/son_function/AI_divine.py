@@ -17,7 +17,7 @@ divine_ai_advice_max_characters                应事内容最多字符数
 from Core.module_config import DivineAIConfig, load_module_config
 
 DIVINE_AI_CONFIG = load_module_config(
-    "backend/Function/divine/son_function/AI_divine_config.toml", DivineAIConfig
+    "src/backend/Function/divine/son_function/AI_divine_config.toml", DivineAIConfig
 )
 
 import asyncio,json

@@ -16,7 +16,7 @@ import re
 from Core.module_config import TarotImageConfig, load_module_config
 
 DIVINE_TAROT_IMAGE_CONFIG = load_module_config(
-    "backend/Function/divine/son_function/tarot_image_config.toml", TarotImageConfig
+    "src/backend/Function/divine/son_function/tarot_image_config.toml", TarotImageConfig
 )
 
 from PIL import Image

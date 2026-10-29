@@ -13,7 +13,7 @@ divine_candidate_excerpt_character_limit       每段聊天摘录的字符上限
 from Core.module_config import DivineConfig, load_module_config
 
 DIVINE_MAIN_CONFIG = load_module_config(
-    "backend/Function/divine/divine_config.toml", DivineConfig
+    "src/backend/Function/divine/divine_config.toml", DivineConfig
 )
 
 import json,math,secrets

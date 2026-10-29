@@ -6,7 +6,7 @@ from Core.module_config import APP_ROOT, DivineAIConfig, load_module_config
 def test_divine_config_paths_are_independent_of_working_directory(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     config = load_module_config(
-        'backend/Function/divine/son_function/AI_divine_config.toml',
+        'src/backend/Function/divine/son_function/AI_divine_config.toml',
         DivineAIConfig,
         config_root=APP_ROOT / 'ops/config-templates',
     )
@@ -29,7 +29,7 @@ def test_missing_config_does_not_fall_back_to_template(tmp_path):
 
 
 def test_invalid_advice_length_bounds_are_rejected(tmp_path):
-    source = APP_ROOT / 'ops/config-templates/backend/Function/divine/son_function/AI_divine_config.toml'
+    source = APP_ROOT / 'ops/config-templates/src/backend/Function/divine/son_function/AI_divine_config.toml'
     text = source.read_text(encoding='utf-8').replace('divine_ai_advice_min_characters = 15', 'divine_ai_advice_min_characters = 101')
     (tmp_path / 'ai.toml').write_text(text, encoding='utf-8')
     with pytest.raises(ValueError, match='长度范围'):
@@ -37,14 +37,14 @@ def test_invalid_advice_length_bounds_are_rejected(tmp_path):
 
 
 def test_enabling_ai_requires_private_connection_config(tmp_path):
-    source = APP_ROOT / 'ops/config-templates/backend/Function/divine/son_function/AI_divine_config.toml'
+    source = APP_ROOT / 'ops/config-templates/src/backend/Function/divine/son_function/AI_divine_config.toml'
     (tmp_path / 'ai.toml').write_text(source.read_text(encoding='utf-8').replace('divine_ai_enabled = false', 'divine_ai_enabled = true'), encoding='utf-8')
     with pytest.raises(ValueError, match='LiteLLM'):
         load_module_config('ai.toml', DivineAIConfig, config_root=tmp_path)
 
 
 def test_api_key_is_redacted_from_config_display():
-    source = APP_ROOT / 'ops/config-templates/backend/Function/divine/son_function/AI_divine_config.toml'
+    source = APP_ROOT / 'ops/config-templates/src/backend/Function/divine/son_function/AI_divine_config.toml'
     import tomllib
     values = tomllib.loads(source.read_text(encoding='utf-8'))
     values['divine_ai_api_key'] = 'synthetic-divine-test-key'
