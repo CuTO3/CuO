@@ -38,3 +38,9 @@ python deploy.py --migrate
 `--config` 可指定配置文件，`CUO_CONFIG_ROOT` 可指定根目录，`--host` 可临时覆盖 SSH 目标。运行 `--help` 不需要配置，也不会连接服务器。填写配置本身不会执行部署。
 
 迁移脚本的 SQL 文件路径位于 `var/config/ops/database/scripts/migrate_config.toml`；解卦资料构建输出路径位于 `var/config/ops/build_readings_config.toml`。数据库版本标记和固定业务规则仍由代码控制，不作为普通运维参数编辑。
+
+## 同步锁与超时
+
+同步与部署共用锁，遇到占用时同步退出码为 75，表示本次没有开始。不要删除正在使用的锁文件，以免并发修改源码。锁随持有进程退出而释放。
+
+`sync_config.toml` 的 `ops_deploy_git_timeout_seconds` 指定每条 Git 命令的超时，默认 120 秒；超时后停止 Git 进程组并退出，释放锁。`ops_deploy_ssh_connect_timeout_seconds` 只控制 SSH 建连，不能限制 Git 网络等待。同步不执行数据库迁移。

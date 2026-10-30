@@ -4,3 +4,5 @@ ops_deploy_repository_url = ""
 ops_deploy_repository_directory = "/serve/repos/CuO"
 ops_deploy_lock_file = "/run/lock/cuo-deploy.lock"
 ops_deploy_ssh_connect_timeout_seconds = 10
+# 每条 Git 命令最长运行时间；超时会结束本次同步。
+ops_deploy_git_timeout_seconds = 120

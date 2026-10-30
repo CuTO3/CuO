@@ -1114,7 +1114,8 @@
         "ops_deploy_repository_url",
         "ops_deploy_repository_directory",
         "ops_deploy_lock_file",
-        "ops_deploy_ssh_connect_timeout_seconds"
+        "ops_deploy_ssh_connect_timeout_seconds",
+        "ops_deploy_git_timeout_seconds"
       ],
       "field_metadata": {
         "ops_deploy_ssh_host": {
@@ -1144,6 +1145,13 @@
         "ops_deploy_ssh_connect_timeout_seconds": {
           "type": "int",
           "description": "ops_deploy_ssh_connect_timeout_seconds",
+          "sensitive": false,
+          "restart_required": false,
+          "min": 1
+        },
+        "ops_deploy_git_timeout_seconds": {
+          "type": "int",
+          "description": "每条 Git 命令超时（秒），超时结束进程并释放同步锁",
           "sensitive": false,
           "restart_required": false,
           "min": 1
