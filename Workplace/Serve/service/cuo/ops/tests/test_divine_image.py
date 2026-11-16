@@ -15,7 +15,7 @@ if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
-@pytest.mark.parametrize("version", ["Arknight", "TrueDark"])
+@pytest.mark.parametrize("version", ["Arknight", "TrueDark", "PrismaVisions"])
 @pytest.mark.parametrize("orientation", ["正位", "逆位"])
 async def test_star_image_reaches_onebot(orientation, version):
     content = f"䷐ 澤雷隨\n无动爻 · 无变卦\n塔罗｜星星 · {orientation}\n\n「隨：元亨。」\n卦运 -5 · 福缘 -5"

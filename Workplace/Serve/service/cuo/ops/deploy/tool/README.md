@@ -1,5 +1,14 @@
 # 本地同步与部署
 
+## 控制台重启权限
+
+控制台“偏好设置”提供 CuO 后端重启按钮。首次启用需由管理员将
+`ops/deploy/50-cuo-restart.rules` 安装为
+`/etc/polkit-1/rules.d/50-cuo-restart.rules`，所有者 root:root、权限 0644。
+规则仅授权 cuo 用户重启 cuo-backend.service，服务保留 NoNewPrivileges。
+服务器需运行 polkit。按钮提交后等待新后端实例就绪，随后重新登录控制台。
+仅更新应用源码不会安装这条系统权限规则。
+
 两个独立 Python 脚本，在本机运行。要求 Python 3.11+、系统 SSH 及已配置的 SSH 目标；服务器需要非交互 sudo、Git、rsync、Python 3.11+ 和现有 CuO 服务环境。本机不需要安装项目依赖。
 
 在这个目录打开终端，依次执行：

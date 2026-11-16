@@ -9,6 +9,7 @@ self_id                              机器人账号标识
 '''
 
 import asyncio,hmac,logging
+from uuid import uuid4
 from contextlib import asynccontextmanager
 from fastapi import FastAPI,WebSocket,WebSocketDisconnect,HTTPException,Request
 from fastapi.responses import JSONResponse
@@ -40,6 +41,7 @@ async def verify_schema(db):
             await db.fetch(gid,sql.SQL("SELECT 1 FROM {} LIMIT 0").format(db.table(gid,table)))
 
 def create_app(settings=None):
+    instance = uuid4().hex
     @asynccontextmanager
     async def lifespan(app):
         s=settings or Settings.load()
@@ -84,7 +86,7 @@ def create_app(settings=None):
             await ctx.queue.stop();await onebot.close();await db.close()
     app=FastAPI(lifespan=lifespan)
     @app.get("/health")
-    async def health():return {"status":"alive"}
+    async def health():return {"status":"alive", "instance": instance}
     @app.get("/ready")
     async def ready():
         ctx=getattr(app.state,"ctx",None)

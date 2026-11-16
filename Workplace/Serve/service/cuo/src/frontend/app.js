@@ -98,6 +98,41 @@ $('#fortune-form').onsubmit=async event=>{
  }
 };
 function showDetail(index){const row=state.rows[index],r=row.record;const member=state.page==='members';$('#detail-title').textContent=member?'成员显示名称':'记录详情';$('#detail-body').innerHTML=member?`<p>${esc(r.nickname)} · ${esc(r.user_id)}<br>显示名称用于管理侧标识，留空将恢复默认名称。</p><label for="display-name" class="hidden">显示名称</label><input id="display-name" maxlength="100" value="${esc(r.display_name||'')}" placeholder="输入显示名称"><p>修改通过任务队列执行，提交后可在任务记录查看结果。</p><div class="detail-actions"><button id="save-member" class="primary">提交修改</button></div>`:`<pre>${esc(JSON.stringify(r,null,2))}</pre><p>记录只读。含有消息送达结果的异常任务，需要先核实是否已经发送。</p>`;$('#detail').showModal();if(member)$('#save-member').onclick=async e=>{e.target.disabled=true;try{const response=await api(`/admin/${state.gid}/commands`,{method:'POST',body:JSON.stringify({operation:'display_name',user_id:r.user_id,display_name:$('#display-name').value.trim()||null,expected_version:row.version})});$('#detail').close();toast(`修改已入队 · ${response.task_id.slice(0,8)}，请在任务记录确认结果`);}catch(error){toast(error.message);}finally{e.target.disabled=false;}};}
+async function restartBackend(event){
+  if(!window.confirm('重启 CuO 后端以应用已保存的配置？未保存的修改会丢失，重启后需要重新登录。'))return;
+  const button=event.currentTarget;
+  button.disabled=true;
+  button.textContent='正在重启…';
+  try{
+    const previous=await api('/health');
+    if(!previous.instance)throw new Error('后端需要更新后才能检测重启结果');
+    try{
+      await api('/console/api/service/restart',{method:'POST'});
+    }catch(error){
+      // A successful restart may close the HTTP connection before its response.
+      if(!(error instanceof TypeError)&&error.name!=='TimeoutError'&&error.name!=='AbortError')throw error;
+    }
+    notice('正在等待 CuO 后端重启，请稍候。');
+    const deadline=Date.now()+120000;
+    while(Date.now()<deadline){
+      await new Promise(resolve=>setTimeout(resolve,2000));
+      try{
+        const response=await fetch('/health',{cache:'no-store',signal:AbortSignal.timeout(3000)});
+        const health=await response.json();
+        if(!response.ok||health.instance===previous.instance||!health.instance)continue;
+        const readyResponse=await fetch('/ready',{cache:'no-store',signal:AbortSignal.timeout(3000)});
+        const ready=await readyResponse.json();
+        if(!readyResponse.ok||!ready.ready)continue;
+        showLogin();
+        toast(ready.onebot_connected?'重启完成，机器人已连接。请重新登录。':'重启完成，正在等待机器人连接。请重新登录。');
+        return;
+      }catch{}
+    }
+    throw new Error('两分钟内未确认服务恢复，请检查服务器状态后刷新页面');
+  }catch(error){notice(error.message);}
+  finally{button.disabled=false;button.textContent='重启服务';}
+}
+
 function renderSettings(){
   const modules=state.settings.modules;
   const tarotModule='TarotImageConfig';
@@ -115,6 +150,8 @@ function renderSettings(){
   const names=Object.keys(modules);
   const orderedNames=modules[tarotModule]?[tarotModule,...names.filter(name=>name!==tarotModule)]:names;
   $('#content').innerHTML='<section class="card settings-card"><div class="card-head"><h2>模块配置</h2></div><div class="form-body"><div class="settings-selector"><label for="config-module">配置模块</label><select id="config-module">'+orderedNames.map(name=>`<option value="${esc(name)}">${esc(moduleLabels[name]||name)}</option>`).join('')+'</select></div><p class="settings-hint">敏感字段留空时保留原值。</p><form id="module-config-form"></form></div></section>';
+  $('#content .card-head').insertAdjacentHTML('beforeend','<button type="button" class="restart-service">重启服务</button>');
+  $('.restart-service').onclick=restartBackend;
   let current=null, activeName=null, revision=0;
   async function select(){
     const token=++revision;const name=$('#config-module').value;

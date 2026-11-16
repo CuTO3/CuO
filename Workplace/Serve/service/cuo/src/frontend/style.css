@@ -57,3 +57,6 @@ button,input,select,textarea{font-family:inherit}
 .settings-switch-state::after{content:"关闭"}
 .settings-switch input:checked+.settings-switch-state::after{content:"启用";color:#1674d5}
 @media(prefers-reduced-motion:reduce){.settings-switch input::after{transition:none}}
+
+.restart-service{padding:9px 14px;border:1px solid #dfe5ed;border-radius:9px;background:#f8fafc;color:#5c697b;font-size:12px}
+.restart-service:hover{background:#edf4ff;border-color:#bedaff;color:#1674d5}

@@ -45,6 +45,8 @@ def require(request):
 
 
 def install(app):
+    from Integration.console.service import install as install_service
+    install_service(app, require)
     from Integration.console.media import install as install_media
     install_media(app, require)
     from Integration.console.configuration import install as install_configuration

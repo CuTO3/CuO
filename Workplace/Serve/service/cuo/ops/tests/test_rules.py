@@ -18,12 +18,19 @@ def test_day_boundary():
     with pytest.raises(ValueError):business_date(datetime(2026,10,26))
 def test_all_4096_divinations():
     table=load_hexagrams()
+    cards = {}
     for values in itertools.product((6,7,8,9),repeat=6):
         z=from_lines(list(values),table);q=select_dictum(z);t=map_tarot(z,0)
+        assert cards.setdefault(t["card_id"], t["name"]) == t["name"]
         assert q["primary"]["text_original"] and q["primary"]["source_url"]
         assert len(z["moving_lines"])==sum(v in (6,9) for v in values)
         assert (z["base_bits"]!=z["changed_bits"])==z["has_change"]
         assert t["orientation"]=="正位"
+    assert set(cards) == {f"{i:02d}" for i in range(22)}
+    assert len(set(cards.values())) == 22
+    from Function.divine.son_function.tarot_image import find_card_image
+    for name in cards.values():
+        assert find_card_image(name, "PrismaVisions") is not None, name
 def test_independent_quotes():
     z=from_lines([9,7,7,7,7,9]);q=select_dictum(z)
     assert q["primary"]["line_position"]==6

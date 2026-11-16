@@ -139,6 +139,28 @@ def test_rate_limit_and_expired_session(client):
     assert login(client).status_code == 429
 
 
+def test_service_restart_requires_session_and_systemd(client, monkeypatch):
+    from unittest.mock import AsyncMock
+    from Integration.console import service
+
+    command = AsyncMock()
+    monkeypatch.setattr(service, 'restart_service', command)
+    url = '/console/api/service/restart'
+    assert client.post(url, headers=HEADERS).status_code == 401
+    login(client)
+    assert client.post(url).status_code == 401
+    monkeypatch.delenv('INVOCATION_ID', raising=False)
+    assert client.post(url, headers=HEADERS).status_code == 409
+    command.assert_not_called()
+    monkeypatch.setenv('INVOCATION_ID', 'test-service')
+    command.side_effect = RuntimeError('permission denied')
+    assert client.post(url, headers=HEADERS).status_code == 503
+    command.side_effect = None
+    assert client.post(url, headers=HEADERS).status_code == 202
+    assert client.post(url, headers=HEADERS).status_code == 409
+    assert command.await_count == 2
+
+
 def test_bearer_api_compatibility(client):
     assert client.get("/admin/groups", headers={"Authorization":"Bearer test-admin-secret"}).status_code == 200
 
