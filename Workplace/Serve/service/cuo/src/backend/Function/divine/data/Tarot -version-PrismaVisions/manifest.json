@@ -9,198 +9,441 @@
       "name": "愚者",
       "file": "0 愚者 The Fool.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_0_fool.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "04553bea1d6c8a5847128272c121ef709bc2b99f8538a6aca9e15138aa435e78"
+      "width": 408,
+      "height": 729,
+      "sha256": "328bb8f368d612290ebb76b62be9bb64f5f45925edc093ed3359e368c41b30a3",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "04553bea1d6c8a5847128272c121ef709bc2b99f8538a6aca9e15138aa435e78"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "01",
       "name": "魔术师",
       "file": "I 魔术师 The Magician.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_1_magician.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "027d28d83be5ea25b1dbfa068c8e760622688c807ec534532cea44ab61e095ab"
+      "width": 408,
+      "height": 729,
+      "sha256": "2c75fd56404b58134eacde7b23761fdedd87688ed0a4b43888fc0500d4f6bdc2",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "027d28d83be5ea25b1dbfa068c8e760622688c807ec534532cea44ab61e095ab"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "02",
       "name": "女祭司",
       "file": "II 女祭司 The High Priestess.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_2_highpriestess.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "7bb8095127807837e37c6703cf74e5142dfad8df8e20aad56d2a00877718938b"
+      "width": 408,
+      "height": 729,
+      "sha256": "0055384495ad5a8adb6045e77bb048f0be759fe4bf2454c3cce72867a0ca68a6",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "7bb8095127807837e37c6703cf74e5142dfad8df8e20aad56d2a00877718938b"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "03",
       "name": "皇后",
       "file": "III 皇后 The Empress.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_3_empress.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "b7fc42d5f43283dc34f5fa0492111fe5386267f06401cee7bda288a35fa00e43"
+      "width": 408,
+      "height": 729,
+      "sha256": "4a3c90ed8bb764a897370527ca2080585b4f0cd3215fdcd58eadfcbdb9282f85",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "b7fc42d5f43283dc34f5fa0492111fe5386267f06401cee7bda288a35fa00e43"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "04",
       "name": "皇帝",
       "file": "IV 皇帝 The Emperor.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_4_emperor.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "6233aba2ed2921aeb9d9df8db1f1760c03db5d10e99c508b2827fcb91610c8bd"
+      "width": 408,
+      "height": 729,
+      "sha256": "447db82ca8cfca830d43b9eff0cbb06429171fb16c4d066ab803457f732bd82d",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "6233aba2ed2921aeb9d9df8db1f1760c03db5d10e99c508b2827fcb91610c8bd"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "05",
       "name": "教宗",
       "file": "V 教宗 The Hierophant.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_5_hierophant.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "d13d0a8aab8abd3550f217e43716ac824a6cb457fd8580b1878d371284274b80"
+      "width": 408,
+      "height": 729,
+      "sha256": "20b71c421b2fa87027fba18f713e080da6e81412d71c3f0abfd0cc0ff0312f01",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "d13d0a8aab8abd3550f217e43716ac824a6cb457fd8580b1878d371284274b80"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "06",
       "name": "恋人",
       "file": "VI 恋人 The Lovers.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_6_lovers.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "abb2ab47036e0141d1f56c936dfd4293fb45c047158d2d40f3572b1e6c04dd70"
+      "width": 408,
+      "height": 729,
+      "sha256": "a5b99e52e5922fc08f2cd8c132ac59cb198a0ac6c197738b2ddbb51fc368b1cc",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "abb2ab47036e0141d1f56c936dfd4293fb45c047158d2d40f3572b1e6c04dd70"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "07",
       "name": "战车",
       "file": "VII 战车 The Chariot.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_7_chariot.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "57b5daf00831c93b5f54aeeaceb198871822ef009a3c77eadebbc8c081ad5fbb"
+      "width": 408,
+      "height": 729,
+      "sha256": "6aee2292bc1dc4d015ccdf6fedc7de1107bb511b21e0ded93d88e9051e4b0734",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "57b5daf00831c93b5f54aeeaceb198871822ef009a3c77eadebbc8c081ad5fbb"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "08",
       "name": "力量",
       "file": "VIII 力量 The Strength.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_8_strength.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "5710efefe43f16a989846125c13c88d2438a0cfbd15347665097c364103e377d"
+      "width": 408,
+      "height": 729,
+      "sha256": "1ad28f4c4d1b44cab9fbb256026ccb8be53b6e36e5e48e1fe955e69c4a3e1518",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "5710efefe43f16a989846125c13c88d2438a0cfbd15347665097c364103e377d"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "09",
       "name": "隐者",
       "file": "IX 隐者 The Hermit.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_9_hermit.jpg?v=1722469385",
-      "width": 682,
-      "height": 1000,
-      "sha256": "4e0f65254da6688d3a2a3d2d0087217af22ef1ef09610b357d52239aefbc404c"
+      "width": 408,
+      "height": 729,
+      "sha256": "91b679399de371391c897885e5bb8ac5419e18235fbc46ac476b6b070de78d14",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "4e0f65254da6688d3a2a3d2d0087217af22ef1ef09610b357d52239aefbc404c"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "10",
       "name": "命运之轮",
       "file": "X 命运之轮 Wheel of Fortune.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_10_wheel.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "b2787ad5cd72b5a94e2c8482801288bbdec5be01c2ea71fd77dec3a72fb2fd85"
+      "width": 408,
+      "height": 729,
+      "sha256": "62841819b706f94c55c73c86612ff992536518fe664a4d9c046e3d22199265b2",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "b2787ad5cd72b5a94e2c8482801288bbdec5be01c2ea71fd77dec3a72fb2fd85"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "11",
       "name": "正义",
       "file": "XI 正义 Justice.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_11_justice.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "ae5c2283275d89ec49b0599f1d30e623c0958aa56b1e02d7d16b56dd6b30ba37"
+      "width": 408,
+      "height": 729,
+      "sha256": "0d3f096e5be3b1fbdaf8e147bebd17c0742e01845c500d57314dac8039640f89",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "ae5c2283275d89ec49b0599f1d30e623c0958aa56b1e02d7d16b56dd6b30ba37"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "12",
       "name": "倒吊人",
       "file": "XII 倒吊人 The Hanged One.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_12_hangedman.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "977019d528397fb53de31d1717212d810c87760e360b401a45e2af8116c6197a"
+      "width": 408,
+      "height": 729,
+      "sha256": "ba64b98619af7837cc74adce1df94e3e09edf76401b83d5ea57948c231572342",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "977019d528397fb53de31d1717212d810c87760e360b401a45e2af8116c6197a"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "13",
       "name": "死神",
       "file": "XIII 死神 Death.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_13_death.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "9fd5bd051613fd65bdd4e25e4d6ad64745ade7f4cd49a6164b02338fde170e15"
+      "width": 408,
+      "height": 729,
+      "sha256": "6584228e5c1cb8d07e08c3851651c630fcf4df706dac7c7f25155d2f01ddbcb8",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "9fd5bd051613fd65bdd4e25e4d6ad64745ade7f4cd49a6164b02338fde170e15"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "14",
       "name": "节制",
       "file": "XIV 节制 Temperance.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_14_temperance.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "f67e960d4585512bc4f6a9174a1a31f3b92697c7fc277b9e848dec2029f5b69d"
+      "width": 408,
+      "height": 729,
+      "sha256": "fb6993823aff9a3ee2370761595467f60ebcb175c372637aa854b8568caec880",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "f67e960d4585512bc4f6a9174a1a31f3b92697c7fc277b9e848dec2029f5b69d"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "15",
       "name": "恶魔",
       "file": "XV 恶魔 The Devil.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_15_devil.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "9023f84c21affee8abec026a934763ef1cd2a881efb253ed1341edf556778149"
+      "width": 408,
+      "height": 729,
+      "sha256": "59ee343ca27792d7d8c2b54b1cf4e3d47f57df987f687fe43a82b59a9de8319a",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "9023f84c21affee8abec026a934763ef1cd2a881efb253ed1341edf556778149"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "16",
       "name": "高塔",
       "file": "XVI 高塔 The Tower.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_16_tower.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "4609a4488bc07802833852af3672366892e3fcfca7f74e67a4c3e5638df70cae"
+      "width": 408,
+      "height": 729,
+      "sha256": "8307e793ae4849a15fceaa9f5cebd31ebad7a7b9d6b0f41a95532f2494da2c0a",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "4609a4488bc07802833852af3672366892e3fcfca7f74e67a4c3e5638df70cae"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "17",
       "name": "星",
       "file": "XVII 星 The Star.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_17_star_jpg.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "bc661c2c8692e5359c4da741ff2fbaab6be3f119ef4bdb6d5e933bc8eca312b6"
+      "width": 408,
+      "height": 729,
+      "sha256": "989b1997a3d205afc34a837bcf2ac761d24662e3eb10b2e9afa923b264cddbb9",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "bc661c2c8692e5359c4da741ff2fbaab6be3f119ef4bdb6d5e933bc8eca312b6"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "18",
       "name": "月亮",
       "file": "XVIII 月亮 The Moon.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_18_moon_jpg.jpg?v=1722469385",
-      "width": 682,
-      "height": 1000,
-      "sha256": "56caca26ec93048341ec1d2f96864828ac6bcece945aa12b01f1f0f0217997d9"
+      "width": 408,
+      "height": 729,
+      "sha256": "78a7e7025011cb341c013239c683df8e87013d03aba7571ede898a8b4c922eca",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "56caca26ec93048341ec1d2f96864828ac6bcece945aa12b01f1f0f0217997d9"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "19",
       "name": "太阳",
       "file": "XIX 太阳 The Sun.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_19_sun.jpg?v=1722469387",
-      "width": 682,
-      "height": 1000,
-      "sha256": "ba9623f3a73a0b5d81ea106ec765e848d1bab2c9366f16b1eb85be47c4a4dac4"
+      "width": 408,
+      "height": 729,
+      "sha256": "801ca6fd775bc7fb8fa19416c25644e9e5f1c159c226e125d365a0c5bc937de2",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "ba9623f3a73a0b5d81ea106ec765e848d1bab2c9366f16b1eb85be47c4a4dac4"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "20",
       "name": "审判",
       "file": "XX 审判 Judgement.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_20_judgement.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "eabf072a1b87667d8db1ce566a897914f6768e30d815a63c9b9bcfbf763c4793"
+      "width": 408,
+      "height": 729,
+      "sha256": "9f9f9582e389f930f02f06876d07fca7732c4d4cb25439995951efffd025412d",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "eabf072a1b87667d8db1ce566a897914f6768e30d815a63c9b9bcfbf763c4793"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     },
     {
       "card_id": "21",
       "name": "世界",
       "file": "XXI 世界 The World.jpg",
       "source_url": "https://prismavisions.com/cdn/shop/files/PrismaAllCards_21_world_jpg.jpg?v=1722469388",
-      "width": 682,
-      "height": 1000,
-      "sha256": "549e60f288b0aa32c620422e3c1c824d01d3aa9a78df2e73b97fd8ebf57d9a43"
+      "width": 408,
+      "height": 729,
+      "sha256": "b585ad124bcefd5ecea479afab574df2f93f2aea07136c21e508a784aa5b4a37",
+      "original": {
+        "width": 682,
+        "height": 1000,
+        "sha256": "549e60f288b0aa32c620422e3c1c824d01d3aa9a78df2e73b97fd8ebf57d9a43"
+      },
+      "crop_box": [
+        138,
+        134,
+        546,
+        863
+      ]
     }
-  ]
+  ],
+  "processing": "Cropped exterior blue background; preserved ornamental card border. JPEG quality 98, subsampling 0."
 }
