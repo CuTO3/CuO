@@ -149,7 +149,7 @@ def _prefixed_block(tag: str, content: str) -> str:
 def _build_user_content(
     *,
     original_text: str,
-    speaker_nickname: str,
+    speaker_name: str,
     history_messages: list[dict],
     names: dict[str, str],
     recent_conversations: list[dict],
@@ -161,7 +161,7 @@ def _build_user_content(
     request_prefix = "<当前用户消息>"
     request_suffix = "</当前用户消息>"
     request_block = (
-        f"{request_prefix}\n发言人：{speaker_nickname}\n{original_text}\n{request_suffix}"
+        f"{request_prefix}\n发言人：{speaker_name}\n{original_text}\n{request_suffix}"
     )
 
     remaining_history_budget = MAX_USER_CONTENT_CHARS - len(request_block)
@@ -334,19 +334,6 @@ async def run(task: dict, ctx) -> dict:
 
         original_text = _original_request_text(existing)
 
-        message_row_id = params.get("message_row_id")
-        speaker_nickname = ""
-        if type(message_row_id) is int:
-            current_messages = await ctx.db.read(
-                "messages",
-                group_id=group_id,
-                filters={"id": message_row_id},
-                limit=1,
-                transaction=tx,
-            )
-            if current_messages:
-                speaker_nickname = _member_nickname(current_messages[0])
-
         messages = await ctx.db.read(
             "messages",
             group_id=group_id,
@@ -381,11 +368,13 @@ async def run(task: dict, ctx) -> dict:
         )
 
         names = _resolve_names(members)
-        speaker_nickname = speaker_nickname or names.get(str(existing.get("user_id") or ""), "群友")
+        speaker_id = str(existing.get("user_id") or "")
+        speaker = next((member for member in members if str(member.get("user_id") or "") == speaker_id), {})
+        speaker_name = _member_display_name(speaker) or names.get(speaker_id, "群友")
 
     user_content, content_error = _build_user_content(
         original_text=original_text,
-        speaker_nickname=" ".join(speaker_nickname.splitlines()),
+        speaker_name=" ".join(speaker_name.splitlines()),
         history_messages=messages,
         names=names,
         recent_conversations=recent_logs,
