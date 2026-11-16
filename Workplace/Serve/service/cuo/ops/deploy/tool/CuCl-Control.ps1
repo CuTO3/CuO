@@ -1,14 +1,30 @@
-﻿param([switch]$NoBrowser)
+﻿param([switch]$NoBrowser, [string]$Config, [string]$PythonExecutable)
 
 # 本地端口可用时沿用常用地址，否则在其后九个端口中选择。
 $ErrorActionPreference = 'Stop'
 $ssh = (Get-Command ssh.exe -CommandType Application).Source
-$pages = @(
-    @{ Name = 'CuO 控制台'; Remote = 8080; Local = 9080; Path = '/console/' }
-    @{ Name = 'NapCat WebUI'; Remote = 6099; Local = 6099; Path = '/webui/' }
-    @{ Name = 'LiteLLM 管理界面'; Remote = 8888; Local = 8888; Path = '/ui/' }
-    @{ Name = 'Syncthing 管理界面'; Remote = 8384; Local = 9090; Path = '/' }
-)
+if (-not $PythonExecutable) {
+    $candidates = @()
+    if (Get-Command py.exe -ErrorAction SilentlyContinue) {
+        $candidates += & py.exe -0p 2>$null | ForEach-Object {
+            if ($_ -match '([A-Za-z]:\\.*python.exe)\s*$') { $matches[1] }
+        }
+    }
+    $candidates += Get-Command python.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+    foreach ($candidate in $candidates) {
+        & $candidate -c "import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)" 2>$null
+        if ($LASTEXITCODE -eq 0) { $PythonExecutable = $candidate; break }
+    }
+}
+if (-not $PythonExecutable) { throw '需要 Python 3.11+，可用 -PythonExecutable 指定路径。' }
+$arguments = @("$PSScriptRoot/control_config.py")
+if ($Config) { $arguments += @('--config', $Config) }
+$configJson = & $PythonExecutable @arguments
+if ($LASTEXITCODE -ne 0) { throw '请检查控制台 TOML 配置。' }
+$settings = ($configJson -join "`n") | ConvertFrom-Json
+$pages = @($settings.pages.PSObject.Properties | ForEach-Object {
+    @{ Name = $_.Name; Local = $_.Value.Local; Remote = $_.Value.Remote; Path = $_.Value.Path }
+})
 $tunnels = @{}
 
 function Stop-PageTunnels {
@@ -40,18 +56,18 @@ function Open-Page($page) {
     }
 
     $occupied = [System.Net.NetworkInformation.IPGlobalProperties]::GetIPGlobalProperties().GetActiveTcpListeners().Port
-    $port = $page.Local..($page.Local + 9) | Where-Object { $_ -notin $occupied } | Select-Object -First 1
-    if (-not $port) { throw "从 $($page.Local) 开始的十个本地端口均已占用。" }
+    $port = $page.Local..($page.Local + $settings.port_attempts - 1) | Where-Object { $_ -notin $occupied } | Select-Object -First 1
+    if (-not $port) { throw "从 $($page.Local) 开始的$($settings.port_attempts) 个本地端口均已占用。" }
     $forward = "127.0.0.1:${port}:127.0.0.1:$($page.Remote)"
     $log = New-TemporaryFile
     $process = $null
     try {
         $process = Start-Process -FilePath $ssh -WindowStyle Hidden -PassThru -RedirectStandardError $log.FullName -ArgumentList @(
             '-N', '-o', 'BatchMode=yes', '-o', 'ExitOnForwardFailure=yes',
-            '-o', 'ConnectTimeout=8', '-o', 'ServerAliveInterval=30',
-            '-o', 'ServerAliveCountMax=3', '-L', $forward, 'cucl'
+            '-o', ('ConnectTimeout=' + $settings.connect_timeout), '-o', ('ServerAliveInterval=' + $settings.keepalive_interval),
+            '-o', ('ServerAliveCountMax=' + $settings.keepalive_count), '-L', $forward, $settings.ssh_host
         )
-        $deadline = [DateTime]::UtcNow.AddSeconds(12)
+        $deadline = [DateTime]::UtcNow.AddSeconds($settings.startup_timeout)
         do {
             if ($process.HasExited) {
                 $detail = (Get-Content -LiteralPath $log.FullName -Raw)
@@ -86,7 +102,7 @@ function Open-Page($page) {
 
 try {
     while ($true) {
-        Write-Host "`nCuCl 管理页面"
+        Write-Host "`n管理页面 · $($settings.ssh_host)"
         for ($i = 0; $i -lt $pages.Count; $i++) {
             $page = $pages[$i]
             $tunnel = $tunnels[$page.Name]
@@ -97,7 +113,8 @@ try {
         $choice = Read-Host '输入编号'
         if ($null -eq $choice -or $choice.Trim() -eq '0') { break }
         $choice = $choice.Trim()
-        if ($choice -notmatch '^[1-4]$') { continue }
+        $selection = 0
+        if (-not [int]::TryParse($choice, [ref]$selection) -or $selection -lt 1 -or $selection -gt $pages.Count) { continue }
         try { Open-Page $pages[[int]$choice - 1] }
         catch { Write-Warning $_.Exception.Message }
     }

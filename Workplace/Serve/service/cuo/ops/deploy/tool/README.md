@@ -1,5 +1,16 @@
 # 本地同步与部署
 
+## 本机管理页面
+
+双击 CuCl-Control.cmd 打开菜单。参数统一位于
+`var/config/ops/deploy/tool/control_config.toml`，字段已登记到 config_index.json，
+`python -m ops.configure` 会从同目录 example 补齐缺失配置。
+填写 ssh_host 后使用。页面名称、端口、路径、SSH 超时和保活参数均在此配置。
+支持 CUO_CONFIG_ROOT，或通过 `CuCl-Control.cmd -Config 配置文件路径` 指定文件。
+相对 CUO_CONFIG_ROOT 按应用根目录解析，显式 -Config 相对当前工作目录解析。
+脚本自动寻找本机 Python 3.11+，也可用 -PythonExecutable 指定解释器。
+修改配置后重新打开脚本生效。
+
 ## 控制台重启权限
 
 控制台“偏好设置”提供 CuO 后端重启按钮。首次启用需由管理员将

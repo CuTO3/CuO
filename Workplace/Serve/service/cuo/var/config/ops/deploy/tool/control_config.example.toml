@@ -1,0 +1,27 @@
+# 复制为 control_config.toml，填写本机 SSH 别名。
+ssh_host = ""
+connect_timeout = 8
+keepalive_interval = 30
+keepalive_count = 3
+startup_timeout = 12
+port_attempts = 10
+
+[pages."CuO 控制台"]
+Local = 9080
+Remote = 8080
+Path = "/console/"
+
+[pages."NapCat WebUI"]
+Local = 6099
+Remote = 6099
+Path = "/webui/"
+
+[pages."LiteLLM 管理界面"]
+Local = 8888
+Remote = 8888
+Path = "/ui/"
+
+[pages."Syncthing 管理界面"]
+Local = 9090
+Remote = 8384
+Path = "/"
