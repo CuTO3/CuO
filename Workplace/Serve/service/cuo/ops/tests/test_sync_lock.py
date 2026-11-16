@@ -48,3 +48,4 @@ def test_git_failure_is_not_reported_as_success(worker,monkeypatch):
     process.communicate.return_value=('',None)
     monkeypatch.setattr(ns['subprocess'],'Popen',Mock(return_value=process))
     with pytest.raises(RuntimeError,match='Git 命令失败'):ns['execute'](['git','fetch'])
+    assert ns['subprocess'].Popen.call_args.kwargs['env']['GIT_TERMINAL_PROMPT']=='0'

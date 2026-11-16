@@ -100,21 +100,37 @@ $('#fortune-form').onsubmit=async event=>{
 function showDetail(index){const row=state.rows[index],r=row.record;const member=state.page==='members';$('#detail-title').textContent=member?'成员显示名称':'记录详情';$('#detail-body').innerHTML=member?`<p>${esc(r.nickname)} · ${esc(r.user_id)}<br>显示名称用于管理侧标识，留空将恢复默认名称。</p><label for="display-name" class="hidden">显示名称</label><input id="display-name" maxlength="100" value="${esc(r.display_name||'')}" placeholder="输入显示名称"><p>修改通过任务队列执行，提交后可在任务记录查看结果。</p><div class="detail-actions"><button id="save-member" class="primary">提交修改</button></div>`:`<pre>${esc(JSON.stringify(r,null,2))}</pre><p>记录只读。含有消息送达结果的异常任务，需要先核实是否已经发送。</p>`;$('#detail').showModal();if(member)$('#save-member').onclick=async e=>{e.target.disabled=true;try{const response=await api(`/admin/${state.gid}/commands`,{method:'POST',body:JSON.stringify({operation:'display_name',user_id:r.user_id,display_name:$('#display-name').value.trim()||null,expected_version:row.version})});$('#detail').close();toast(`修改已入队 · ${response.task_id.slice(0,8)}，请在任务记录确认结果`);}catch(error){toast(error.message);}finally{e.target.disabled=false;}};}
 function renderSettings(){
   const modules=state.settings.modules;
-  $('#content').innerHTML='<section class="card"><div class="card-head"><h2>模块配置</h2></div><div class="form-body"><select id="config-module">'+Object.entries(modules).map(([name,spec])=>`<option value="${esc(name)}">${esc(spec.source)}</option>`).join('')+'</select><p>保存后需重启服务。敏感字段不回显，留空表示保留原值。</p><form id="module-config-form"></form></div></section>';
+  const tarotModule='TarotImageConfig';
+  const moduleLabels={
+    DivineConfig:'周易 · 占卜规则',DivineAIConfig:'周易 · 应事解读',
+    ReadingsConfig:'周易 · 固定解卦',ZhouYiConfig:'周易 · 起卦',
+    TarotImageConfig:'塔罗图片',database:'数据库连接',groups:'群组配置',
+    napcat:'NapCat 连接',runtime:'运行环境',sender:'消息发送',
+    archive:'每日归档',console:'控制台',summary_scope:'众声录 · 总结范围',
+    summary_text:'众声录 · 内容生成',image:'图片识别',conversation:'清谈录 · 对话',
+    analyzer:'意图识别',nickname:'昵称识别',memento:'鸿爪录',queue:'任务队列',
+    ops_deploy_config:'运维 · 部署',ops_sync_config:'运维 · 同步',
+    ops_migrate_config:'运维 · 数据库迁移',ops_build_readings_config:'运维 · 解卦资料构建'
+  };
+  const names=Object.keys(modules);
+  const orderedNames=modules[tarotModule]?[tarotModule,...names.filter(name=>name!==tarotModule)]:names;
+  $('#content').innerHTML='<section class="card settings-card"><div class="card-head"><h2>模块配置</h2></div><div class="form-body"><div class="settings-selector"><label for="config-module">配置模块</label><select id="config-module">'+orderedNames.map(name=>`<option value="${esc(name)}">${esc(moduleLabels[name]||name)}</option>`).join('')+'</select></div><p class="settings-hint">敏感字段留空时保留原值。</p><form id="module-config-form"></form></div></section>';
   let current=null, activeName=null, revision=0;
   async function select(){
     const token=++revision;const name=$('#config-module').value;
-    $('#module-config-form').innerHTML='正在加载配置…';current=null;
+    $('#module-config-form').innerHTML='<div class="settings-loading" role="status">正在加载配置…</div>';current=null;
     try{
       const data=await api('/console/api/configuration/'+encodeURIComponent(name));
       if(token!==revision)return;current=data;activeName=name;
       $('#module-config-form').innerHTML=Object.entries(data.fields).map(([key,f])=>{
         const value=f.sensitive?'':data.values[key];
-        const input=f.type==='bool'?`<select name="${esc(key)}"><option value="true" ${value?'selected':''}>启用</option><option value="false" ${!value?'selected':''}>关闭</option></select>`:
+        const input=Array.isArray(f.choices)?`<select name="${esc(key)}" aria-label="${esc(f.description)}">${f.choices.map(choice=>`<option value="${esc(choice)}" ${choice===value?'selected':''}>${esc(choice)}</option>`).join('')}</select>`:
+          f.type==='bool'?`<div class="settings-switch"><input name="${esc(key)}" type="checkbox" role="switch" ${value?'checked':''}><span class="settings-switch-state" aria-hidden="true"></span></div>`:
           f.type==='table'||f.type==='strings'?`<textarea name="${esc(key)}" rows="5" placeholder="${f.sensitive?'留空保留原值':''}">${esc(f.sensitive?'':JSON.stringify(value,null,2))}</textarea>`:
           `<input name="${esc(key)}" type="${f.sensitive?'password':f.type==='int'||f.type==='float'?'number':'text'}" step="any" autocomplete="off" value="${esc(value)}" placeholder="${f.sensitive?(data.configured[key]?'已配置；留空保留':'尚未配置'):''}">`;
-        return `<div class="form-row"><label>${esc(f.description)}<small>${esc(key)}</small></label>${input}</div>`;
-      }).join('')+'<button class="primary" type="submit">保存配置</button>';
+        const description=key==='divine_tarot_picture_directory'?'牌图目录':f.description;
+        return `<div class="form-row"><label for="setting-${esc(key)}">${esc(description)}${description!==key?`<small>${esc(key)}</small>`:''}</label>${input.replace('name=',`id="setting-${esc(key)}" name=`)}</div>`;
+      }).join('')+'<div class="save-row"><span id="settings-save-status" role="status">修改后需保存并重启服务。</span><button class="primary" type="submit">保存配置</button></div>';
     }catch(error){if(token===revision)$('#module-config-form').textContent=error.message;}
   }
   $('#config-module').onchange=select;
@@ -123,14 +139,19 @@ function renderSettings(){
     const values={};const button=event.submitter;const name=activeName;const version=current.version;
     try{
       for(const [key,f] of Object.entries(current.fields)){
-        const raw=event.target.elements.namedItem(key).value;
+        const field=event.target.elements.namedItem(key);
+        const raw=field.value;
         if(f.sensitive&&raw==='')continue;
-        values[key]=f.type==='bool'?raw==='true':f.type==='int'||f.type==='float'?Number(raw):f.type==='table'||f.type==='strings'?JSON.parse(raw):raw;
+        values[key]=f.type==='bool'?field.checked:f.type==='int'||f.type==='float'?Number(raw):f.type==='table'||f.type==='strings'?JSON.parse(raw):raw;
       }
-      button.disabled=true;
+      button.disabled=true;button.textContent='正在保存…';$('#config-module').disabled=true;
       await api('/console/api/configuration/'+encodeURIComponent(name),{method:'PUT',body:JSON.stringify({values,version})});
       toast('已保存，重启服务后生效');await select();
-    }catch(error){toast(error.message);}finally{if(button.isConnected)button.disabled=false;}
+      if($('#settings-save-status'))$('#settings-save-status').textContent='已保存，重启服务后生效。';
+    }catch(error){toast(error.message);}finally{
+      if(button.isConnected){button.disabled=false;button.textContent='保存配置';}
+      if($('#config-module'))$('#config-module').disabled=false;
+    }
   };
   select();
 }

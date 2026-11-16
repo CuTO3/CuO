@@ -9,6 +9,14 @@ python sync.py
 python deploy.py
 ```
 
+Windows 若默认 `py` 为 Python 3.10，会因缺少 `tomllib` 无法运行。先用 `py -0p` 查看解释器；当前本机安装的 uv Python 3.12 可这样运行：
+
+```powershell
+py -V:Astral/CPython3.12.14 sync.py
+```
+
+同步会输出 SSH 连接、部署锁和 Git fetch 阶段。fetch 等待远端网络时受配置中的单条 Git 超时限制；成功后只更新暂存仓库，发布仍需单独执行 deploy。
+
 - `sync.py`：从 GitHub 首次 clone 或 fetch 最新默认分支到 `/serve/repos/CuO`，检出暂存版本。不会重启或更新正式服务。
 - `deploy.py`：自动读取暂存提交，备份当前源码和数据库，更新 `/serve/service/cuo` 内的 `src`、`ops`、`pyproject.toml`、`.gitignore`，重启后检查服务及 OneBot 连接。`var`、README、systemd 单元和生产配置不覆盖，正式工作目录不变。
 - 本地尚未提交、推送的代码不参与同步；两个脚本都不代替你提交或推送 Git。

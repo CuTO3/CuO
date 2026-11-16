@@ -32,7 +32,7 @@ async def test_review_replaces_same_hash_and_stale_file(ctx,monkeypatch):
     result=await ip.describe_image(new['segments'][0],ctx,ctx.gid,new)
     assert result['description']=='人工修正' and result['reuse_source']=='database'
     assert result['segment_key']==ip.segment_key(new['segments'][0])
-    assert json.loads(cache.read_text())['description']=='人工修正'
+    assert json.loads(cache.read_text(encoding='utf-8'))['description']=='人工修正'
 
 async def test_missing_cache_uses_database(ctx,monkeypatch):
     row,key,old=await seed(ctx);fake_download(ctx,monkeypatch,old['hash']);calls=[]

@@ -3,7 +3,6 @@ if sys.platform=="win32":asyncio.set_event_loop_policy(asyncio.WindowsSelectorEv
 from uuid import uuid4
 from types import SimpleNamespace
 import pytest
-import pytest
 # 在导入业务模块前建立独立测试配置，仅从公开 example 复制。
 import atexit
 import tempfile
@@ -33,7 +32,7 @@ class FakeBot:
         if self.fail:raise self.fail
         return {"status":"ok","retcode":0,"data":{"message_id":str(90000+len(self.calls))} if action=="send_group_msg" else None}
 @pytest.fixture
-async def ctx(tmp_path):
+async def ctx(tmp_path, monkeypatch):
     dsn=os.getenv("CUO_TEST_DSN")
     if not dsn:pytest.skip("isolated PostgreSQL required: CUO_TEST_DSN")
     ids=[str(uuid4().int%10**12) for _ in range(2)]
@@ -41,5 +40,18 @@ async def ctx(tmp_path):
     db=Database(s);await db.open();await migrate(db)
     c=RuntimeContext(s,db,FakeModel(),FakeBot());c.gid=ids[0];c.other=ids[1]
     c.queue=SimpleNamespace(wake=lambda:None)
-    try:yield c
-    finally:await db.close()
+    try:
+        from Function.conversation import conversation
+        from Function.summary import summary
+        from Function.summary.son_function import AI_sum, image_processor
+
+        async def day_scope(**kwargs):
+            return '{"mode":"day","topic":"","include_divine":false}'
+
+        monkeypatch.setattr(conversation, "MODEL", c.model)
+        monkeypatch.setattr(summary, "MODEL", SimpleNamespace(complete=day_scope))
+        monkeypatch.setattr(AI_sum, "MODEL", c.model)
+        monkeypatch.setattr(image_processor, "MODEL", c.model)
+        yield c
+    finally:
+        await db.close()

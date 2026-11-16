@@ -8,8 +8,28 @@ REGISTRY    各模块配置字段定义；所有读写限定在已注册的小�
 import asyncio
 import hashlib
 import json
+import re
 from fastapi import HTTPException, Request
-from Core.configuration import REGISTRY, read, save
+from Core.configuration import REGISTRY, read, resource, save
+
+
+def configuration_fields(name, values):
+    fields = REGISTRY[name]['fields']
+    if name != 'TarotImageConfig':
+        return fields
+
+    key = 'divine_tarot_version'
+    prefix = 'Tarot -version-'
+    directory = resource(values['divine_tarot_picture_directory']).resolve()
+    versions = sorted(
+        entry.name.removeprefix(prefix)
+        for entry in directory.iterdir()
+        if entry.name.startswith(prefix)
+        and re.fullmatch(r'[A-Za-z0-9_-]+', entry.name.removeprefix(prefix))
+        and entry.is_dir()
+        and not entry.is_symlink()
+    )
+    return {**fields, key: {**fields[key], 'description': '塔罗图片版本', 'choices': versions}}
 
 
 def install(app, require):
@@ -21,7 +41,7 @@ def install(app, require):
         version = hashlib.sha256(json.dumps(values, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         return {'values': {k: v for k, v in values.items() if not spec['fields'][k]['sensitive']},
                 'configured': {k: bool(v) for k, v in values.items() if spec['fields'][k]['sensitive']},
-                'fields': spec['fields'], 'version': version, 'restart_required': True}
+                'fields': configuration_fields(name, values), 'version': version, 'restart_required': True}
 
     @app.get('/console/api/configuration')
     async def catalog(request: Request):

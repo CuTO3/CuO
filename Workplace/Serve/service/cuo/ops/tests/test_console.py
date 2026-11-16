@@ -102,6 +102,33 @@ def test_divine_editor_uses_index_schema_and_cross_field_validation(client):
     assert config.divine_ai_request_attempt_limit==3
 
 
+def test_tarot_version_choices_and_persistence(client):
+    from Core.module_config import TarotImageConfig, load_module_config
+
+    url = '/console/api/configuration/TarotImageConfig'
+    assert client.get(url, headers=HEADERS).status_code == 401
+    assert login(client).status_code == 200
+    response = client.get(url, headers=HEADERS)
+    assert response.status_code == 200
+    initial = response.json()
+    key = 'divine_tarot_version'
+    assert {'Arknight', 'PrismaVisions', 'TrueDark'} <= set(initial['fields'][key]['choices'])
+    for invalid in ('../TrueDark', 'MissingDeck'):
+        payload = {'version': initial['version'], 'values': {key: invalid}}
+        assert client.put(url, headers=HEADERS, json=payload).status_code == 422
+
+    payload = {'version': initial['version'], 'values': {key: 'TrueDark'}}
+    response = client.put(url, headers=HEADERS, json=payload)
+    assert response.status_code == 200
+    assert response.json()['restart_required'] is True
+    config = load_module_config(
+        'src/backend/Function/divine/son_function/tarot_image_config.toml',
+        TarotImageConfig,
+        config_root=client.app.state.ctx.settings.config_root,
+    )
+    assert config.divine_tarot_version == 'TrueDark'
+
+
 def test_rate_limit_and_expired_session(client):
     login(client)
     for token in client.app.state.console_sessions:

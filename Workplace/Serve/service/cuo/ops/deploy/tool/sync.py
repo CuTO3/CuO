@@ -16,6 +16,9 @@ import json
 import subprocess
 from pathlib import Path
 import os
+import sys
+if sys.version_info < (3, 11):
+    raise SystemExit('sync 需要 Python 3.11+；请用 py -0p 查看解释器，再选择对应版本运行 sync.py。')
 import tomllib
 
 REMOTE_SOURCE = r"""
@@ -32,8 +35,10 @@ REPO=Path(CFG['ops_deploy_repository_directory'])
 URL=CFG['ops_deploy_repository_url']
 
 def execute(args, capture=False):
+    environment = os.environ.copy()
+    environment['GIT_TERMINAL_PROMPT'] = '0'
     process=subprocess.Popen(list(map(str,args)),start_new_session=True,
-                             stdout=subprocess.PIPE if capture else None,text=True)
+                             stdout=subprocess.PIPE if capture else None,text=True,env=environment)
     try:
         output,_=process.communicate(timeout=CFG['ops_deploy_git_timeout_seconds'])
     except subprocess.TimeoutExpired:
@@ -57,15 +62,18 @@ def main(request):
         except BlockingIOError:
             print('已有同步或部署任务正在运行，本次未执行。请等待其结束后重试；不要删除锁文件。',file=sys.stderr,flush=True)
             return 75
+        print('已取得部署锁，正在检查暂存仓库。',flush=True)
         if not (REPO/'.git').is_dir():
             if REPO.exists():raise RuntimeError('repos exists without Git; refusing overwrite')
             REPO.parent.mkdir(parents=True,exist_ok=True)
+            print('正在克隆远端仓库。',flush=True)
             run('git','-c','credential.helper=','clone',URL,REPO)
         if git('remote','get-url','origin').rstrip('/').removesuffix('.git')!=URL.removesuffix('.git'):
             raise RuntimeError('Unexpected repository origin')
         if git('status','--porcelain','--untracked-files=all'):
             raise RuntimeError('Server repos has local changes; refusing overwrite')
-        run('git','-C',REPO,'-c','credential.helper=','fetch','--prune','origin')
+        print('正在获取远端提交；单条 Git 命令超时为 '+str(CFG['ops_deploy_git_timeout_seconds'])+' 秒。',flush=True)
+        run('git','-C',REPO,'-c','credential.helper=','fetch','--progress','--prune','origin')
         if not ref:
             run('git','-C',REPO,'remote','set-head','origin','-a')
             ref='origin/HEAD'
@@ -101,6 +109,7 @@ def main():
         parser.error("SSH 主机名格式错误")
     encoded = base64.b64encode(json.dumps(request).encode()).decode()
     source = "import base64,json\nREQUEST=json.loads(base64.b64decode('" + encoded + "'))\n" + REMOTE_SOURCE
+    print('正在通过 SSH 连接服务器并同步 Git 暂存仓库。', flush=True)
     result = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout="+str(settings["ops_deploy_ssh_connect_timeout_seconds"]), host,
                              "sudo -n python3 -"], input=source.encode("utf-8"))
     if result.returncode == 75:

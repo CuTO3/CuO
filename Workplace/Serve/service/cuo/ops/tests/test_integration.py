@@ -174,7 +174,7 @@ async def test_archive_no_send_and_late_revision(ctx):
     assert len(rows)==2 and any(r["result"].get("source_dirty") for r in rows)
 
 async def test_divine_repeat_fee_latest_and_idempotency(ctx,monkeypatch):
-    from Function.divine.divine import run
+    from Function.divine.divine import message_action, run
     from ops.database.scripts.migrate import migrate
     monkeypatch.setattr("Function.divine.divine.draw_dictum_luck",lambda dictum:0)
     await run(await task(ctx),ctx)
@@ -191,8 +191,10 @@ async def test_divine_repeat_fee_latest_and_idempotency(ctx,monkeypatch):
     denied=await run(await task(ctx),ctx)
     assert denied["error_code"]=="insufficient_fortune"
     assert denied["result_id"]==latest["result_id"]
-    assert denied["actions"][1]==latest["actions"][0]
-    assert len(await ctx.db.read("divinations",group_id=ctx.gid,filters={}))==3
+    entries = await ctx.db.read("divinations", group_id=ctx.gid, filters={})
+    saved_reading = next(row for row in entries if str(row["id"]) == str(latest["result_id"]))
+    assert denied["actions"][1] == message_action(saved_reading["content"], saved_reading["tarot"])
+    assert len(entries) == 3
     await migrate(ctx.db)
 
 async def test_divine_repeat_resume_does_not_charge_twice(ctx,monkeypatch):
