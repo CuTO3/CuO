@@ -23,7 +23,7 @@
 | 再次占卜 | 同群、同用户、同业务日首次免费，其后每次消耗 2 点福缘 |
 | 历史结果 | 已保存结果直接返回，不因资料升级重新抽卦或结算 |
 | 塔罗视觉 | 独立 TOML 按目录后缀选择牌组，按标准牌名自动找图 |
-| TrueDark | 已支持，通过 `divine_tarot_version` 切换；默认仍为 Arknight |
+| 牌组 | 通过 `divine_tarot_version` 切换，Prisma Visions 与 TrueDark 均包含完整 22 张大牌 |
 
 ## 目录与职责
 
@@ -36,9 +36,10 @@ divine/
 │   ├── readings.json             4096 条固定组合解读
 │   ├── keyword_rules.json        应事候选短语、停用词及排除规则
 │   ├── SOURCES.md                原文来源、转换及资料编排说明
-│   ├── Tarot -version-Arknight/  当前启用的牌图
-│   └── Tarot -version-TrueDark/  22 张标准大阿卡那
-│       └── Supplementary Pack/  56 张小阿卡那、Anant 附加牌与牌背
+│   ├── Tarot -version-Arknight/       部分大阿卡那
+│   ├── Tarot -version-PrismaVisions/  22 张标准大阿卡那
+│   └── Tarot -version-TrueDark/       22 张标准大阿卡那
+│       └── Supplementary Pack/       56 张小阿卡那、Anant 附加牌与牌背
 ├── prompts/
 │   └── divine_prompt.txt         只生成应事的模型提示词
 └── son_function/
@@ -201,7 +202,7 @@ python -m ops.build_readings
 
 ## 塔罗牌与图片
 
-`tarot.py` 使用有变化时的变卦、否则使用本卦，按上卦选择三张候选牌，再以动爻数模 3 选一张。当前映射覆盖 18 种牌，并未覆盖全部 22 张。卦运非负为正位，负数为逆位；塔罗不独立决定福缘。
+`tarot.py` 使用有变化时的变卦、否则使用本卦，按上卦选择三张候选牌，再以动爻数模 3 选一张。v2 映射覆盖标准 22 张大阿卡那。卦运非负为正位，负数为逆位。福缘仍由卦运结算。
 
 `tarot_image.py` 从独立模块配置读取图片根目录和牌组后缀，组成 `Picture根目录 / Tarot -version-{后缀}`。例如 `Arknight` 和 `TrueDark`，无需为每套牌维护文件名映射。缺图退回纯文字；逆位旋转 180°，以 PNG 编码为 OneBot image 消息段插在塔罗标题之后。
 
@@ -209,7 +210,7 @@ python -m ops.build_readings
 
 ```toml
 divine_tarot_picture_directory = "src/backend/Function/divine/data"
-divine_tarot_version = "TrueDark"
+divine_tarot_version = "PrismaVisions"
 ```
 
 根目录配置相对于 cuo 项目根目录解析，也可指定绝对路径。配置示例在 `var/config` 下与实际配置同目录的 `.example.toml` 文件中；修改配置后重启生效。原先的完整牌组目录和逐牌映射配置字段已移除，升级时须同步使用这两个新字段。
