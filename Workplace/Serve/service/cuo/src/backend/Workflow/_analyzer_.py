@@ -256,7 +256,12 @@ async def classify_task(task,ctx):
     if kind!="message":return kind
     p=task["params"]
     if "_opt" not in p:
-        intent=await run(p.get("request_text",task.get("original_text") or ""),task["triggered_at"],context=ctx,group_id=task["group_id"])
+        original_text = task.get("original_text") or ""
+        segments = p.get("segments") or []
+        if not original_text.strip() and any(s.get("type") in ("image", "mface", "face") for s in segments):
+            intent = {"opt": "conversation", "params": {}}
+        else:
+            intent=await run(p.get("request_text",original_text),task["triggered_at"],context=ctx,group_id=task["group_id"])
         p.update(intent["params"]);p["_opt"]=intent["opt"]
         await ctx.db.write("log",[{"task_id":task["task_id"],"params":p,"step":"classified"}],group_id=task["group_id"],mode="update",key_fields=("task_id",))
     return p["_opt"]

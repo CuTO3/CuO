@@ -96,9 +96,16 @@ def create_app(settings=None):
         ctx=app.state.ctx
         token=ws.headers.get("authorization","")
         if not hmac.compare_digest(token,"Bearer "+ctx.settings.napcat_token) or ws.headers.get("x-self-id")!=ctx.settings.self_id:
+            if not ctx.onebot.connected:
+                app.state.onebot_issue = {
+                    "code": "onebot_token_mismatch" if not hmac.compare_digest(token, "Bearer " + ctx.settings.napcat_token)
+                    else "onebot_account_mismatch",
+                    "at": now().isoformat(),
+                }
             await ws.close(code=1008);return
         if not ctx.ready or ctx.onebot.connected:await ws.close(code=1013);return
         await ws.accept();await ctx.onebot.attach(ws)
+        app.state.onebot_issue = None
         try:
             while True:
                 event=await ws.receive_json()
@@ -109,9 +116,13 @@ def create_app(settings=None):
                 try:app.state.inbound.put_nowait((event,now()))
                 except asyncio.QueueFull:
                     # Stop accepting rather than silently evict an older event.
+                    app.state.onebot_issue = {"code": "onebot_queue_full", "at": now().isoformat()}
                     await ws.close(code=1013);break
         except WebSocketDisconnect:pass
-        finally:await ctx.onebot.detach(ws)
+        finally:
+            if not app.state.onebot_issue:
+                app.state.onebot_issue = {"code": "onebot_disconnected", "at": now().isoformat()}
+            await ctx.onebot.detach(ws)
     from Integration.console.admin import install
     install(app)
     from Integration.console.routes import install as install_console

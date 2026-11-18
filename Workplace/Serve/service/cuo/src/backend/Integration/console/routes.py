@@ -137,4 +137,5 @@ def install(app):
         daily = await ctx.db.fetch(gid, sql.SQL("SELECT business_date::text AS day,count(*) AS n FROM {} WHERE business_date >= (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Shanghai')::date - 6 GROUP BY business_date ORDER BY business_date").format(ctx.db.table(gid, "messages")))
         return {"counts": counts, "tasks": {r["status"]: r["n"] for r in states}, "daily": daily,
                 "ready": ctx.ready, "connected": ctx.onebot.connected,
+                "onebot_issue": None if ctx.onebot.connected else getattr(app.state, "onebot_issue", None),
                 "model": ctx.settings.model_name, "inbound": app.state.inbound.qsize()}

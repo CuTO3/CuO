@@ -106,7 +106,7 @@ async def receive_event(event, received_at, *, context):
             params = {"request_text": request_text.strip(), "message_row_id": row["id"], "snapshot_seq": row["id"], "segments": segments, "self_id": self_id, "queue": {"batch_seq": row["id"], "order": 2}}
             await db.write("log", [_task(task_id, "message", params, row, received_at)], group_id=group_id, transaction=tx)
             task_ids.append(task_id)
-        if user_id != self_id and any(s['type']=='image' for s in segments):
+        if user_id != self_id and any(s["type"] in ("image", "mface") for s in segments):
             task_id=stable_task_id(self_id,group_id,message_id,'media_describe')
             await db.write('log',[_task(task_id,'media_describe',{'message_row_id':row['id'],'queue':{'batch_seq':row['id'],'order':1}},row,received_at)],group_id=group_id,transaction=tx)
             task_ids.append(task_id)

@@ -21,6 +21,7 @@ conversation_reply_ai_temperature                    生成温度
 from __future__ import annotations
 
 from Core.configuration import load, resource
+from Function.summary.son_function.image_processor import segment_key
 
 CONFIG = load("conversation")
 from Integration.litellm.callsite import CallsiteModel
@@ -118,6 +119,39 @@ def _original_request_text(log: dict) -> str:
     return str(log.get("original_text") or "").strip()
 
 
+def _message_text(message: dict, names: dict[str, str], *, self_id: str = "") -> str:
+    segments = message.get("segments") or []
+    if not segments:
+        return str(message.get("text") or "").strip()
+
+    descriptions = (message.get("processing") or {}).get("media_descriptions") or {}
+    parts = []
+    for segment in segments:
+        kind = segment["type"]
+        data = segment["data"]
+        if kind == "text":
+            text = data.get("text")
+            if isinstance(text, str):
+                parts.append(text)
+        elif kind == "at":
+            target = str(data.get("qq") or "")
+            if target != self_id:
+                parts.append("@" + ("全体成员" if target == "all" else names.get(target, "群友")))
+        elif kind in ("image", "mface"):
+            item = descriptions.get(segment_key(segment)) or {}
+            label = "表情包" if kind == "mface" else "图片"
+            detail = item.get("description") if item.get("status") == "ready" else None
+            detail = detail or data.get("summary") or data.get("name") or item.get("description")
+            parts.append(f"[{label}：{detail}]" if detail else f"[{label}]")
+        elif kind == "face":
+            detail = data.get("name") or data.get("id", "未知")
+            parts.append(f"[QQ表情：{detail}]")
+        else:
+            label = {"reply": "回复", "record": "语音", "video": "视频", "file": "文件"}.get(kind, kind)
+            parts.append(f"[{label}]")
+    return "".join(parts).strip()
+
+
 def _guard_original_request(original_text: str) -> str | None:
     prefix = "<当前用户消息>"
     suffix = "</当前用户消息>"
@@ -132,7 +166,7 @@ def _make_recent_history_entry(
     m: dict,
     names: dict[str, str],
 ) -> str | None:
-    text = str(m.get("text") or "").strip()
+    text = _message_text(m, names)
     if not text:
         return None
     user_id = str(m.get("user_id") or "")
@@ -333,6 +367,13 @@ async def run(task: dict, ctx) -> dict:
             return existing["result"]
 
         original_text = _original_request_text(existing)
+        message_row_id = params.get("message_row_id")
+        current_messages = []
+        if type(message_row_id) is int:
+            current_messages = await ctx.db.read(
+                "messages", group_id=group_id, filters={"id": message_row_id},
+                limit=1, transaction=tx,
+            )
 
         messages = await ctx.db.read(
             "messages",
@@ -372,6 +413,8 @@ async def run(task: dict, ctx) -> dict:
         speaker = next((member for member in members if str(member.get("user_id") or "") == speaker_id), {})
         speaker_name = _member_display_name(speaker) or names.get(speaker_id, "群友")
 
+    current_message = current_messages[0] if current_messages else {"segments": params.get("segments")}
+    original_text = _message_text(current_message, names, self_id=str(params.get("self_id") or "")) or original_text
     user_content, content_error = _build_user_content(
         original_text=original_text,
         speaker_name=" ".join(speaker_name.splitlines()),

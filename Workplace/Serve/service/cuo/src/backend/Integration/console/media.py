@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse
 from PIL import Image, UnidentifiedImageError
 from pydantic import BaseModel, ConfigDict, Field
 from psycopg import sql
-from Function.summary.son_function.image_processor import segment_key, download, VERSION
+from Function.summary.son_function.image_processor import segment_key, download, short_description, VERSION
 from Core.clock import now
 
 
@@ -53,9 +53,12 @@ def record(row, segment, index):
     key = segment_key(segment)
     item = row.get("processing", {}).get("media_descriptions", {}).get(key, {})
     machine = item.get("machine_result", item)
+    description = item.get("description", "")
+    display = "" if item.get("manually_reviewed") else item.get("display_description")
     return {"message_row_id": row["id"], "segment_key": key, "image_index": index,
             "sent_at": row["sent_at"].isoformat(), "version": revision(item),
-            "status": item.get("status", "pending"), "description": item.get("description", ""),
+            "status": item.get("status", "pending"), "description": description,
+            "display_description": short_description(display or description),
             "reviewed": bool(item.get("manually_reviewed")), "note": item.get("annotation_note", ""),
             "annotated_at": item.get("annotated_at"), "error_code": item.get("error_code"),
             "machine_description": machine.get("description", ""),
