@@ -44,6 +44,7 @@ def annotate(item, payload):
     history.append({"description": payload.description.strip(), "note": payload.note.strip(),
                     "at": now().isoformat(), "actor": "administrator", "revision": len(history) + 1})
     value.update(description=payload.description.strip(), status="ready", version=VERSION,
+                 annotation_display_description=short_description(payload.description),
                  manually_reviewed=True, annotation_note=payload.note.strip(), annotated_at=history[-1]["at"])
     value.pop("error_code", None)
     return value
@@ -119,6 +120,7 @@ async def propagate_annotation(ctx,gid,digest,review,tx):
             latest=copy.deepcopy(review['annotation_history'][-1]);latest['revision']=len(history)+1
             history.append(latest)
             value.update(description=review['description'],status='ready',version=VERSION,hash=digest,
+                annotation_display_description=short_description(review['description']),
                 manually_reviewed=True,annotation_note=review.get('annotation_note',''),annotated_at=review['annotated_at'],segment_key=key)
             value.pop('error_code',None)
             entries[key]=value;dirty=True

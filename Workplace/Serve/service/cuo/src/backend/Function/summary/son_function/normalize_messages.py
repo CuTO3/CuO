@@ -6,7 +6,7 @@
 '''
 
 import re,regex
-from .image_processor import segment_key
+from .image_processor import media_display_text, segment_key
 def clean(text):return re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]","",str(text)).replace("\r\n","\n")
 async def normalize_messages(rows,ctx,group_id,include_divine=False):
     gid=ctx.db.check_group(group_id)
@@ -35,11 +35,12 @@ async def normalize_messages(rows,ctx,group_id,include_divine=False):
                 else:
                     ext=await ctx.db.read("messages",group_id=gid,filters={"message_id":target},limit=1)
                     reply={"context_only":True,"speaker":names.get(ext[0]["user_id"],"群友"),"text":clean(ext[0]["text"])[:200]} if ext else {"unavailable":True}
-            elif kind=="image":
+            elif kind in ("image", "mface"):
                 cached=row.get("processing",{}).get("media_descriptions",{}).get(segment_key(seg),{})
-                description=cached.get("description","图片尚未识别")
-                media.append({"type":"image","description":description,"status":cached.get("status","pending")})
-                parts.append("[图片："+description+"]")
+                display = media_display_text(seg, cached)
+                label = "图片" if kind == "image" else "表情包"
+                media.append({"type":kind,"description":display,"status":cached.get("status","pending")})
+                parts.append(f"[{label}：{display}]" if display else f"[{label}]")
             elif kind=="face":parts.append("[QQ表情："+str(data.get("name") or data.get("id","未知"))+"]")
             else:parts.append("["+str(kind)+"]")
         text="".join(parts) if row.get("segments") else clean(row["text"])

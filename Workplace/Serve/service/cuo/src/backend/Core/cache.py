@@ -15,6 +15,7 @@ from types import SimpleNamespace
 from Function.summary.son_function.normalize_messages import normalize_messages
 from Core.clock import business_date,now
 from Core.results import jsonable
+MESSAGE_CACHE_FORMAT = "normalized-v2"
 def atomic_write(path,text):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     fd,tmp=tempfile.mkstemp(dir=path.parent,prefix=".cuo-",suffix=".tmp")
@@ -54,7 +55,7 @@ class CacheManager:
         for name,value in (("messages",records),("divined_users",{r["user_id"]:str(r["id"]) for r in divined}),("keywords",kw)):
             text='\n'.join(dump(r) for r in value)+'\n' if name=='messages' else dump(value)
             await asyncio.to_thread(atomic_write,paths[name],text)
-        await asyncio.to_thread(atomic_write,paths["manifest"],dump({"state":"ready","format":"normalized-v1","business_date":str(day),"count":len(records)}))
+        await asyncio.to_thread(atomic_write,paths["manifest"],dump({"state":"ready","format":MESSAGE_CACHE_FORMAT,"business_date":str(day),"count":len(records)}))
         self.ready.add((gid,day));self.dates.setdefault(gid,set()).add(day)
     async def refresh_day(self,gid,day):
         if isinstance(day,str):day=date.fromisoformat(day)
@@ -79,7 +80,7 @@ class CacheManager:
                     paths=self.paths(gid,day)
                     manifest=json.loads(paths['manifest'].read_text(encoding='utf-8'))
                     rows=[json.loads(line) for line in paths['messages'].read_text(encoding='utf-8').splitlines() if line]
-                    if manifest.get('state')!='ready' or manifest.get('format')!='normalized-v1' or manifest.get('count')!=len(rows):raise ValueError('invalid cache manifest')
+                    if manifest.get('state')!='ready' or manifest.get('format')!=MESSAGE_CACHE_FORMAT or manifest.get('count')!=len(rows):raise ValueError('invalid cache manifest')
                     if len({r['_source']['row_id'] for r in rows})!=len(rows):raise ValueError('duplicate cache row')
                     for row in rows:
                         if not isinstance(row['text'],str) or datetime.fromisoformat(row['time']).tzinfo is None:raise ValueError('invalid normalized row')

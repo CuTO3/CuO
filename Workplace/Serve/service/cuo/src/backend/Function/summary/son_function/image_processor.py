@@ -43,6 +43,13 @@ def short_description(text):
     return " ".join(text.split())[:DISPLAY_DESCRIPTION_LIMIT].rstrip()
 
 
+def media_display_text(segment, item):
+    data = segment.get("data") or {}
+    field = "annotation_display_description" if item.get("manually_reviewed") else "display_description"
+    display = item.get(field) if item.get("status") == "ready" else None
+    return short_description(str(display or data.get("summary") or data.get("name") or ""))
+
+
 def split_description(text):
     text = text.strip()
     first, _, rest = text.partition("\n")

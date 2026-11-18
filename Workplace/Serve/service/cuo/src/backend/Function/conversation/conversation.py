@@ -21,7 +21,7 @@ conversation_reply_ai_temperature                    生成温度
 from __future__ import annotations
 
 from Core.configuration import load, resource
-from Function.summary.son_function.image_processor import segment_key
+from Function.summary.son_function.image_processor import media_display_text, segment_key
 
 CONFIG = load("conversation")
 from Integration.litellm.callsite import CallsiteModel
@@ -140,8 +140,7 @@ def _message_text(message: dict, names: dict[str, str], *, self_id: str = "") ->
         elif kind in ("image", "mface"):
             item = descriptions.get(segment_key(segment)) or {}
             label = "表情包" if kind == "mface" else "图片"
-            detail = item.get("description") if item.get("status") == "ready" else None
-            detail = detail or data.get("summary") or data.get("name") or item.get("description")
+            detail = media_display_text(segment, item)
             parts.append(f"[{label}：{detail}]" if detail else f"[{label}]")
         elif kind == "face":
             detail = data.get("name") or data.get("id", "未知")

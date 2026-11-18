@@ -5,12 +5,14 @@ from unittest.mock import AsyncMock
 
 from Function.conversation import conversation
 from Function.summary.son_function.image_processor import segment_key
+from Function.summary.son_function.normalize_messages import normalize_messages
 from Workflow._analyzer_ import classify_task
 
 
 async def test_conversation_sends_current_image_and_media_only_history(monkeypatch):
     image = {"type": "image", "data": {"url": "https://example.invalid/image"}}
-    image_description = {"status": "ready", "description": "一只蓝鲸"}
+    archived = "仅限留档的完整视觉描述"
+    image_description = {"status": "ready", "display_description": "一只蓝鲸", "description": archived}
     current = {
         "segments": [{"type": "at", "data": {"qq": "999"}}, image],
         "processing": {"media_descriptions": {segment_key(image): image_description}},
@@ -55,3 +57,15 @@ async def test_conversation_sends_current_image_and_media_only_history(monkeypat
     assert "牵鱼: [表情包：点头][QQ表情：微笑]" in prompt
     assert "<当前用户消息>\n发言人：涛涛\n[图片：一只蓝鲸]\n</当前用户消息>" in prompt
     assert image["data"]["url"] not in prompt
+    assert archived not in prompt
+
+    records, _ = await normalize_messages(
+        [{**current, "message_id": "2", "sent_at": timestamp, "user_id": "123"}],
+        ctx, "1",
+    )
+    assert records[0]["text"] == "@群友[图片：一只蓝鲸]"
+    assert records[0]["media"][0]["description"] == "一只蓝鲸"
+    assert archived not in str(records)
+
+    del image_description["display_description"]
+    assert conversation._message_text(current, {}, self_id="999") == "[图片]"
