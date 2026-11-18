@@ -5,6 +5,7 @@ from types import SimpleNamespace
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from psycopg import sql
 import httpx
 import pytest
 
@@ -34,6 +35,38 @@ def client(tmp_path, example_config_root):
 
 def login(client):
     return client.post("/console/api/login", headers=HEADERS, json={"token": "test-admin-secret"})
+
+
+def test_overview_reports_onebot_rejection_without_credentials():
+    from unittest.mock import AsyncMock
+    from starlette.websockets import WebSocketDisconnect
+    from Integration.napcat.client import OneBotClient
+    from Workflow.main import create_app
+
+    app = create_app()
+    db = SimpleNamespace(
+        groups={"123"}, table=lambda gid, table: sql.Identifier(table),
+        fetch=AsyncMock(side_effect=[[{"n": 0}]] * 4 + [[], []]),
+    )
+    app.state.ctx = SimpleNamespace(
+        settings=SimpleNamespace(admin_token="test-admin-secret", napcat_token="test-napcat-secret",
+                                 self_id="12345", model_name="test-model"),
+        ready=True, onebot=OneBotClient(), db=db,
+    )
+    app.state.inbound = asyncio.Queue()
+    with pytest.raises(WebSocketDisconnect), TestClient(app).websocket_connect(
+        "/onebot/ws", headers={"Authorization": "Bearer wrong-token", "X-Self-ID": "12345"},
+    ):
+        pytest.fail("invalid OneBot token was accepted")
+    client = TestClient(app)
+    url = "/console/api/overview/123"
+    assert client.get(url, headers=HEADERS).status_code == 401
+    assert login(client).status_code == 200
+    response = client.get(url, headers=HEADERS)
+    assert response.status_code == 200
+    assert response.json()["onebot_issue"]["code"] == "onebot_token_mismatch"
+    assert "test-napcat-secret" not in response.text
+    assert "wrong-token" not in response.text
 
 
 def test_static_and_protected_routes(client):

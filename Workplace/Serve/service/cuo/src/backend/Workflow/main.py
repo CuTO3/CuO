@@ -95,11 +95,11 @@ def create_app(settings=None):
     async def websocket(ws:WebSocket):
         ctx=app.state.ctx
         token=ws.headers.get("authorization","")
-        if not hmac.compare_digest(token,"Bearer "+ctx.settings.napcat_token) or ws.headers.get("x-self-id")!=ctx.settings.self_id:
+        valid_token = hmac.compare_digest(token,"Bearer "+ctx.settings.napcat_token)
+        if not valid_token or ws.headers.get("x-self-id")!=ctx.settings.self_id:
             if not ctx.onebot.connected:
                 app.state.onebot_issue = {
-                    "code": "onebot_token_mismatch" if not hmac.compare_digest(token, "Bearer " + ctx.settings.napcat_token)
-                    else "onebot_account_mismatch",
+                    "code": "onebot_account_mismatch" if valid_token else "onebot_token_mismatch",
                     "at": now().isoformat(),
                 }
             await ws.close(code=1008);return
