@@ -55,7 +55,7 @@ async def run(task,ctx):
     from Function.summary.son_function.normalize_messages import normalize_messages
     from Function.divine.divine import candidates_from
     records,mapping=await normalize_messages(rows,ctx,gid)
-    candidates=candidates_from(records,mapping,"")
+    candidates=candidates_from(records,mapping,"",source_rows=rows)
     keywords={"business_date":str(day),"source_business_date":str(source_day),"source_status":"ready" if records else "no_data","items":candidates}
     start,end=day_bounds(source_day)
     value=result(business_date=str(day),coverage_start=start.isoformat(),coverage_end=end.isoformat(),

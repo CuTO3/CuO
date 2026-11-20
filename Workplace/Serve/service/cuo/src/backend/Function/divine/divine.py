@@ -20,11 +20,12 @@ import json,math,secrets
 from datetime import timedelta
 from uuid import uuid4
 import jieba.posseg
+import regex
 from psycopg import sql
 
 from Core.clock import business_date,now
 from Core.results import result,save,saved
-from Function.summary.son_function.normalize_messages import normalize_messages
+from Function.summary.son_function.normalize_messages import clean, normalize_messages
 
 from .son_function.zhou_yi import cast
 from .son_function.tarot import map_tarot
@@ -54,14 +55,57 @@ def draw_dictum_luck(dictum,rng=None):
     magnitude=min(assessment["magnitude_max"],max(assessment["magnitude_min"],abs(draw_luck(rng))))
     return direction*magnitude
 
-def candidates_from(records,ref_map,uid):
+MEDIA_LABELS = frozenset({
+    "图片", "图像", "截图", "照片", "表情", "表情包", "qq表情", "贴纸",
+    "语音", "视频", "文件", "转发", "image", "face", "mface", "record",
+    "video", "file", "forward",
+})
+_MEDIA_LABEL_PATTERN = "|".join(sorted(map(regex.escape, MEDIA_LABELS)))
+# Some older rows have no segments but retain a CQ tag or a bracketed media label.
+_MEDIA_MARKUP = regex.compile(
+    rf"\[(?:CQ:[^\]]*|(?:{_MEDIA_LABEL_PATTERN})(?:[：:](?P<body>(?:[^\[\]]++|\[(?&body)\])*))?)\]",
+    regex.IGNORECASE,
+)
+
+
+def _candidate_text(source):
+    segments = source.get("segments") or []
+    if segments:
+        # Preserve boundaries so text on opposite sides of an attachment cannot form a keyword.
+        text = "".join(
+            segment["data"].get("text", "") if segment["type"] == "text" else " "
+            for segment in segments
+        )
+    else:
+        text = source.get("text", "")
+    return _MEDIA_MARKUP.sub(" ", clean(text)).strip()
+
+
+def candidates_from(records, ref_map, uid, *, source_rows):
     rules=json.loads(DIVINE_MAIN_CONFIG.divine_candidate_keyword_rules_file.read_text(encoding="utf-8"))
+    sources = {source["message_id"]: source for source in source_rows}
+    stopwords = MEDIA_LABELS | {word.casefold() for word in rules["stopwords"]}
+    preferred = sorted(
+        (word for word in rules["phrases"] if word.casefold() not in stopwords),
+        key=len,
+        reverse=True,
+    )
     found={}
     for row in records:
-        text=row["text"]
-        if row["kind"]=="bot" or any(s in text for s in rules["excluded"]):continue
-        phrases=[p for p in sorted(rules["phrases"],key=len,reverse=True) if p in text]
-        if not phrases:phrases=[p.word for p in jieba.posseg.cut(text) if p.flag.startswith("n") and 2<=len(p.word)<=12 and p.word not in rules["stopwords"]][:8]
+        source = sources[ref_map[row["ref"]]["message_id"]]
+        if row["kind"] == "bot" or source.get("processing", {}).get("receiver", {}).get("at_bot"):
+            continue
+        text = _candidate_text(source)
+        if not text or any(s in text for s in rules["excluded"]):
+            continue
+        phrases = [word for word in preferred if word in text]
+        if not phrases:
+            phrases = [
+                token.word
+                for token in jieba.posseg.cut(text)
+                if token.flag.startswith("n") and 2 <= len(token.word) <= 12
+                and token.word.casefold() not in stopwords
+            ][:8]
         own=ref_map[row["ref"]]["user_id"]==uid
         reply=(row.get("reply_to") or {}).get("ref")
         responds=reply in ref_map and ref_map[reply]["user_id"]==uid
@@ -115,7 +159,7 @@ async def run(task,ctx):
         rows=await ctx.db.read("messages",group_id=gid,filters={"business_date":day-timedelta(days=1),"id":{"lte":zhou["snapshot_seq"]}},order_by=(("sent_at","asc"),("id","asc")))
         rows=[r for r in rows if not r.get("generated_by") and not r.get("processing",{}).get("receiver",{}).get("at_bot")]
         records,mapping=await normalize_messages(rows,ctx,gid)
-        candidates=candidates_from(records,mapping,uid)
+        candidates=candidates_from(records,mapping,uid,source_rows=rows)
         zhou["ai_result"]=await generate(zhou,draft["tarot"],draft["dictum"],candidates,draft["luck_delta"],ctx)
         zhou["candidates"]=candidates
         await ctx.db.write("divinations",[{"id":draft["id"],"zhou_yi":zhou}],group_id=gid,mode="update",key_fields=("id",))
