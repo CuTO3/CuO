@@ -25,7 +25,7 @@ $settings = ($configJson -join "`n") | ConvertFrom-Json
 $pages = @($settings.pages.PSObject.Properties | ForEach-Object {
     @{
         Name = $_.Name; Local = $_.Value.Local; Remote = $_.Value.Remote
-        Path = $_.Value.Path; TokenFile = $_.Value.TokenFile
+        Path = $_.Value.Path; TokenFile = $_.Value.TokenFile; UseNapCatToken = $_.Value.UseNapCatToken
     }
 })
 $tunnels = @{}
@@ -47,14 +47,17 @@ function Stop-PageTunnels {
 
 function Show-Page($page, $url) {
     Write-Host "$($page.Name)  $url"
-    if ($page.TokenFile) {
+    $token = if ($page.UseNapCatToken) { $settings.napcat_webui_token }
+    if ($token -or $page.TokenFile) {
         $failure = '远程读取失败，请检查 SSH、TokenFile 路径和远程 sudo 读取权限。'
         try {
-            $configLines = & $ssh -o BatchMode=yes -o ("ConnectTimeout=" + $settings.connect_timeout) $settings.ssh_host "sudo -n cat -- $($page.TokenFile)" 2>$null
-            if ($LASTEXITCODE -ne 0) { throw '远程读取失败' }
-            $failure = '服务器配置无法解析，或缺少 token。'
-            $token = ($configLines -join [Environment]::NewLine | ConvertFrom-Json).token
-            if ($token -isnot [string] -or [string]::IsNullOrWhiteSpace($token)) { throw '服务器配置缺少 token' }
+            if (-not $token) {
+                $configLines = & $ssh -o BatchMode=yes -o ("ConnectTimeout=" + $settings.connect_timeout) $settings.ssh_host "sudo -n cat -- $($page.TokenFile)" 2>$null
+                if ($LASTEXITCODE -ne 0) { throw '远程读取失败' }
+                $failure = '服务器配置无法解析，或缺少 token。'
+                $token = ($configLines -join [Environment]::NewLine | ConvertFrom-Json).token
+                if ($token -isnot [string] -or [string]::IsNullOrWhiteSpace($token)) { throw '服务器配置缺少 token' }
+            }
             $failure = '无法写入本机剪贴板。'
             Set-Clipboard -Value $token
             Write-Host '登录 token 已复制，在 WebUI 密码框按 Ctrl+V。'

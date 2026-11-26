@@ -41,12 +41,14 @@ def install(app, require):
         version = hashlib.sha256(json.dumps(values, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
         return {'values': {k: v for k, v in values.items() if not spec['fields'][k]['sensitive']},
                 'configured': {k: bool(v) for k, v in values.items() if spec['fields'][k]['sensitive']},
-                'fields': configuration_fields(name, values), 'version': version, 'restart_required': True}
+                'fields': configuration_fields(name, values), 'version': version,
+                'restart_required': any(field.get('restart_required', True) for field in spec['fields'].values())}
 
     @app.get('/console/api/configuration')
     async def catalog(request: Request):
         require(request)
-        return {'modules': {name: {'source': spec['source'], 'fields': spec['fields']} for name, spec in REGISTRY.items()}}
+        return {'modules': {name: {'source': spec['source'], 'path': spec['path'], 'fields': spec['fields']}
+                            for name, spec in REGISTRY.items()}}
 
     @app.get('/console/api/configuration/{name}')
     async def get_config(name: str, request: Request):

@@ -86,6 +86,9 @@ def read(name, *, root=None):
             values = tomllib.load(stream)
     except (ValueError, OSError):
         raise ValueError(f'无法读取配置：{spec["path"]}') from None
+    for key, field in spec['fields'].items():
+        if 'default' in field:
+            values.setdefault(key, field['default'])
     return validate(spec, values)
 
 

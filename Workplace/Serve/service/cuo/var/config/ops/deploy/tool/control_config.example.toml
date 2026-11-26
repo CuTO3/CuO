@@ -1,5 +1,6 @@
 # 复制为 control_config.toml，填写本机 SSH 别名。
 ssh_host = ""
+napcat_webui_token = ""
 connect_timeout = 8
 keepalive_interval = 30
 keepalive_count = 3
@@ -17,6 +18,7 @@ Remote = 6099
 Path = "/webui/"
 # 只配置服务器文件路径。脚本打开页面时读取 token 并复制到本机剪贴板。
 TokenFile = "/serve/software/napcat/var/config/webui.json"
+UseNapCatToken = true
 
 [pages."LiteLLM 管理界面"]
 Local = 8888

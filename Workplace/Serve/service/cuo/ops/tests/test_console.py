@@ -87,6 +87,32 @@ def test_static_and_protected_routes(client):
     assert client.get("/admin/groups", headers=HEADERS).status_code == 401
 
 
+def test_control_token_is_write_only_and_catalog_exposes_config_path(client):
+    from Core.configuration import REGISTRY, read
+
+    assert login(client).status_code == 200
+    catalog = client.get('/console/api/configuration', headers=HEADERS).json()['modules']
+    assert {name: module['path'] for name, module in catalog.items()} == {
+        name: spec['path'] for name, spec in REGISTRY.items()
+    }
+    name = 'ops_control_config'
+    url = '/console/api/configuration/' + name
+    root = client.app.state.ctx.settings.config_root
+    path = root / catalog[name]['path']
+    path.write_text(path.read_text(encoding='utf-8').replace('napcat_webui_token = ""\n', ''), encoding='utf-8')
+    initial = client.get(url, headers=HEADERS).json()
+    assert initial['configured']['napcat_webui_token'] is False
+    assert initial['restart_required'] is False
+    token = 'synthetic-webui-token'
+    response = client.put(url, headers=HEADERS, json={
+        'version': initial['version'], 'values': {'napcat_webui_token': token},
+    })
+    assert response.status_code == 200
+    assert token not in response.text
+    assert response.json()['configured']['napcat_webui_token'] is True
+    assert read(name, root=root)['napcat_webui_token'] == token
+
+
 def test_settings_validation_persistence_and_conflict(client):
     login(client)
     url = '/console/api/configuration/sender'

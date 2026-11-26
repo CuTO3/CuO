@@ -10,8 +10,10 @@
 相对 CUO_CONFIG_ROOT 按应用根目录解析，显式 -Config 相对当前工作目录解析。
 脚本自动寻找本机 Python 3.11+，也可用 -PythonExecutable 指定解释器。
 修改配置后重新打开脚本生效。
-选择 NapCat WebUI 时，脚本通过 SSH 读取该页面的 `TokenFile`，将登录 token 复制到本机剪贴板。
-已有配置可在 NapCat 的页面配置段补上示例中的 `TokenFile`。
+选择 NapCat WebUI 时，脚本将登录 token 复制到本机剪贴板。可在本机私有
+`control_config.toml` 设置 `napcat_webui_token` 和页面的 `UseNapCatToken = true`。
+本机未配置固定值时，脚本通过 SSH 读取该页面的 `TokenFile`。
+NapCat 更换 WebUI token 后，同步更新本机固定值，或清空本机固定值以恢复从服务器读取。
 
 ## 控制台重启权限
 

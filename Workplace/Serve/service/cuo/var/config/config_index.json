@@ -1196,6 +1196,7 @@
       "module_id": "ops_control_config",
       "fields": [
         "ssh_host",
+        "napcat_webui_token",
         "connect_timeout",
         "keepalive_interval",
         "keepalive_count",
@@ -1204,6 +1205,13 @@
         "pages"
       ],
       "field_metadata": {
+        "napcat_webui_token": {
+          "type": "str",
+          "description": "napcat_webui_token",
+          "sensitive": true,
+          "restart_required": false,
+          "default": ""
+        },
         "ssh_host": {
           "type": "str",
           "description": "ssh_host",

@@ -11,13 +11,16 @@ APP_ROOT = Path(__file__).resolve().parents[3]
 
 
 def validate(values):
+    values.setdefault('napcat_webui_token', '')
     expected = {'ssh_host', 'connect_timeout', 'keepalive_interval',
-                'keepalive_count', 'startup_timeout', 'port_attempts', 'pages'}
+                'keepalive_count', 'startup_timeout', 'port_attempts', 'pages', 'napcat_webui_token'}
     if set(values) != expected:
         raise ValueError('控制台配置字段缺失或未知')
     if not isinstance(values['ssh_host'], str) or not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.@-]*', values['ssh_host']):
         raise ValueError('请填写有效的 ssh_host')
-    for key in expected - {'ssh_host', 'pages'}:
+    if not isinstance(values['napcat_webui_token'], str):
+        raise ValueError('napcat_webui_token 必须是字符串')
+    for key in expected - {'ssh_host', 'pages', 'napcat_webui_token'}:
         if type(values[key]) is not int or not 1 <= values[key] <= 3600:
             raise ValueError(f'{key} 必须为 1 到 3600 的整数')
     pages = values['pages']
@@ -27,8 +30,10 @@ def validate(values):
     for name, page in pages.items():
         if (not name.strip() or not isinstance(page, dict)
                 or not required_page_fields <= page.keys()
-                or page.keys() - required_page_fields - {'TokenFile'}):
-            raise ValueError('页面需要 Local、Remote 和 Path，可选 TokenFile')
+                or page.keys() - required_page_fields - {'TokenFile', 'UseNapCatToken'}):
+            raise ValueError('页面需要 Local、Remote 和 Path，可选 TokenFile、UseNapCatToken')
+        if type(page.get('UseNapCatToken', False)) is not bool:
+            raise ValueError('UseNapCatToken 必须是布尔值')
         if 'TokenFile' in page:
             token_file = page['TokenFile']
             if (not isinstance(token_file, str)
