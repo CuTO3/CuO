@@ -15,6 +15,8 @@ Path = "/console/"
 Local = 6099
 Remote = 6099
 Path = "/webui/"
+# 只配置服务器文件路径。脚本打开页面时读取 token 并复制到本机剪贴板。
+TokenFile = "/serve/software/napcat/var/config/webui.json"
 
 [pages."LiteLLM 管理界面"]
 Local = 8888

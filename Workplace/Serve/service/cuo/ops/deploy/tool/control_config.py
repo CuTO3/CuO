@@ -23,9 +23,17 @@ def validate(values):
     pages = values['pages']
     if not isinstance(pages, dict) or not pages:
         raise ValueError('pages 必须包含至少一个管理页面')
+    required_page_fields = {'Local', 'Remote', 'Path'}
     for name, page in pages.items():
-        if not name.strip() or not isinstance(page, dict) or set(page) != {'Local', 'Remote', 'Path'}:
-            raise ValueError('页面需要 Local、Remote 和 Path')
+        if (not name.strip() or not isinstance(page, dict)
+                or not required_page_fields <= page.keys()
+                or page.keys() - required_page_fields - {'TokenFile'}):
+            raise ValueError('页面需要 Local、Remote 和 Path，可选 TokenFile')
+        if 'TokenFile' in page:
+            token_file = page['TokenFile']
+            if (not isinstance(token_file, str)
+                    or not re.fullmatch(r'/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+\.json', token_file)):
+                raise ValueError('TokenFile 必须是服务器上的绝对 JSON 文件路径')
         for key in ('Local', 'Remote'):
             if type(page[key]) is not int or not 1 <= page[key] <= 65535:
                 raise ValueError('页面端口必须为 1 到 65535')

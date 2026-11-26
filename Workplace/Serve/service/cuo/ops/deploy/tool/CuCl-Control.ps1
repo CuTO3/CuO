@@ -23,7 +23,10 @@ $configJson = & $PythonExecutable @arguments
 if ($LASTEXITCODE -ne 0) { throw '请检查控制台 TOML 配置。' }
 $settings = ($configJson -join "`n") | ConvertFrom-Json
 $pages = @($settings.pages.PSObject.Properties | ForEach-Object {
-    @{ Name = $_.Name; Local = $_.Value.Local; Remote = $_.Value.Remote; Path = $_.Value.Path }
+    @{
+        Name = $_.Name; Local = $_.Value.Local; Remote = $_.Value.Remote
+        Path = $_.Value.Path; TokenFile = $_.Value.TokenFile
+    }
 })
 $tunnels = @{}
 
@@ -42,11 +45,30 @@ function Stop-PageTunnels {
     $tunnels.Clear()
 }
 
+function Show-Page($page, $url) {
+    Write-Host "$($page.Name)  $url"
+    if ($page.TokenFile) {
+        $failure = '远程读取失败，请检查 SSH、TokenFile 路径和远程 sudo 读取权限。'
+        try {
+            $configLines = & $ssh -o BatchMode=yes -o ("ConnectTimeout=" + $settings.connect_timeout) $settings.ssh_host "sudo -n cat -- $($page.TokenFile)" 2>$null
+            if ($LASTEXITCODE -ne 0) { throw '远程读取失败' }
+            $failure = '服务器配置无法解析，或缺少 token。'
+            $token = ($configLines -join [Environment]::NewLine | ConvertFrom-Json).token
+            if ($token -isnot [string] -or [string]::IsNullOrWhiteSpace($token)) { throw '服务器配置缺少 token' }
+            $failure = '无法写入本机剪贴板。'
+            Set-Clipboard -Value $token
+            Write-Host '登录 token 已复制，在 WebUI 密码框按 Ctrl+V。'
+        } catch {
+            Write-Warning "登录 token 未复制。$failure"
+        }
+    }
+    if (-not $NoBrowser) { Start-Process $url }
+}
+
 function Open-Page($page) {
     $tunnel = $tunnels[$page.Name]
     if ($tunnel -and -not $tunnel.Process.HasExited) {
-        Write-Host "$($page.Name)  $($tunnel.Url)"
-        if (-not $NoBrowser) { Start-Process $tunnel.Url }
+        Show-Page $page $tunnel.Url
         return
     }
     if ($tunnel) {
@@ -59,10 +81,10 @@ function Open-Page($page) {
     $port = $page.Local..($page.Local + $settings.port_attempts - 1) | Where-Object { $_ -notin $occupied } | Select-Object -First 1
     if (-not $port) { throw "从 $($page.Local) 开始的$($settings.port_attempts) 个本地端口均已占用。" }
     $forward = "127.0.0.1:${port}:127.0.0.1:$($page.Remote)"
-    $log = New-TemporaryFile
+    $logPath = [IO.Path]::GetTempFileName()
     $process = $null
     try {
-        $process = Start-Process -FilePath $ssh -WindowStyle Hidden -PassThru -RedirectStandardError $log.FullName -ArgumentList @(
+        $process = Start-Process -FilePath $ssh -WindowStyle Hidden -PassThru -RedirectStandardError $logPath -ArgumentList @(
             '-N', '-o', 'BatchMode=yes', '-o', 'ExitOnForwardFailure=yes',
             '-o', ('ConnectTimeout=' + $settings.connect_timeout), '-o', ('ServerAliveInterval=' + $settings.keepalive_interval),
             '-o', ('ServerAliveCountMax=' + $settings.keepalive_count), '-L', $forward, $settings.ssh_host
@@ -70,7 +92,7 @@ function Open-Page($page) {
         $deadline = [DateTime]::UtcNow.AddSeconds($settings.startup_timeout)
         do {
             if ($process.HasExited) {
-                $detail = (Get-Content -LiteralPath $log.FullName -Raw)
+                $detail = (Get-Content -LiteralPath $logPath -Raw)
                 throw "SSH 隧道启动失败（退出码 $($process.ExitCode)）。$detail"
             }
             $listener = Get-NetTCPConnection -LocalAddress 127.0.0.1 -LocalPort $port -State Listen -OwningProcess $process.Id -ErrorAction SilentlyContinue
@@ -80,8 +102,7 @@ function Open-Page($page) {
         if (-not $listener) { throw '等待 SSH 隧道超时。' }
 
         $url = "http://127.0.0.1:${port}$($page.Path)"
-        $tunnels[$page.Name] = @{ Process = $process; Url = $url; Log = $log.FullName }
-        Write-Host "$($page.Name)  $url"
+        $tunnels[$page.Name] = @{ Process = $process; Url = $url; Log = $logPath }
     } catch {
         if ($process) {
             if (-not $process.HasExited) {
@@ -94,10 +115,10 @@ function Open-Page($page) {
     } finally {
         # SSH 在运行时可能仍持有日志文件，退出时再清理。
         if (-not $tunnels.ContainsKey($page.Name)) {
-            Remove-Item -LiteralPath $log.FullName -ErrorAction SilentlyContinue
+            Remove-Item -LiteralPath $logPath -ErrorAction SilentlyContinue
         }
     }
-    if (-not $NoBrowser) { Start-Process $url }
+    Show-Page $page $url
 }
 
 try {
