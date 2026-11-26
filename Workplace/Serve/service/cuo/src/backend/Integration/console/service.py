@@ -1,6 +1,7 @@
 """Authenticated restart of the fixed CuO systemd service."""
 import asyncio
 import os
+import signal
 
 from fastapi import HTTPException, Request
 
@@ -18,8 +19,10 @@ async def restart_service():
         process.kill()
         await process.wait()
         raise RuntimeError('重启请求超时，请检查服务状态') from None
-    if process.returncode:
-        raise RuntimeError('重启请求被拒绝，请检查 CuO 的 systemd 重启权限')
+    # systemd can stop the whole service cgroup before systemctl exits normally.
+    # The console checks that a new backend instance actually becomes ready.
+    if process.returncode not in (0, -signal.SIGTERM):
+        raise RuntimeError('重启请求失败，请检查 CuO 的 systemd 授权及服务日志')
 
 
 def install(app, require):

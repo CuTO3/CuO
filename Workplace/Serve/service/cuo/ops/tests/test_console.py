@@ -172,6 +172,18 @@ def test_rate_limit_and_expired_session(client):
     assert login(client).status_code == 429
 
 
+@pytest.mark.parametrize("returncode, status", [(0, 202), (-15, 202), (1, 503)])
+def test_service_restart_systemctl_exit_status(client, monkeypatch, returncode, status):
+    from unittest.mock import AsyncMock
+    from Integration.console import service
+
+    process = SimpleNamespace(wait=AsyncMock(return_value=returncode), returncode=returncode)
+    monkeypatch.setenv("INVOCATION_ID", "test-service")
+    monkeypatch.setattr(service.asyncio, "create_subprocess_exec", AsyncMock(return_value=process))
+    login(client)
+    assert client.post("/console/api/service/restart", headers=HEADERS).status_code == status
+
+
 def test_service_restart_requires_session_and_systemd(client, monkeypatch):
     from unittest.mock import AsyncMock
     from Integration.console import service
